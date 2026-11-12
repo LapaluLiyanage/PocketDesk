@@ -73,6 +73,19 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    # Manrope (SIL Open Font License, see assets/fonts/Manrope-OFL.txt): one variable font.
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope.ttf
+          weight: 200
+        - asset: assets/fonts/Manrope.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope.ttf
+          weight: 800
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

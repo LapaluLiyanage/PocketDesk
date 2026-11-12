@@ -87,8 +87,18 @@ class PocketDeskApp extends StatelessWidget {
     return MaterialApp(
       title: 'PocketDesk',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: light, scaffoldBackgroundColor: const Color(0xFFFAFAFA)),
-      darkTheme: ThemeData(colorScheme: dark, scaffoldBackgroundColor: const Color(0xFF0E0E0F)),
+      theme: ThemeData(
+        colorScheme: light,
+        fontFamily: 'Manrope',
+        scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+        extensions: const [PocketColors.light],
+      ),
+      darkTheme: ThemeData(
+        colorScheme: dark,
+        fontFamily: 'Manrope',
+        scaffoldBackgroundColor: const Color(0xFF0E0E0F),
+        extensions: const [PocketColors.dark],
+      ),
       builder: (context, child) {
         final settings = model.settings;
         if (settings == null || child == null) return child ?? const SizedBox.shrink();
