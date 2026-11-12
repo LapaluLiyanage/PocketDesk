@@ -529,11 +529,16 @@ class _ScreenTabState extends State<ScreenTab> with WidgetsBindingObserver {
                     ),
                   ),
                 if (_stats.isNotEmpty)
-                  Positioned(left: 8, bottom: 8, child: _Hint(text: _stats, small: true)),
-                if (widget.fullscreen)
                   Positioned(
-                    right: 8,
-                    top: 8,
+                    left: 8 + (widget.fullscreen ? MediaQuery.viewPaddingOf(context).left : 0),
+                    bottom: 8 + (widget.fullscreen ? MediaQuery.viewPaddingOf(context).bottom : 0),
+                    child: _Hint(text: _stats, small: true),
+                  ),
+                if (widget.fullscreen)
+                  // Clear of the notch / Dynamic Island and the side cut-outs.
+                  Positioned(
+                    right: 8 + MediaQuery.viewPaddingOf(context).right,
+                    top: 8 + MediaQuery.viewPaddingOf(context).top,
                     child: IconButton.filledTonal(
                       tooltip: 'Exit full screen',
                       icon: const Icon(Icons.fullscreen_exit),

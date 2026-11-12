@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // How to use PocketDesk away from home, with Tailscale.
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -9,6 +11,7 @@ class RemoteHelpScreen extends StatelessWidget {
 
   static final _playStore = Uri.parse('https://play.google.com/store/apps/details?id=com.tailscale.ipn');
   static final _fdroid = Uri.parse('https://f-droid.org/packages/com.tailscale.ipn/');
+  static final _appStore = Uri.parse('https://apps.apple.com/app/tailscale/id1470499037');
   static final _download = Uri.parse('https://tailscale.com/download');
 
   Future<void> _open(BuildContext context, Uri uri) async {
@@ -70,8 +73,15 @@ class RemoteHelpScreen extends StatelessWidget {
             ],
           ),
           step(2, 'On this phone', 'Install Tailscale and sign in with the same account.', [
-            FilledButton.tonal(onPressed: () => _open(context, _playStore), child: const Text('Google Play')),
-            OutlinedButton(onPressed: () => _open(context, _fdroid), child: const Text('F-Droid')),
+            if (Platform.isIOS)
+              FilledButton.tonal(onPressed: () => _open(context, _appStore), child: const Text('App Store'))
+            else ...[
+              FilledButton.tonal(
+                onPressed: () => _open(context, _playStore),
+                child: const Text('Google Play'),
+              ),
+              OutlinedButton(onPressed: () => _open(context, _fdroid), child: const Text('F-Droid')),
+            ],
           ]),
           step(
             3,
@@ -90,7 +100,7 @@ class RemoteHelpScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 'The computer must be on and awake. To stop it sleeping, turn on "Keep this computer awake" '
-                'on its PocketDesk page. Android allows one VPN at a time, so Tailscale replaces any other VPN '
+                'on its PocketDesk page. Your phone allows one VPN at a time, so Tailscale replaces any other VPN '
                 'while it\'s on.',
                 style: theme.textTheme.bodyMedium,
               ),

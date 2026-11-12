@@ -158,7 +158,7 @@ class AudioController extends ChangeNotifier {
       return false;
     });
     if (!ok) {
-      _error ??= 'PocketDesk needs the microphone to talk to the computer. Allow it in Android settings.';
+      _error ??= 'PocketDesk needs the microphone to talk to the computer. Allow it in the Settings app.';
       _talking = false;
       _handsFree = false;
       await backend.setCallMode(false);

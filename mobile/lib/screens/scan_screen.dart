@@ -138,7 +138,7 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
                   const SizedBox(height: 16),
                   const Text(
                     'PocketDesk needs the camera to scan the code on your computer. '
-                    'Allow camera access in Android settings, or paste the link instead.',
+                    'Allow camera access in the Settings app, or paste the link instead.',
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),

@@ -50,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
           title: const Text('Set a screen lock first'),
           content: const Text(
             'App lock uses your phone\'s fingerprint, face or screen lock. '
-            'Set one up in Android settings, then try again.',
+            'Set one up in the Settings app, then try again.',
           ),
           actions: [FilledButton(onPressed: () => Navigator.pop(ctx), child: const Text('OK'))],
         ),
