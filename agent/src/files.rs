@@ -8,7 +8,7 @@
 //! (so a slow link doesn't pile up memory or starve the touchpad) and sends
 //! `file_end` only once all bytes are acknowledged.
 //!
-//! Received files go to `Downloads/PairDesk`, written to a hidden part file
+//! Received files go to `Downloads/PocketDesk`, written to a hidden part file
 //! first and renamed once the checksum matches; names are cleaned and never
 //! overwrite an existing file.
 
@@ -115,14 +115,14 @@ pub fn unique_path(dir: &Path, name: &str) -> PathBuf {
 
 /// Where files from phones are saved.
 pub fn downloads_dir() -> PathBuf {
-    if let Some(d) = std::env::var_os("PAIRDESK_DOWNLOADS") {
+    if let Some(d) = std::env::var_os("POCKETDESK_DOWNLOADS") {
         return PathBuf::from(d);
     }
     let base = directories::UserDirs::new()
         .and_then(|u| u.download_dir().map(Path::to_path_buf))
         .or_else(|| directories::BaseDirs::new().map(|b| b.home_dir().join("Downloads")))
         .unwrap_or_else(std::env::temp_dir);
-    base.join("PairDesk")
+    base.join("PocketDesk")
 }
 
 pub fn hex(bytes: &[u8]) -> String {
@@ -152,7 +152,7 @@ impl Incoming {
         }
         std::fs::create_dir_all(dir).map_err(|e| format!("Can't create {}: {e}", dir.display()))?;
         let part = dir.join(format!(
-            ".pairdesk-{}.part",
+            ".pocketdesk-{}.part",
             crate::config::b64(&crate::config::random_bytes::<6>())
         ));
         let file = File::create(&part).map_err(|e| format!("Can't save the file: {e}"))?;

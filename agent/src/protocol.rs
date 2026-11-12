@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Wire protocol between the PairDesk phone app and the desktop agent.
+//! Wire protocol between the PocketDesk phone app and the desktop agent.
 //!
 //! Every message is a JSON object with a `t` (type) field. See
 //! `docs/PROTOCOL.md` for the full description.

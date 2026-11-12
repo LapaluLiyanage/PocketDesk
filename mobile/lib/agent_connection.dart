@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Connection from the phone to the PairDesk desktop agent.
+// Connection from the phone to the PocketDesk desktop agent.
 //
 // Every connection is TLS, and the phone accepts exactly one certificate:
 // the one whose SHA-256 fingerprint it got from the pairing QR code. The
@@ -353,7 +353,7 @@ class AgentConnection extends ChangeNotifier {
 
   String? _agentVersion;
 
-  /// The computer's PairDesk release ("0.5.1"); null before 0.5.1.
+  /// The computer's PocketDesk release ("0.5.1"); null before 0.5.1.
   String? get agentVersion => _agentVersion;
 
   Set<String> _features = const {};
@@ -899,21 +899,21 @@ class AgentConnection extends ChangeNotifier {
     }
   }
 
-  /// What to tell the user when the computer's PairDesk is too old for
+  /// What to tell the user when the computer's PocketDesk is too old for
   /// something. Before 0.5.1 the computer didn't say its version; the usual
   /// cause then is an old copy still running after a new one was downloaded.
   String outdatedComputerMessage() {
     final v = _agentVersion;
     if (v != null) {
-      return 'The computer has PairDesk $v, which can\'t do this. '
-          'Install the latest PairDesk on the computer.';
+      return 'The computer has PocketDesk $v, which can\'t do this. '
+          'Install the latest PocketDesk on the computer.';
     }
     final where = _agentOs == 'windows'
-        ? 'right-click the PairDesk icon next to the clock (it may be under the ^ arrow)'
-        : 'open the PairDesk icon in the top bar or system tray';
-    return 'The computer is running an older PairDesk.\n\n'
-        'If you just installed a new one there: $where, choose Stop PairDesk, '
-        'then open the new PairDesk. Otherwise download it from pairdesk.madhushan.me.';
+        ? 'right-click the PocketDesk icon next to the clock (it may be under the ^ arrow)'
+        : 'open the PocketDesk icon in the top bar or system tray';
+    return 'The computer is running an older PocketDesk.\n\n'
+        'If you just installed a new one there: $where, choose Stop PocketDesk, '
+        'then open the new PocketDesk. Otherwise download it from pocketdesk.lapalu.me.';
   }
 
   /// Lock, sleep, restart… Completes when the computer accepts.
@@ -939,7 +939,7 @@ class AgentConnection extends ChangeNotifier {
   final _screenEvents = StreamController<String>.broadcast();
   final _notices = StreamController<String>.broadcast();
 
-  /// Messages from the computer for the person, e.g. "approve PairDesk on
+  /// Messages from the computer for the person, e.g. "approve PocketDesk on
   /// the computer" (Linux Wayland).
   Stream<String> get notices => _notices.stream;
 
@@ -988,7 +988,7 @@ class AgentConnection extends ChangeNotifier {
     await _request({'t': 'clip_set', 'text': text, 'paste': paste});
   }
 
-  /// Sends a file to the computer's Downloads/PairDesk folder.
+  /// Sends a file to the computer's Downloads/PocketDesk folder.
   Future<Transfer> sendFile(File file, {String? name}) async {
     _requireFeature('files');
     if (_status != ConnectionStatus.connected) {

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/update_check.dart';
+import 'package:pocketdesk/update_check.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -18,10 +18,10 @@ void main() {
 
   Map<String, Object> manifest(String version) => {
     'version': version,
-    'notes_url': 'https://github.com/sandunMadhushan/pairdesk/releases/tag/v$version',
+    'notes_url': 'https://github.com/LapaluLiyanage/pocketdesk/releases/tag/v$version',
     'assets': {
-      'android-arm64': {'url': 'https://example.com/pairdesk-$version-arm64.apk', 'sha256': '00', 'size': 1},
-      'android-armv7': {'url': 'https://example.com/pairdesk-$version-armv7.apk', 'sha256': '00', 'size': 1},
+      'android-arm64': {'url': 'https://example.com/pocketdesk-$version-arm64.apk', 'sha256': '00', 'size': 1},
+      'android-armv7': {'url': 'https://example.com/pocketdesk-$version-armv7.apk', 'sha256': '00', 'size': 1},
     },
   };
 
@@ -73,7 +73,7 @@ void main() {
   test('finds a signed newer release', () async {
     final u = await checker(github(manifest('0.9.0'))).check();
     expect(u!.version, '0.9.0');
-    expect(u.download.toString(), 'https://example.com/pairdesk-0.9.0-arm64.apk');
+    expect(u.download.toString(), 'https://example.com/pocketdesk-0.9.0-arm64.apk');
     expect(u.notes.path, endsWith('/v0.9.0'));
     final armv7 = await checker(github(manifest('0.9.0')), abis: ['armeabi-v7a']).check();
     expect(armv7!.download.path, endsWith('armv7.apk'));

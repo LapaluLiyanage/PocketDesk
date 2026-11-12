@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Builds site/ (Next.js, static export) and publishes it to GitHub Pages
-# (pairdesk.madhushan.me).
+# (pocketdesk.lapalu.me).
 # One-time setup: Settings → Pages → Source: GitHub Actions; custom domain
-# pairdesk.madhushan.me (DNS: CNAME pairdesk → sandunmadhushan.github.io).
+# pocketdesk.lapalu.me (DNS: CNAME pocketdesk → lapaluliyanage.github.io).
 name: Website
 
 on:

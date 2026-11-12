@@ -8,25 +8,25 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/audio/ulaw.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/audio/ulaw.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
 
 void main() {
   final env = Platform.environment;
-  final link = env['PAIRDESK_E2E_LINK'];
-  final settings = env['PAIRDESK_E2E_SETTINGS'];
-  final dir = env['PAIRDESK_E2E_AUDIO'];
+  final link = env['POCKETDESK_E2E_LINK'];
+  final settings = env['POCKETDESK_E2E_SETTINGS'];
+  final dir = env['POCKETDESK_E2E_AUDIO'];
   // Wine can't record what the computer plays (real Windows can).
-  final loopback = env['PAIRDESK_E2E_LOOPBACK'] != '0';
+  final loopback = env['POCKETDESK_E2E_LOOPBACK'] != '0';
   final skip = link == null || settings == null || dir == null ? 'run through tools/e2e-audio.sh' : null;
 
   Future<void> post(String path, Object body) async {
     final client = HttpClient();
     try {
       final req = await client.postUrl(Uri.parse('$settings$path'));
-      req.headers.set('X-PairDesk', '1');
+      req.headers.set('X-PocketDesk', '1');
       req.write(jsonEncode(body));
       final res = await req.close();
       await res.drain<void>();

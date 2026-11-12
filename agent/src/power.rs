@@ -4,13 +4,13 @@
 //! None of these need administrator rights: they act on the signed-in
 //! user's own session, the way the Start menu does.
 //!
-//! Set `PAIRDESK_POWER_DRY_RUN=1` to log actions instead of doing them
+//! Set `POCKETDESK_POWER_DRY_RUN=1` to log actions instead of doing them
 //! (used by the end-to-end tests).
 
 use crate::protocol::PowerAction;
 
 pub fn run(action: PowerAction) -> Result<(), String> {
-    if std::env::var_os("PAIRDESK_POWER_DRY_RUN").is_some() {
+    if std::env::var_os("POCKETDESK_POWER_DRY_RUN").is_some() {
         log::info!("power action {action:?} (dry run, not performed)");
         return Ok(());
     }

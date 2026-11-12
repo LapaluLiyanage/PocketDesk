@@ -5,12 +5,12 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
 
 void main() {
-  final link = Platform.environment['PAIRDESK_E2E_LINK'];
+  final link = Platform.environment['POCKETDESK_E2E_LINK'];
   test(
     'the phone hears that control was refused',
     () async {
@@ -25,7 +25,7 @@ void main() {
       while (DateTime.now().isBefore(deadline) && !notices.any((n) => n.contains("wasn't allowed"))) {
         await Future<void>.delayed(const Duration(milliseconds: 100));
       }
-      expect(notices.first, contains('Approve PairDesk on the computer'));
+      expect(notices.first, contains('Approve PocketDesk on the computer'));
       expect(notices.last, contains("Control wasn't allowed on the computer"));
       // Screen view says so too, instead of hanging.
       await expectLater(conn.startScreen(), throwsA(isA<RequestException>()));

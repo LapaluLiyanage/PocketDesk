@@ -8,8 +8,8 @@
 #   tools/e2e-relay.sh
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-AGENT=$(realpath "${AGENT:-$ROOT/agent/target/debug/pairdesk-agent}")
-RELAY=$(realpath "${RELAY:-$ROOT/relay/target/debug/pairdesk-relay}")
+AGENT=$(realpath "${AGENT:-$ROOT/agent/target/debug/pocketdesk}")
+RELAY=$(realpath "${RELAY:-$ROOT/relay/target/debug/pocketdesk-relay}")
 PORT=${PORT:-47813}
 RPORT=${RPORT:-47913}
 DATA=$(mktemp -d)
@@ -21,10 +21,10 @@ trap cleanup EXIT
 Xvfb :95 -noreset -screen 0 1024x768x24 >/dev/null 2>&1 & PIDS+=($!)
 for _ in $(seq 50); do [ -e /tmp/.X11-unix/X95 ] && break; sleep 0.1; done
 "$RELAY" --listen "127.0.0.1:$RPORT" >"$DATA/relay.txt" 2>&1 & PIDS+=($!)
-PAIRDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
+POCKETDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
 for _ in $(seq 50); do [ -s "$DATA/settings-url.txt" ] && break; sleep 0.2; done
 SETTINGS=$(cat "$DATA/settings-url.txt")
-api() { curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/$1" -d "$2"; }
+api() { curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/$1" -d "$2"; }
 
 # Point the agent at the local relay and wait until it's registered.
 api relay "{\"on\":true,\"address\":\"127.0.0.1:$RPORT\"}" >/dev/null
@@ -38,7 +38,7 @@ curl -sf "${SETTINGS}api/state" | python3 -c 'import json,sys; s=json.load(sys.s
 SHARE=$(api pair '{"help":true}' | python3 -c 'import json,sys; p=json.load(sys.stdin)["pairing"]; assert p["help"] and p["relay"]; print(p["share"])')
 echo "help link: ${SHARE%%&t=*}&t=…"
 
-(cd "$ROOT/mobile" && PAIRDESK_E2E_HELP_LINK="$SHARE" PAIRDESK_E2E_SETTINGS="$SETTINGS" \
+(cd "$ROOT/mobile" && POCKETDESK_E2E_HELP_LINK="$SHARE" POCKETDESK_E2E_SETTINGS="$SETTINGS" \
   flutter test test/e2e_relay_test.dart)
 
 grep -q "through the relay (helping)" "$DATA/out.txt" || { echo "the agent didn't see a relayed helper"; cat "$DATA/out.txt"; exit 1; }

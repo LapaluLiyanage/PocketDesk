@@ -5,18 +5,18 @@ import 'package:crypto/crypto.dart' show sha256;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/files/native_files.dart';
-import 'package:pairdesk/files/share_inbox.dart';
-import 'package:pairdesk/files/transfers.dart';
-import 'package:pairdesk/screens/control_screen.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/files/native_files.dart';
+import 'package:pocketdesk/files/share_inbox.dart';
+import 'package:pocketdesk/files/transfers.dart';
+import 'package:pocketdesk/screens/control_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FakeConnection extends AgentConnection {
   FakeConnection({this.allow = const Allowed(clipboard: true, files: true), required super.tempDir})
     : super(
         saveFile: (temp, name) async =>
-            SavedFile(where: 'Download/PairDesk/$name', uri: 'content://downloads/$name'),
+            SavedFile(where: 'Download/PocketDesk/$name', uri: 'content://downloads/$name'),
       );
   final Allowed allow;
   final calls = <String>[];
@@ -55,7 +55,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-    tmp = Directory.systemTemp.createTempSync('pairdesk-widgets');
+    tmp = Directory.systemTemp.createTempSync('pocketdesk-widgets');
     phoneClipboard = ['on the phone'];
   });
   tearDown(() => tmp.deleteSync(recursive: true));
@@ -118,10 +118,10 @@ void main() {
     await openSheet(tester);
     expect(find.text('Copy from computer'), findsNothing);
     expect(find.text('Send files to computer'), findsNothing);
-    expect(find.text('Turned off in PairDesk settings on the computer.'), findsNWidgets(2));
+    expect(find.text('Turned off in PocketDesk settings on the computer.'), findsNWidgets(2));
   });
 
-  testWidgets('"Share → PairDesk" sends shared files and text', (tester) async {
+  testWidgets('"Share → PocketDesk" sends shared files and text', (tester) async {
     final f = File('${tmp.path}/share/abc/photo.jpg')..createSync(recursive: true);
     f.writeAsStringSync('jpeg bytes');
     final inbox = ShareInbox(take: () async => const SharedItems());
@@ -133,7 +133,7 @@ void main() {
     }
     expect(conn.calls, ['send photo.jpg jpeg bytes']);
     expect(inbox.pending, isNull);
-    expect(find.textContaining('Downloads\\PairDesk'), findsOneWidget);
+    expect(find.textContaining('Downloads\\PocketDesk'), findsOneWidget);
     expect(f.parent.existsSync(), isFalse, reason: 'the cache copy is removed');
 
     inbox.put(const SharedItems(text: 'a link https://example.com'));
@@ -166,7 +166,7 @@ void main() {
     expect(find.widgetWithText(SnackBarAction, 'Open'), findsOneWidget);
     await tester.pump(const Duration(seconds: 10));
     await openSheet(tester);
-    expect(find.text('Saved in Download/PairDesk/report.pdf'), findsOneWidget);
+    expect(find.text('Saved in Download/PocketDesk/report.pdf'), findsOneWidget);
     expect(find.descendant(of: find.byType(ListTile), matching: find.text('Open')), findsOneWidget);
   });
 }

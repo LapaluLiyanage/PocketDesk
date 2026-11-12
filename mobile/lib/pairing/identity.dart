@@ -38,9 +38,9 @@ class MemoryKeyVault implements KeyVault {
 class PhoneIdentity {
   PhoneIdentity._(this._keyPair, this.publicKey);
 
-  static const _vaultKey = 'pairdesk.identity.ed25519.seed.v1';
+  static const _vaultKey = 'pocketdesk.identity.ed25519.seed.v1';
   static final _algorithm = Ed25519();
-  static const _context = 'pairdesk-auth-v2';
+  static const _context = 'pocketdesk-auth-v2';
 
   final SimpleKeyPair _keyPair;
   final Uint8List publicKey;

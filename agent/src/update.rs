@@ -4,10 +4,10 @@
 //! Every release carries `latest.json` (the version and, for each kind of
 //! install, the file to download with its SHA-256) and `latest.json.sig`, an
 //! Ed25519 signature made by the release workflow with a key only the
-//! project holds. PairDesk checks the signature against the public key built
+//! project holds. PocketDesk checks the signature against the public key built
 //! into it, then the file's size and SHA-256, before it touches anything.
 //!
-//! Installing depends on how PairDesk was installed ([`install::Kind`]):
+//! Installing depends on how PocketDesk was installed ([`install::Kind`]):
 //! - Windows setup: run the new setup silently; it stops this copy, replaces
 //!   the files and starts the new version.
 //! - Program file (Windows .exe, Linux binary, AppImage): rename the running
@@ -15,7 +15,7 @@
 //!   from this copy like any newer release does (see `instance`).
 //! - .deb/.rpm: the settings page links to the download; the package
 //!   manager installs it.
-//! - Microsoft Store, Flathub: the store updates PairDesk; no checks here.
+//! - Microsoft Store, Flathub: the store updates PocketDesk; no checks here.
 
 use std::collections::BTreeMap;
 use std::io::{Read, Write};
@@ -31,10 +31,10 @@ use sha2::{Digest, Sha256};
 use crate::install::Kind;
 
 pub const MANIFEST_URL: &str =
-    "https://github.com/sandunMadhushan/pairdesk/releases/latest/download/latest.json";
+    "https://github.com/LapaluLiyanage/pocketdesk/releases/latest/download/latest.json";
 /// The release workflow's public key (raw Ed25519, base64).
 pub const PUBLIC_KEY: &str = "mPqsTySowXha+X+KMh49/y3HgcepbYP8QvYdpIGnwaU=";
-const RELEASES_PAGE: &str = "https://github.com/sandunMadhushan/pairdesk/releases/latest";
+const RELEASES_PAGE: &str = "https://github.com/LapaluLiyanage/pocketdesk/releases/latest";
 
 const MAX_MANIFEST: u64 = 64 * 1024;
 const MAX_DOWNLOAD: u64 = 300 * 1024 * 1024;
@@ -81,16 +81,16 @@ pub struct Source {
 }
 
 impl Source {
-    /// GitHub Releases and the project's key. `PAIRDESK_UPDATE_MANIFEST` and
-    /// `PAIRDESK_UPDATE_KEY` replace them for tests (whoever can set this
+    /// GitHub Releases and the project's key. `POCKETDESK_UPDATE_MANIFEST` and
+    /// `POCKETDESK_UPDATE_KEY` replace them for tests (whoever can set this
     /// program's environment can already replace the program itself).
     pub fn github() -> Self {
-        let key = std::env::var("PAIRDESK_UPDATE_KEY")
+        let key = std::env::var("POCKETDESK_UPDATE_KEY")
             .ok()
             .and_then(|k| parse_key(&k))
             .unwrap_or_else(|| parse_key(PUBLIC_KEY).expect("PUBLIC_KEY is a base64 Ed25519 key"));
         Self {
-            manifest_url: std::env::var("PAIRDESK_UPDATE_MANIFEST")
+            manifest_url: std::env::var("POCKETDESK_UPDATE_MANIFEST")
                 .unwrap_or_else(|_| MANIFEST_URL.into()),
             key,
         }
@@ -138,7 +138,7 @@ fn agent() -> ureq::Agent {
     ureq::Agent::config_builder()
         .timeout_global(Some(Duration::from_secs(60 * 10)))
         .timeout_connect(Some(Duration::from_secs(15)))
-        .user_agent(concat!("PairDesk/", env!("CARGO_PKG_VERSION")))
+        .user_agent(concat!("PocketDesk/", env!("CARGO_PKG_VERSION")))
         .build()
         .into()
 }
@@ -197,7 +197,7 @@ pub fn verify(key: &VerifyingKey, data: &[u8], sig: &[u8]) -> Result<(), String>
     };
     let sig = Signature::from_slice(&raw).map_err(|_| "the update signature is damaged")?;
     key.verify(data, &sig)
-        .map_err(|_| "the update information isn't signed by PairDesk; ignoring it".to_string())
+        .map_err(|_| "the update information isn't signed by PocketDesk; ignoring it".to_string())
 }
 
 impl Updater {
@@ -264,7 +264,7 @@ impl Updater {
         inner.checked_at = Some(crate::config::unix_now());
         match result {
             Ok(m) if crate::instance::is_older(env!("CARGO_PKG_VERSION"), &m.version) => {
-                log::info!("PairDesk {} is available", m.version);
+                log::info!("PocketDesk {} is available", m.version);
                 inner.latest = Some(m);
                 inner.status = Status::Available;
                 Ok(true)
@@ -308,7 +308,7 @@ impl Updater {
         let key = self
             .kind
             .asset_key()
-            .ok_or("This copy of PairDesk is updated by your package manager.")?;
+            .ok_or("This copy of PocketDesk is updated by your package manager.")?;
         let asset = manifest
             .assets
             .get(key)
@@ -357,14 +357,14 @@ impl Updater {
             Kind::WindowsSetup => {
                 let dir = self.data_dir.join("updates");
                 std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
-                dir.join(format!("PairDesk-Setup-{}.exe", manifest.version))
+                dir.join(format!("PocketDesk-Setup-{}.exe", manifest.version))
             }
             _ => sibling(&target, ".download"),
         };
         self.download(asset, &dest).inspect_err(|_| {
             let _ = std::fs::remove_file(&dest);
         })?;
-        log::info!("downloaded PairDesk {}; installing", manifest.version);
+        log::info!("downloaded PocketDesk {}; installing", manifest.version);
         match self.kind {
             Kind::WindowsSetup => run_setup(&dest),
             Kind::Service => {
@@ -405,7 +405,7 @@ impl Updater {
         let mut reader = resp.into_body().into_reader().take(asset.size + 1);
         let mut file = std::fs::File::create(dest).map_err(|e| {
             format!(
-                "can't write next to PairDesk ({e}). Download the new version from {RELEASES_PAGE}"
+                "can't write next to PocketDesk ({e}). Download the new version from {RELEASES_PAGE}"
             )
         })?;
         let mut hash = Sha256::new();
@@ -467,10 +467,10 @@ pub fn swap(target: &Path, new: &Path) -> Result<(), String> {
     } else {
         old
     };
-    std::fs::rename(target, &old).map_err(|e| format!("can't replace PairDesk: {e}"))?;
+    std::fs::rename(target, &old).map_err(|e| format!("can't replace PocketDesk: {e}"))?;
     if let Err(e) = std::fs::rename(new, target) {
         let _ = std::fs::rename(&old, target);
-        return Err(format!("can't replace PairDesk: {e}"));
+        return Err(format!("can't replace PocketDesk: {e}"));
     }
     Ok(())
 }
@@ -595,7 +595,7 @@ mod tests {
         serde_json::to_vec(&json!({
             "version": version,
             "date": "2026-10-29",
-            "notes_url": "https://github.com/sandunMadhushan/pairdesk/releases/tag/v9.0.0",
+            "notes_url": "https://github.com/LapaluLiyanage/pocketdesk/releases/tag/v9.0.0",
             "assets": {"linux-x64": asset("agent"), "windows-x64": asset("agent")},
         }))
         .unwrap()
@@ -661,7 +661,7 @@ mod tests {
         assert_eq!(snap["can_install"], true);
 
         // The download is checked, then swapped in for the program file.
-        let target = dir.path().join("pairdesk-agent");
+        let target = dir.path().join("pocketdesk");
         std::fs::write(&target, b"old agent").unwrap();
         let m = u.available().unwrap();
         let asset = &m.assets["linux-x64"];
@@ -711,7 +711,7 @@ mod tests {
         assert!(!old.check().unwrap());
         assert_eq!(old.status(), Status::UpToDate);
 
-        // Stores update PairDesk themselves: no checks at all.
+        // Stores update PocketDesk themselves: no checks at all.
         let store = Updater::new(Kind::Flatpak, source(&base), dir.path().into());
         assert!(!store.check().unwrap());
         assert_eq!(store.status(), Status::Idle);
@@ -749,7 +749,7 @@ mod tests {
     fn cleanup_removes_leftovers() {
         let dir = tempfile::tempdir().unwrap();
         std::fs::create_dir_all(dir.path().join("updates")).unwrap();
-        std::fs::write(dir.path().join("updates/PairDesk-Setup-9.exe"), b"x").unwrap();
+        std::fs::write(dir.path().join("updates/PocketDesk-Setup-9.exe"), b"x").unwrap();
         cleanup(dir.path());
         assert!(!dir.path().join("updates").exists());
     }

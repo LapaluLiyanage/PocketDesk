@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=PairDesk
+Name=PocketDesk
 GenericName=Phone remote control
 Comment=Control this computer from your phone
-Exec=pairdesk-agent
-Icon=me.madhushan.pairdesk
+Exec=pocketdesk
+Icon=me.lapalu.pocketdesk
 Terminal=false
 Categories=Network;RemoteAccess;
 Keywords=remote;phone;touchpad;mouse;keyboard;android;control;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // End-to-end test against the real Rust agent. Skipped unless
-// PAIRDESK_E2E_LINK (a pairing link from the agent's settings page)
-// and PAIRDESK_E2E_SETTINGS (its settings page address) are set.
+// POCKETDESK_E2E_LINK (a pairing link from the agent's settings page)
+// and POCKETDESK_E2E_SETTINGS (its settings page address) are set.
 // Run through tools/e2e.sh.
 
 import 'dart:convert';
@@ -13,17 +13,17 @@ import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/painting.dart' show Color;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/files/transfers.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
-import 'package:pairdesk/screen/compositor.dart';
-import 'package:pairdesk/screen/video.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/files/transfers.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/screen/compositor.dart';
+import 'package:pocketdesk/screen/video.dart';
 
 void main() {
-  final link = Platform.environment['PAIRDESK_E2E_LINK'];
-  final settings = Platform.environment['PAIRDESK_E2E_SETTINGS'];
-  final skip = link == null || settings == null ? 'set PAIRDESK_E2E_LINK and PAIRDESK_E2E_SETTINGS' : null;
+  final link = Platform.environment['POCKETDESK_E2E_LINK'];
+  final settings = Platform.environment['POCKETDESK_E2E_SETTINGS'];
+  final skip = link == null || settings == null ? 'set POCKETDESK_E2E_LINK and POCKETDESK_E2E_SETTINGS' : null;
 
   Future<(int, String)> call(String method, String path, {Map<String, String>? headers, Object? body}) async {
     final client = HttpClient();
@@ -46,7 +46,7 @@ void main() {
       // The agent runs on this machine; use loopback in case the link lists none.
       info.addresses.insert(0, '127.0.0.1');
       final me = await PhoneIdentity.fromSeed(List.filled(32, 42));
-      final inbox = Directory.systemTemp.createTempSync('pairdesk-e2e-phone');
+      final inbox = Directory.systemTemp.createTempSync('pocketdesk-e2e-phone');
       final saved = <String, List<int>>{};
       final conn = AgentConnection(
         pingInterval: const Duration(seconds: 1),
@@ -54,7 +54,7 @@ void main() {
         saveFile: (temp, name) async {
           saved[name] = await temp.readAsBytes();
           await temp.delete();
-          return SavedFile(where: 'Download/PairDesk/$name');
+          return SavedFile(where: 'Download/PocketDesk/$name');
         },
       );
 
@@ -62,8 +62,8 @@ void main() {
       expect(conn.status, ConnectionStatus.connected);
       expect(
         laptop.os,
-        Platform.environment['PAIRDESK_E2E_OS']?.isNotEmpty == true
-            ? Platform.environment['PAIRDESK_E2E_OS']
+        Platform.environment['POCKETDESK_E2E_OS']?.isNotEmpty == true
+            ? Platform.environment['POCKETDESK_E2E_OS']
             : 'linux',
       );
 
@@ -111,7 +111,7 @@ void main() {
       await waitForColour(isRed, 'the red window');
       final firstWidth = compositor.image!.width;
       // The window turns green; only the changed part should be sent.
-      File(Platform.environment['PAIRDESK_E2E_SCREEN_SIGNAL']!).writeAsStringSync('go');
+      File(Platform.environment['POCKETDESK_E2E_SCREEN_SIGNAL']!).writeAsStringSync('go');
       await waitForColour(isGreen, 'the window turning green');
       expect(compositor.image!.width, firstWidth);
       expect(await pixelAt(1000, 700), isNot(predicate<Color>(isGreen)), reason: 'outside the window');
@@ -169,15 +169,15 @@ void main() {
       debugPrint('e2e: Phase 6: clipboard');
       expect(conn.features, containsAll(['clipboard', 'files']));
       expect(conn.allowed.clipboard, isTrue);
-      await conn.clipboardSet('PairDesk E2E ✓ clipboard');
-      expect(await conn.clipboardGet(), 'PairDesk E2E ✓ clipboard');
-      final checkClip = env['PAIRDESK_E2E_CLIP_CHECK'];
+      await conn.clipboardSet('PocketDesk E2E ✓ clipboard');
+      expect(await conn.clipboardGet(), 'PocketDesk E2E ✓ clipboard');
+      final checkClip = env['POCKETDESK_E2E_CLIP_CHECK'];
       if (checkClip != null && checkClip.isNotEmpty) {
         // Another program on the computer sees it too.
         final r = await Process.run('sh', ['-c', checkClip]);
-        expect((r.stdout as String).trim(), 'PairDesk E2E ✓ clipboard');
+        expect((r.stdout as String).trim(), 'PocketDesk E2E ✓ clipboard');
         // ... and what another program copies reaches the phone.
-        await Process.run('sh', ['-c', env['PAIRDESK_E2E_CLIP_SET']!]);
+        await Process.run('sh', ['-c', env['POCKETDESK_E2E_CLIP_SET']!]);
         await Future<void>.delayed(const Duration(milliseconds: 300));
         expect(await conn.clipboardGet(), 'copied on the computer');
       }
@@ -190,7 +190,7 @@ void main() {
       final sent = await conn.sendFile(out);
       expect(sent.state, TransferState.done);
       expect(sent.name, 'holiday photo.jpg');
-      final downloads = env['PAIRDESK_E2E_DOWNLOADS']!;
+      final downloads = env['POCKETDESK_E2E_DOWNLOADS']!;
       expect(File('$downloads/holiday photo.jpg').readAsBytesSync(), bytes);
       // The same name again doesn't overwrite.
       expect((await conn.sendFile(out)).name, 'holiday photo (2).jpg');
@@ -202,7 +202,7 @@ void main() {
         'POST',
         Uri.parse('${settings}api/upload?name=from%20the%20PC.txt'),
       );
-      upload.headers.set('X-PairDesk', '1');
+      upload.headers.set('X-PocketDesk', '1');
       upload.add(utf8.encode('hello from the computer\n' * 50000));
       final res = await upload.close();
       expect(res.statusCode, 200, reason: await res.transform(utf8.decoder).join());
@@ -211,7 +211,7 @@ void main() {
       expect(utf8.decode(saved['from the PC.txt']!), 'hello from the computer\n' * 50000);
       // ... and "Send to phone" in the file manager.
       debugPrint('e2e: and "Send to phone" in the file manager');
-      final sendCmd = env['PAIRDESK_E2E_SEND_CMD'];
+      final sendCmd = env['POCKETDESK_E2E_SEND_CMD'];
       if (sendCmd != null && sendCmd.isNotEmpty) {
         final got2 = conn.transfers.received.first;
         final r = await Process.run('sh', ['-c', '$sendCmd "\$1"', 'sh', out.path]);
@@ -227,7 +227,7 @@ void main() {
         reason: 'learned the computer\'s own addresses',
       );
       expect(conn.viaTailscale, isFalse);
-      if (Platform.environment['PAIRDESK_E2E_TAILSCALE'] == '1') {
+      if (Platform.environment['POCKETDESK_E2E_TAILSCALE'] == '1') {
         // The agent saw Tailscale running and told the phone how to reach it.
         expect(laptop.addresses, containsAll(['100.101.102.103', 'e2e-pc.tail1234.ts.net']));
         expect(laptop.reachableAnywhere, isTrue);
@@ -240,7 +240,7 @@ void main() {
       expect(conn.features, containsAll(['combo', 'power', 'apps']));
       conn.combo([Modifier.ctrl], char: 'c');
       conn.combo([Modifier.alt], key: AgentKey.tab);
-      // The agent runs with PAIRDESK_POWER_DRY_RUN, so nothing really locks.
+      // The agent runs with POCKETDESK_POWER_DRY_RUN, so nothing really locks.
       await conn.power(PowerAction.lock);
       await conn.power(PowerAction.sleep);
 
@@ -248,7 +248,7 @@ void main() {
       var (status, body) = await call(
         'POST',
         'api/permissions',
-        headers: {'X-PairDesk': '1'},
+        headers: {'X-PocketDesk': '1'},
         body: {'power': true, 'session': false, 'apps': true},
       );
       expect(status, 200);
@@ -261,12 +261,12 @@ void main() {
       (status, body) = await call(
         'POST',
         'api/shortcuts/add',
-        headers: {'X-PairDesk': '1'},
+        headers: {'X-PocketDesk': '1'},
         body: {
           'name': 'E2E marker',
           'kind': 'program',
-          'target': env['PAIRDESK_E2E_PROGRAM']!,
-          'args': env['PAIRDESK_E2E_PROGRAM_ARGS']!,
+          'target': env['POCKETDESK_E2E_PROGRAM']!,
+          'args': env['POCKETDESK_E2E_PROGRAM_ARGS']!,
         },
       );
       expect(status, 200, reason: body);
@@ -278,7 +278,7 @@ void main() {
         conn.launch('not-an-id'),
         throwsA(isA<RequestException>().having((e) => e.code, 'code', 'not_found')),
       );
-      final appName = env['PAIRDESK_E2E_APP'];
+      final appName = env['POCKETDESK_E2E_APP'];
       if (appName != null && appName.isNotEmpty) {
         final installed = apps.apps.singleWhere((a) => a.name == appName);
         await conn.launch(installed.id);
@@ -314,7 +314,7 @@ void main() {
       c.close();
 
       // Removing the phone on the computer disconnects it right away.
-      (status, _) = await call('POST', 'api/remove', headers: {'X-PairDesk': '1'}, body: {'id': me.id});
+      (status, _) = await call('POST', 'api/remove', headers: {'X-PocketDesk': '1'}, body: {'id': me.id});
       expect(status, 200);
       await Future<void>.delayed(const Duration(milliseconds: 500));
       expect(conn.status, ConnectionStatus.disconnected);

@@ -91,7 +91,7 @@ export default function Anywhere() {
               From the next room, or the next country
             </h2>
             <p className="mt-5 text-lg text-slate">
-              At home it connects over Wi-Fi. Away, it goes through Tailscale if you use it, or through the PairDesk
+              At home it connects over Wi-Fi. Away, it goes through Tailscale if you use it, or through the PocketDesk
               relay. Either way the connection is encrypted between your phone and your computer, and nobody in
               between can read it.
             </p>

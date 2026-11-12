@@ -118,7 +118,7 @@ impl Listener {
         let stop = Arc::new(AtomicBool::new(false));
         let flag = stop.clone();
         let thread = std::thread::Builder::new()
-            .name("pairdesk-listen".into())
+            .name("pocketdesk-listen".into())
             .spawn(move || {
                 let _devices = devices;
                 // Removes the phone's own voice when it talks too.
@@ -216,7 +216,7 @@ impl Speaker {
         let (flag, watched) = (alive.clone(), ring.clone());
         // Closes the device once the phone stops talking.
         std::thread::Builder::new()
-            .name("pairdesk-speaker".into())
+            .name("pocketdesk-speaker".into())
             .spawn(move || {
                 let _device = device;
                 let mut quiet_since = Instant::now();

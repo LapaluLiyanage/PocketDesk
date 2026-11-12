@@ -34,7 +34,7 @@ impl Identity {
             return Ok(Self::from_der(cert_der, key_der));
         }
 
-        let generated = rcgen::generate_simple_self_signed(vec!["pairdesk.local".to_string()])
+        let generated = rcgen::generate_simple_self_signed(vec!["pocketdesk.local".to_string()])
             .map_err(io::Error::other)?;
         let cert_der = generated.cert.der().to_vec();
         let key_der = generated.key_pair.serialize_der();

@@ -4,7 +4,7 @@
 //! The phone signs:
 //!
 //! ```text
-//! "pairdesk-auth-v2" || 0x00 || cert_fingerprint (32) || nonce (32) || phone_public_key (32)
+//! "pocketdesk-auth-v2" || 0x00 || cert_fingerprint (32) || nonce (32) || phone_public_key (32)
 //! ```
 //!
 //! Including the certificate fingerprint ties the signature to this
@@ -14,7 +14,7 @@
 
 use ed25519_dalek::{Signature, VerifyingKey};
 
-const CONTEXT: &[u8] = b"pairdesk-auth-v2\0";
+const CONTEXT: &[u8] = b"pocketdesk-auth-v2\0";
 
 /// Parses a phone ID (base64url Ed25519 public key).
 pub fn parse_phone_id(id: &str) -> Option<VerifyingKey> {

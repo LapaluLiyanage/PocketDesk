@@ -101,7 +101,7 @@ unsafe fn wide_ptr_to_string(p: *const u16) -> String {
     String::from_utf16_lossy(unsafe { std::slice::from_raw_parts(p, len) })
 }
 
-/// The user's roaming AppData folder (where their PairDesk keeps its data).
+/// The user's roaming AppData folder (where their PocketDesk keeps its data).
 pub fn roaming_appdata(token: &Handle) -> Option<PathBuf> {
     let mut path: windows_sys::core::PWSTR = std::ptr::null_mut();
     let hr = unsafe { SHGetKnownFolderPath(&FOLDERID_RoamingAppData, 0, token.0, &mut path) };

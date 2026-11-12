@@ -1,10 +1,10 @@
 [package]
-name = "pairdesk-relay"
+name = "pocketdesk-relay"
 version = "0.11.3"
 edition = "2024"
 license = "GPL-3.0-or-later"
-description = "PairDesk relay: connects phones to computers that can't be reached directly"
-repository = "https://github.com/sandunMadhushan/pairdesk"
+description = "PocketDesk relay: connects phones to computers that can't be reached directly"
+repository = "https://github.com/LapaluLiyanage/pocketdesk"
 
 [dependencies]
 env_logger = "0.11"

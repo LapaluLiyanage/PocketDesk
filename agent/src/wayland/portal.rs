@@ -22,7 +22,7 @@ const PATH: &str = "/org/freedesktop/portal/desktop";
 const REMOTE: &str = "org.freedesktop.portal.RemoteDesktop";
 const SCREEN: &str = "org.freedesktop.portal.ScreenCast";
 const CLIPBOARD: &str = "org.freedesktop.portal.Clipboard";
-/// Text types offered when PairDesk owns the clipboard.
+/// Text types offered when PocketDesk owns the clipboard.
 const TEXT_TYPES: [&str; 5] = [
     "text/plain;charset=utf-8",
     "text/plain",
@@ -79,7 +79,7 @@ pub struct Session {
     pub restore_token: Option<String>,
     /// The desktop shares its clipboard with this session.
     pub clipboard: bool,
-    /// Text PairDesk put on the clipboard, handed out on request.
+    /// Text PocketDesk put on the clipboard, handed out on request.
     offered: Arc<Mutex<Option<String>>>,
     /// Answers the desktop's requests for that text.
     serving: Option<tokio::task::JoinHandle<()>>,
@@ -163,7 +163,7 @@ fn token(what: &str) -> String {
     use std::sync::atomic::{AtomicU32, Ordering};
     static NEXT: AtomicU32 = AtomicU32::new(1);
     format!(
-        "pairdesk_{}_{}_{}",
+        "pocketdesk_{}_{}_{}",
         what.to_ascii_lowercase(),
         std::process::id(),
         NEXT.fetch_add(1, Ordering::Relaxed)
@@ -211,7 +211,7 @@ pub async fn start(restore_token: Option<&str>) -> Result<Session, StartError> {
     let handle = OwnedObjectPath::try_from(handle).map_err(failed)?;
 
     // The clipboard has to be asked for before Start; older portals don't
-    // have it, and PairDesk works without it.
+    // have it, and PocketDesk works without it.
     let clip_proxy = zbus::Proxy::new(&conn, DEST, PATH, CLIPBOARD).await;
     let asked_clipboard = match &clip_proxy {
         Ok(p) => p
@@ -314,9 +314,9 @@ async fn select_and_start(
     Ok((devices, streams, restore, clipboard))
 }
 
-/// While PairDesk owns the clipboard, the desktop asks for the text with
+/// While PocketDesk owns the clipboard, the desktop asks for the text with
 /// `SelectionTransfer`; it's written to a pipe the portal gives out. When
-/// another app copies something, PairDesk's text is forgotten.
+/// another app copies something, PocketDesk's text is forgotten.
 async fn serve_clipboard(
     conn: Connection,
     handle: OwnedObjectPath,

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! "Send to phone" in the file manager's right-click menu.
 //!
-//! - Windows: a "PairDesk phone" shortcut in the Send To folder.
+//! - Windows: a "PocketDesk phone" shortcut in the Send To folder.
 //! - Linux: a GNOME Files (Nautilus) script and a Dolphin service menu,
 //!   for whichever is installed.
 //!
-//! Each runs `pairdesk-agent --send <files>`, which hands the files to the
-//! running PairDesk. Refreshed on every start, so they follow the program
+//! Each runs `pocketdesk --send <files>`, which hands the files to the
+//! running PocketDesk. Refreshed on every start, so they follow the program
 //! file when a new version is downloaded elsewhere.
 
 use std::path::Path;
@@ -43,7 +43,7 @@ mod platform {
 
     fn link() -> Option<PathBuf> {
         let appdata = std::env::var_os("APPDATA")?;
-        Some(Path::new(&appdata).join(r"Microsoft\Windows\SendTo\PairDesk phone.lnk"))
+        Some(Path::new(&appdata).join(r"Microsoft\Windows\SendTo\PocketDesk phone.lnk"))
     }
 
     pub fn present() -> bool {
@@ -56,7 +56,7 @@ mod platform {
         let script = "$s = (New-Object -ComObject WScript.Shell).CreateShortcut($env:PD_LINK); \
                       $s.TargetPath = $env:PD_EXE; $s.Arguments = '--send'; \
                       $s.IconLocation = $env:PD_EXE + ',0'; \
-                      $s.Description = 'Send to your phone with PairDesk'; $s.Save()";
+                      $s.Description = 'Send to your phone with PocketDesk'; $s.Save()";
         let status = std::process::Command::new("powershell.exe")
             .args([
                 "-NoProfile",
@@ -83,7 +83,7 @@ mod platform {
 mod platform {
     use std::path::{Path, PathBuf};
 
-    const NAME: &str = "Send to phone (PairDesk)";
+    const NAME: &str = "Send to phone (PocketDesk)";
 
     fn data_home() -> Option<PathBuf> {
         directories::BaseDirs::new().map(|b| b.data_dir().to_path_buf())
@@ -99,7 +99,7 @@ mod platform {
     }
 
     fn dolphin_menu() -> Option<PathBuf> {
-        Some(data_home()?.join("kio/servicemenus/pairdesk-send.desktop"))
+        Some(data_home()?.join("kio/servicemenus/pocketdesk-send.desktop"))
     }
 
     pub fn present() -> bool {

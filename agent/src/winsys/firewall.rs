@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Windows Firewall rules for PairDesk.
+//! Windows Firewall rules for PocketDesk.
 //!
-//! Windows asks "allow PairDesk on which networks?" the first time the
+//! Windows asks "allow PocketDesk on which networks?" the first time the
 //! agent listens, and its answer is remembered per network profile. The
 //! box for Public networks is normally left unticked, and Windows often
 //! files the Tailscale adapter under Public (it is an unidentified
@@ -20,8 +20,8 @@ use crate::winsys::service;
 
 /// Our rules' names. Distinct from anything Windows writes by itself, so
 /// finding one means we put it there with the right profiles.
-const TCP_RULE: &str = "PairDesk (phones)";
-const MDNS_RULE: &str = "PairDesk (finding this computer)";
+const TCP_RULE: &str = "PocketDesk (phones)";
+const MDNS_RULE: &str = "PocketDesk (finding this computer)";
 
 static WORKING: Mutex<bool> = Mutex::new(false);
 static LAST_ERROR: Mutex<Option<String>> = Mutex::new(None);
@@ -109,7 +109,7 @@ pub fn allow(port: u16) -> Result<(), String> {
             format!("localport={port}"),
             "profile=any".into(),
             "enable=yes".into(),
-            "description=Lets your paired phones reach PairDesk on this computer, including over Tailscale.".into(),
+            "description=Lets your paired phones reach PocketDesk on this computer, including over Tailscale.".into(),
         ],
         vec![
             format!("name={MDNS_RULE}"),

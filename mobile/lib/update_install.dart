@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Installing an update without leaving PairDesk.
+// Installing an update without leaving PocketDesk.
 //
 // The app downloads the APK the signed manifest points at, checks it
 // against the SHA-256 in that manifest, and hands the file to Android
@@ -35,8 +35,8 @@ class UpdateInstaller extends ChangeNotifier {
     MethodChannel? channel,
     Future<Directory> Function()? cacheDir,
     Future<HttpClientResponse> Function(Uri url)? open,
-  }) : _channel = channel ?? const MethodChannel('pairdesk/update'),
-       _cacheDir = cacheDir ?? (() async => Directory.systemTemp.createTemp('pairdesk-update')),
+  }) : _channel = channel ?? const MethodChannel('pocketdesk/update'),
+       _cacheDir = cacheDir ?? (() async => Directory.systemTemp.createTemp('pocketdesk-update')),
        _open = open ?? _httpOpen {
     _channel.setMethodCallHandler((call) async {
       switch (call.method) {
@@ -66,7 +66,7 @@ class UpdateInstaller extends ChangeNotifier {
 
   bool get busy => _stage == UpdateStage.downloading || _stage == UpdateStage.installing;
 
-  /// True when Android lets PairDesk install an app.
+  /// True when Android lets PocketDesk install an app.
   Future<bool> canInstall() async {
     try {
       return await _channel.invokeMethod<bool>('canInstall') ?? false;
@@ -75,7 +75,7 @@ class UpdateInstaller extends ChangeNotifier {
     }
   }
 
-  /// Opens Android's "Install unknown apps" page for PairDesk.
+  /// Opens Android's "Install unknown apps" page for PocketDesk.
   Future<void> requestPermission() async {
     try {
       await _channel.invokeMethod<void>('requestPermission');
@@ -113,7 +113,7 @@ class UpdateInstaller extends ChangeNotifier {
 
   Future<File> _download(AvailableUpdate update) async {
     final dir = await _cacheDir();
-    final file = File('${dir.path}/pairdesk-${update.version}.apk');
+    final file = File('${dir.path}/pocketdesk-${update.version}.apk');
     final res = await _open(update.download);
     if (res.statusCode != 200) {
       throw HttpException('HTTP ${res.statusCode}', uri: update.download);
@@ -145,7 +145,7 @@ class UpdateInstaller extends ChangeNotifier {
     }
     if (update.sha256.isNotEmpty && '${digest.value}' != update.sha256.toLowerCase()) {
       await _delete(file);
-      throw const FormatException('the download doesn\'t match what PairDesk signed');
+      throw const FormatException('the download doesn\'t match what PocketDesk signed');
     }
     return file;
   }

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! The few SPA "POD" values PipeWire needs from a screen-capture client,
-//! built and read by hand (PairDesk loads PipeWire at run time and doesn't
+//! built and read by hand (PocketDesk loads PipeWire at run time and doesn't
 //! link its C helpers).
 //!
 //! A POD is `size: u32, type: u32` followed by `size` bytes of body, padded
@@ -105,7 +105,7 @@ fn ne(values: &[u32]) -> Vec<u8> {
     values.iter().flat_map(|v| v.to_ne_bytes()).collect()
 }
 
-/// The formats PairDesk can take: raw 32-bit RGB in memory (not GPU
+/// The formats PocketDesk can take: raw 32-bit RGB in memory (not GPU
 /// buffers, so no `modifier`), any size and frame rate.
 pub fn enum_format() -> Vec<u8> {
     Builder::object(OBJECT_FORMAT, PARAM_ENUM_FORMAT, |b| {
@@ -132,7 +132,7 @@ pub fn enum_format() -> Vec<u8> {
     })
 }
 
-/// Buffers PairDesk can read: plain or shared memory.
+/// Buffers PocketDesk can read: plain or shared memory.
 pub fn buffers() -> Vec<u8> {
     Builder::object(OBJECT_PARAM_BUFFERS, PARAM_BUFFERS, |b| {
         b.prop(BUFFERS_DATA_TYPE);
@@ -162,7 +162,7 @@ pub struct VideoFormat {
     pub format: u32,
     pub width: u32,
     pub height: u32,
-    /// GPU buffers (`modifier` present): PairDesk can't read those.
+    /// GPU buffers (`modifier` present): PocketDesk can't read those.
     pub gpu: bool,
 }
 

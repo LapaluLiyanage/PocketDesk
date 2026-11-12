@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/files/share_inbox.dart';
-import 'package:pairdesk/files/native_files.dart';
-import 'package:pairdesk/pairing/host.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
-import 'package:pairdesk/pairing/relay_route.dart';
+import 'package:pocketdesk/files/share_inbox.dart';
+import 'package:pocketdesk/files/native_files.dart';
+import 'package:pocketdesk/pairing/host.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/pairing/relay_route.dart';
 
 void main() {
   const fp = 'q6urq6urq6urq6urq6urq6urq6urq6urq6urq6urq6s';
@@ -12,8 +12,8 @@ void main() {
   final id = 'ab' * 16;
 
   test('a shared https link reads like the QR code', () {
-    final qr = parsePairingLink('pairdesk://pair?$query');
-    final shared = parsePairingLink('https://pairdesk.madhushan.me/p#$query');
+    final qr = parsePairingLink('pocketdesk://pair?$query');
+    final shared = parsePairingLink('https://pocketdesk.lapalu.me/p#$query');
     expect(shared.name, 'Office PC');
     expect(shared.token, qr.token);
     expect(shared.addresses, qr.addresses);
@@ -22,7 +22,7 @@ void main() {
 
   test('relay and help', () {
     final info = parsePairingLink(
-      'https://pairdesk.madhushan.me/p#$query&r=relay.example.org%3A443%2F$id&h=1',
+      'https://pocketdesk.lapalu.me/p#$query&r=relay.example.org%3A443%2F$id&h=1',
     );
     expect(info.help, isTrue);
     expect(info.addresses, ['192.168.1.5', 'relay:relay.example.org:443/$id']);
@@ -61,7 +61,7 @@ void main() {
     ]) {
       expect(isTypedHost(a), isTrue, reason: a);
     }
-    for (final a in ['', 'bogus', 'localhost', 'pairdesk.localhost', '127.0.0.1', '-bad.example.org']) {
+    for (final a in ['', 'bogus', 'localhost', 'pocketdesk.localhost', '127.0.0.1', '-bad.example.org']) {
       expect(isTypedHost(a), isFalse, reason: a.isEmpty ? '(empty)' : a);
     }
   });
@@ -77,7 +77,7 @@ void main() {
   test('other https links are refused', () {
     expect(() => parsePairingLink('https://evil.example/p#$query'), throwsA(isA<PairingLinkException>()));
     expect(
-      () => parsePairingLink('https://pairdesk.madhushan.me/other#$query'),
+      () => parsePairingLink('https://pocketdesk.lapalu.me/other#$query'),
       throwsA(isA<PairingLinkException>()),
     );
   });
@@ -93,7 +93,7 @@ void main() {
   });
 
   test('a link opened or shared into the app waits to be used, apart from files', () async {
-    var next = SharedItems(link: 'https://pairdesk.madhushan.me/p#$query');
+    var next = SharedItems(link: 'https://pocketdesk.lapalu.me/p#$query');
     final inbox = ShareInbox(take: () async => next);
     await inbox.check();
     expect(inbox.link, startsWith('https://'));
@@ -101,9 +101,9 @@ void main() {
     expect(inbox.takeLink(), isNotNull);
     expect(inbox.link, isNull);
     // Shared as text (e.g. from a chat app's share button) counts too.
-    next = SharedItems(text: '  pairdesk://pair?$query ');
+    next = SharedItems(text: '  pocketdesk://pair?$query ');
     await inbox.check();
-    expect(inbox.link, 'pairdesk://pair?$query');
+    expect(inbox.link, 'pocketdesk://pair?$query');
     expect(inbox.pending, isNull);
   });
 }

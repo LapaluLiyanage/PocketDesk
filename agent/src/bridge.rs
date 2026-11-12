@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! The bridge between PairDesk (running as the signed-in user) and the
-//! PairDesk helper (running as SYSTEM in the same Windows session).
+//! The bridge between PocketDesk (running as the signed-in user) and the
+//! PocketDesk helper (running as SYSTEM in the same Windows session).
 //!
 //! Windows shows the lock screen and administrator (UAC) prompts on a
 //! separate "secure desktop" that only SYSTEM can see or control. While it
-//! is up, PairDesk hands pointer and keyboard input and screen capture to the
+//! is up, PocketDesk hands pointer and keyboard input and screen capture to the
 //! helper through this bridge.
 //!
 //! Transport: TCP on 127.0.0.1, port and a random token in a file that only
@@ -78,7 +78,7 @@ pub enum Response {
     },
 }
 
-/// What the helper does for PairDesk (Windows: on the secure desktop).
+/// What the helper does for PocketDesk (Windows: on the secure desktop).
 pub trait Backend: Send + Sync {
     fn input(&self, cmd: &InputCmd) -> Result<(), String>;
     fn capture(&self, x: i32, y: i32, width: u32, height: u32) -> Result<Frame, String>;
@@ -192,14 +192,14 @@ fn handle(mut stream: TcpStream, token: &str, backend: &dyn Backend) -> io::Resu
     }
 }
 
-/// Where a helper listens: written by the helper, read by PairDesk.
+/// Where a helper listens: written by the helper, read by PocketDesk.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Endpoint {
     pub port: u16,
     pub token: String,
 }
 
-/// PairDesk's side: one connection, reopened when it breaks.
+/// PocketDesk's side: one connection, reopened when it breaks.
 pub struct Client {
     endpoint: Box<dyn Fn() -> Option<Endpoint> + Send + Sync>,
     conn: Mutex<Option<TcpStream>>,
@@ -217,7 +217,7 @@ impl Client {
 
     fn connect(&self) -> io::Result<TcpStream> {
         let ep = (self.endpoint)().ok_or_else(|| {
-            io::Error::new(io::ErrorKind::NotFound, "the PairDesk helper isn't running (turn on Sign-in screen and admin prompts in PairDesk's settings)")
+            io::Error::new(io::ErrorKind::NotFound, "the PocketDesk helper isn't running (turn on Sign-in screen and admin prompts in PocketDesk's settings)")
         })?;
         let addr = SocketAddr::from(([127, 0, 0, 1], ep.port));
         let mut s = TcpStream::connect_timeout(&addr, Duration::from_secs(2))?;

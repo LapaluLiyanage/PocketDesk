@@ -60,7 +60,7 @@ fn spawn(
     let (tx, rx) = std::sync::mpsc::channel();
     let flag = stop.clone();
     let thread = std::thread::Builder::new()
-        .name(format!("pairdesk-{what}"))
+        .name(format!("pocketdesk-{what}"))
         .spawn(move || {
             let stream = match build().and_then(|s| s.play().map(|_| s).map_err(|e| e.to_string()))
             {

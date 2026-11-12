@@ -7,14 +7,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
 
 void main() {
   final env = Platform.environment;
-  final link = env['PAIRDESK_E2E_HELP_LINK'];
-  final settings = env['PAIRDESK_E2E_SETTINGS'];
+  final link = env['POCKETDESK_E2E_HELP_LINK'];
+  final settings = env['POCKETDESK_E2E_SETTINGS'];
   final skip = link == null || settings == null ? 'run through tools/e2e-relay.sh' : null;
 
   Future<Map<String, dynamic>> state() async {
@@ -31,7 +31,7 @@ void main() {
     final client = HttpClient();
     try {
       final req = await client.postUrl(Uri.parse('$settings$path'));
-      req.headers.set('X-PairDesk', '1');
+      req.headers.set('X-PocketDesk', '1');
       req.write(jsonEncode(body));
       expect((await req.close()).statusCode, 200);
     } finally {

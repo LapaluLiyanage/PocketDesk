@@ -3,11 +3,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/app_model.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/laptop.dart';
-import 'package:pairdesk/screens/home_screen.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/app_model.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/laptop.dart';
+import 'package:pocketdesk/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<AppModel> model(List<Laptop> laptops) async => AppModel(

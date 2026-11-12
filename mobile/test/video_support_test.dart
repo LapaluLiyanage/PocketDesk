@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/screen/video.dart';
+import 'package:pocketdesk/screen/video.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  const channel = MethodChannel('pairdesk/video');
+  const channel = MethodChannel('pocketdesk/video');
 
   setUp(() {
     VideoSupport.resetForTest();

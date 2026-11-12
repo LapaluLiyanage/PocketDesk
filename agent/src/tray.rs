@@ -5,7 +5,7 @@
 //! the main thread). Linux: a StatusNotifierItem over D-Bus, shown by KDE,
 //! most other desktops and GNOME with the AppIndicator extension. Where no
 //! tray is available the agent keeps running and the settings page is
-//! still reachable by starting PairDesk again.
+//! still reachable by starting PocketDesk again.
 
 use std::sync::Arc;
 
@@ -55,12 +55,12 @@ fn tooltip(state: &AppState) -> String {
     let mic = state.listening_phones().iter().any(|l| l.2);
     match (screen, mic) {
         (true, true) => format!(
-            "PairDesk – {} – your screen and microphone are in use",
+            "PocketDesk – {} – your screen and microphone are in use",
             state.name
         ),
-        (true, false) => format!("PairDesk – {} – your screen is being viewed", state.name),
-        (false, true) => format!("PairDesk – {} – your microphone is being heard", state.name),
-        (false, false) => format!("PairDesk – {}", state.name),
+        (true, false) => format!("PocketDesk – {} – your screen is being viewed", state.name),
+        (false, true) => format!("PocketDesk – {} – your microphone is being heard", state.name),
+        (false, false) => format!("PocketDesk – {}", state.name),
     }
 }
 
@@ -70,7 +70,7 @@ fn open(url: &str) {
     }
 }
 
-/// The settings page's address, and whether this PairDesk may show it
+/// The settings page's address, and whether this PocketDesk may show it
 /// (not the sign-in screen server, which runs as SYSTEM).
 static PAGE: std::sync::OnceLock<(String, bool)> = std::sync::OnceLock::new();
 
@@ -91,8 +91,8 @@ fn page_url(pair: bool) -> Option<String> {
     })
 }
 
-/// Shows PairDesk (`pair`: on the pairing code). From any thread.
-/// Windows: the PairDesk window (the browser without WebView2). Linux:
+/// Shows PocketDesk (`pair`: on the pairing code). From any thread.
+/// Windows: the PocketDesk window (the browser without WebView2). Linux:
 /// the browser.
 pub fn show(pair: bool) {
     platform::show(pair);
@@ -143,7 +143,7 @@ mod platform {
 
     pub fn show_error(msg: &str) {
         let text: Vec<u16> = msg.encode_utf16().chain(Some(0)).collect();
-        let title: Vec<u16> = "PairDesk".encode_utf16().chain(Some(0)).collect();
+        let title: Vec<u16> = "PocketDesk".encode_utf16().chain(Some(0)).collect();
         unsafe {
             MessageBoxW(
                 std::ptr::null_mut(),
@@ -186,10 +186,10 @@ mod platform {
                 }
             });
         }
-        let open_item = MenuItem::new("Open PairDesk", true, None);
+        let open_item = MenuItem::new("Open PocketDesk", true, None);
         let pair_item = MenuItem::new("Pair a phone…", true, None);
         let browser_item = MenuItem::new("Open in the browser", true, None);
-        let quit_item = MenuItem::new("Stop PairDesk", true, None);
+        let quit_item = MenuItem::new("Stop PocketDesk", true, None);
         let tray = if no_tray {
             None
         } else {
@@ -209,7 +209,7 @@ mod platform {
                     TrayIconBuilder::new()
                         .with_menu(Box::new(menu))
                         .with_menu_on_left_click(false)
-                        .with_tooltip(format!("PairDesk – {}", state.name))
+                        .with_tooltip(format!("PocketDesk – {}", state.name))
                         .with_icon(icon)
                         .build()
                         .map_err(|e| e.to_string())
@@ -310,16 +310,16 @@ mod platform {
     #[cfg(target_os = "linux")]
     impl ksni::Tray for Tray {
         fn id(&self) -> String {
-            "pairdesk".into()
+            "pocketdesk".into()
         }
         fn title(&self) -> String {
             if self.viewing {
                 format!(
-                    "PairDesk – {} – your screen or microphone is in use",
+                    "PocketDesk – {} – your screen or microphone is in use",
                     self.name
                 )
             } else {
-                format!("PairDesk – {}", self.name)
+                format!("PocketDesk – {}", self.name)
             }
         }
         fn icon_pixmap(&self) -> Vec<ksni::Icon> {
@@ -340,7 +340,7 @@ mod platform {
             use ksni::menu::StandardItem;
             vec![
                 StandardItem {
-                    label: "Open PairDesk".into(),
+                    label: "Open PocketDesk".into(),
                     activate: Box::new(|t: &mut Self| open(&t.url)),
                     ..Default::default()
                 }
@@ -353,7 +353,7 @@ mod platform {
                 .into(),
                 ksni::MenuItem::Separator,
                 StandardItem {
-                    label: "Stop PairDesk".into(),
+                    label: "Stop PocketDesk".into(),
                     activate: Box::new(|_| request_quit()),
                     ..Default::default()
                 }
@@ -387,7 +387,7 @@ mod platform {
                         std::future::pending::<()>().await;
                     }
                     Err(e) => {
-                        log::warn!("no tray icon ({e}); run pairdesk-agent again to open settings")
+                        log::warn!("no tray icon ({e}); run pocketdesk again to open settings")
                     }
                 }
             });

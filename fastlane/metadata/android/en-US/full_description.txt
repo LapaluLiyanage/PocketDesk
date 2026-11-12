@@ -1,4 +1,4 @@
-<p>PairDesk turns your phone into a remote for your Windows or Linux computer. Pair once by scanning a code; after that the app connects by itself whenever you open it.</p>
+<p>PocketDesk turns your phone into a remote for your Windows or Linux computer. Pair once by scanning a code; after that the app connects by itself whenever you open it.</p>
 
 <p><b>What you can do</b></p>
 <ul>
@@ -7,21 +7,21 @@
 <li>Key combinations, media and volume keys, and your own shortcut buttons</li>
 <li>Open apps and shortcuts, lock, sleep, restart or shut down</li>
 <li>Copy and paste between phone and computer</li>
-<li>Send files both ways, including from other apps with Share → PairDesk</li>
+<li>Send files both ways, including from other apps with Share → PocketDesk</li>
 </ul>
 
 <p><b>Private by design</b></p>
 <ul>
-<li>Your phone talks to your computer directly. There is no PairDesk server and no account.</li>
+<li>Your phone talks to your computer directly. There is no PocketDesk server and no account.</li>
 <li>Connections are encrypted, and only phones you paired can connect.</li>
 <li>You decide on the computer what paired phones may do.</li>
 </ul>
 
 <p><b>Getting started</b></p>
 <ol>
-<li>Install PairDesk on your computer from <a href="https://pairdesk.madhushan.me">pairdesk.madhushan.me</a>.</li>
+<li>Install PocketDesk on your computer from <a href="https://pocketdesk.lapalu.me">pocketdesk.lapalu.me</a>.</li>
 <li>It shows a pairing code. Open this app and scan it.</li>
 <li>That's it. The phone connects on the same Wi-Fi, or from anywhere with Tailscale.</li>
 </ol>
 
-<p>PairDesk is free software (GPL-3.0-or-later).</p>
+<p>PocketDesk is free software (GPL-3.0-or-later).</p>

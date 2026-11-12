@@ -8,8 +8,8 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/update_check.dart';
-import 'package:pairdesk/update_install.dart';
+import 'package:pocketdesk/update_check.dart';
+import 'package:pocketdesk/update_install.dart';
 
 /// Enough of an HttpClientResponse to feed the downloader.
 class FakeResponse extends Stream<List<int>> implements HttpClientResponse {
@@ -46,10 +46,10 @@ void main() {
   late bool canInstall;
   late String? installError;
 
-  const channel = MethodChannel('pairdesk/update');
+  const channel = MethodChannel('pocketdesk/update');
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('pairdesk-update-test');
+    dir = Directory.systemTemp.createTempSync('pocketdesk-update-test');
     calls = [];
     canInstall = true;
     installError = null;
@@ -76,7 +76,7 @@ void main() {
 
   AvailableUpdate update({String? sha, int? size}) => AvailableUpdate(
     version: '9.9.9',
-    download: Uri.parse('https://example.com/pairdesk-9.9.9-android-arm64.apk'),
+    download: Uri.parse('https://example.com/pocketdesk-9.9.9-android-arm64.apk'),
     notes: Uri.parse('https://example.com/notes'),
     sha256: sha ?? good,
     size: size ?? apk.length,

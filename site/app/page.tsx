@@ -36,11 +36,11 @@ const STRUCTURED = {
         "See and control the computer's screen",
         "Send files and share the clipboard both ways",
         "Hear the computer and talk through it",
-        "Connect from anywhere through Tailscale or the PairDesk relay",
+        "Connect from anywhere through Tailscale or the PocketDesk relay",
         "Help a friend with a two-hour help link",
       ],
       author: { "@type": "Person", name: AUTHOR.name, url: AUTHOR.url },
-      sameAs: ["https://github.com/sandunMadhushan/pairdesk"],
+      sameAs: ["https://github.com/LapaluLiyanage/pocketdesk"],
     },
     {
       "@type": "WebSite",

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! The PairDesk helper service: installing it (elevated), running it under
+//! The PocketDesk helper service: installing it (elevated), running it under
 //! the Windows service manager, and asking for elevation from the agent.
 
 use std::os::windows::ffi::OsStrExt;
@@ -32,9 +32,9 @@ use super::{SERVICE_NAME, acl, session};
 use crate::install::Kind;
 use crate::update::{Source, Updater};
 
-const DISPLAY_NAME: &str = "PairDesk helper";
+const DISPLAY_NAME: &str = "PocketDesk helper";
 const DESCRIPTION: &str = "Lets your paired phone use the Windows sign-in screen and administrator prompts. \
-     Turn it off in PairDesk's settings.";
+     Turn it off in PocketDesk's settings.";
 
 fn wide(s: impl AsRef<std::ffi::OsStr>) -> Vec<u16> {
     s.as_ref().encode_wide().chain(Some(0)).collect()
@@ -44,18 +44,18 @@ fn last_error() -> String {
     std::io::Error::last_os_error().to_string()
 }
 
-/// `%ProgramData%\PairDesk`: SYSTEM and administrators only.
+/// `%ProgramData%\PocketDesk`: SYSTEM and administrators only.
 pub fn program_data() -> PathBuf {
     let base = std::env::var_os("ProgramData").unwrap_or_else(|| "C:\\ProgramData".into());
-    PathBuf::from(base).join("PairDesk")
+    PathBuf::from(base).join("PocketDesk")
 }
 
-/// `%ProgramFiles%\PairDesk`: the service's own copy of PairDesk.
+/// `%ProgramFiles%\PocketDesk`: the service's own copy of PocketDesk.
 fn program_files() -> PathBuf {
     let base = std::env::var_os("ProgramW6432")
         .or_else(|| std::env::var_os("ProgramFiles"))
         .unwrap_or_else(|| "C:\\Program Files".into());
-    PathBuf::from(base).join("PairDesk")
+    PathBuf::from(base).join("PocketDesk")
 }
 
 struct Scm(SC_HANDLE);
@@ -135,7 +135,7 @@ fn stop_and_wait(svc: &Scm) {
 }
 
 /// `--install-service` (as administrator): copies this program to Program
-/// Files, protects PairDesk's ProgramData folder, registers and starts the
+/// Files, protects PocketDesk's ProgramData folder, registers and starts the
 /// service. Installing again updates it.
 pub fn install() -> Result<(), String> {
     let scm = manager(SC_MANAGER_ALL_ACCESS)
@@ -150,12 +150,12 @@ pub fn install() -> Result<(), String> {
     // can replace.
     let dir = program_files();
     std::fs::create_dir_all(&dir).map_err(|e| format!("can't create {}: {e}", dir.display()))?;
-    let exe = dir.join("pairdesk-agent.exe");
+    let exe = dir.join("pocketdesk.exe");
     let me = std::env::current_exe().map_err(|e| e.to_string())?;
     if me != exe {
         let _ = std::fs::remove_file(&exe);
         std::fs::copy(&me, &exe)
-            .map_err(|e| format!("can't copy PairDesk to {}: {e}", dir.display()))?;
+            .map_err(|e| format!("can't copy PocketDesk to {}: {e}", dir.display()))?;
     }
 
     let data = program_data();
@@ -348,7 +348,7 @@ pub fn run_elevated(args: &str) -> Result<(), String> {
         Ok(())
     } else {
         Err(format!(
-            "it didn't work (code {code}); see %ProgramData%\\PairDesk\\service.log"
+            "it didn't work (code {code}); see %ProgramData%\\PocketDesk\\service.log"
         ))
     }
 }
@@ -485,7 +485,7 @@ fn work() {
             if let Some(token) = session::user_token(sess)
                 && let Some(appdata) = session::roaming_appdata(&token)
                 && let Err(e) =
-                    super::mirror(&appdata.join("PairDesk"), &super::system_data_dir(&base))
+                    super::mirror(&appdata.join("PocketDesk"), &super::system_data_dir(&base))
             {
                 log::warn!("can't copy the pairing for the sign-in screen: {e}");
             }

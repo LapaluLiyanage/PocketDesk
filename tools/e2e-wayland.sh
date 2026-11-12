@@ -17,10 +17,10 @@
 #   3. permission forgotten and the owner presses Cancel: the phone is told.
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-if [ -z "${PAIRDESK_IN_SESSION:-}" ]; then
-  exec env PAIRDESK_IN_SESSION=1 dbus-run-session -- "$0" "$@"
+if [ -z "${POCKETDESK_IN_SESSION:-}" ]; then
+  exec env POCKETDESK_IN_SESSION=1 dbus-run-session -- "$0" "$@"
 fi
-AGENT=${AGENT:-$ROOT/agent/target/release/pairdesk-agent}
+AGENT=${AGENT:-$ROOT/agent/target/release/pocketdesk}
 PORT=${PORT:-47812}
 DATA=$(mktemp -d)
 PY=$(command -v python3.12 || command -v python3)
@@ -35,26 +35,26 @@ trap cleanup EXIT
 sleep 1
 
 start_agent() {
-  PAIRDESK_HOME="$DATA/home" BROWSER=true "$AGENT" --no-tray --port "$PORT" "$@" >>"$DATA/agent.txt" 2>&1 &
+  POCKETDESK_HOME="$DATA/home" BROWSER=true "$AGENT" --no-tray --port "$PORT" "$@" >>"$DATA/agent.txt" 2>&1 &
   APID=$!
   for _ in $(seq 50); do [ -s "$DATA/home/settings-url.txt" ] && break; sleep 0.2; done
   SETTINGS=$(cat "$DATA/home/settings-url.txt")
 }
 stop_agent() {
-  curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/quit" >/dev/null
+  curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/quit" >/dev/null
   for _ in $(seq 50); do kill -0 $APID 2>/dev/null || break; sleep 0.2; done
   ! kill -0 $APID 2>/dev/null || { echo "agent did not stop"; exit 1; }
 }
 new_link() {
-  curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/pair" |
+  curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/pair" |
     "$PY" -c 'import json,sys; print(json.load(sys.stdin)["pairing"]["link"])'
 }
 wayland_status() {
   curl -sf "${SETTINGS}api/state" | "$PY" -c 'import json,sys; print(json.load(sys.stdin)["wayland"]["status"])'
 }
 phone() {
-  (cd "$ROOT/mobile" && PAIRDESK_E2E_LINK="$1" PAIRDESK_E2E_STAGE="$2" \
-    PAIRDESK_E2E_APP_LOG="$DATA/app.log" PAIRDESK_E2E_SCREEN_SIGNAL="$DATA/turn-green" \
+  (cd "$ROOT/mobile" && POCKETDESK_E2E_LINK="$1" POCKETDESK_E2E_STAGE="$2" \
+    POCKETDESK_E2E_APP_LOG="$DATA/app.log" POCKETDESK_E2E_SCREEN_SIGNAL="$DATA/turn-green" \
     flutter test test/e2e_wayland_test.dart)
 }
 
@@ -87,7 +87,7 @@ rm -f "$DATA/home/wayland-restore-token"
 "$PY" "$ROOT/tools/wayland/approve_portal.py" 30 --cancel >"$DATA/approve3.txt" 2>&1 & APPROVER=$!
 start_agent --background
 LINK=$(new_link)
-(cd "$ROOT/mobile" && PAIRDESK_E2E_LINK="$LINK" PAIRDESK_E2E_STAGE=cancel \
+(cd "$ROOT/mobile" && POCKETDESK_E2E_LINK="$LINK" POCKETDESK_E2E_STAGE=cancel \
   flutter test test/e2e_wayland_notice_test.dart)
 wait $APPROVER
 for _ in $(seq 25); do [ "$(wayland_status)" = denied ] && break; sleep 0.2; done

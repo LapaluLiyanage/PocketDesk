@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
-<!-- PairDesk icon: a laptop with a phone in front of it. -->
+<!-- PocketDesk icon: a laptop with a phone in front of it. -->
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">

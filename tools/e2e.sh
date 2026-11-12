@@ -6,10 +6,10 @@
 #   cargo build --release --manifest-path agent/Cargo.toml && tools/e2e.sh
 #
 # Windows build under Wine (exercises the tray message loop too):
-#   WINE=1 AGENT=agent/target/x86_64-pc-windows-gnu/release/pairdesk-agent.exe tools/e2e.sh
+#   WINE=1 AGENT=agent/target/x86_64-pc-windows-gnu/release/pocketdesk.exe tools/e2e.sh
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-AGENT=$(realpath "${AGENT:-$ROOT/agent/target/release/pairdesk-agent}")
+AGENT=$(realpath "${AGENT:-$ROOT/agent/target/release/pocketdesk}")
 PORT=${PORT:-47811}
 DATA=$(mktemp -d)
 export DISPLAY=:97
@@ -42,7 +42,7 @@ PY
 sleep 0.5
 
 # Power actions are logged, not performed.
-export PAIRDESK_POWER_DRY_RUN=1
+export POCKETDESK_POWER_DRY_RUN=1
 # Files from the phone land here.
 mkdir -p "$DATA/downloads"
 
@@ -60,25 +60,25 @@ if [ -n "${WINE:-}" ]; then
     "$WINEBIN" wineboot -i >/dev/null 2>&1
     # Wine has no secure desktop: let the helper act on the normal one
     # (a marker only administrators can create; see winsys/helper.rs).
-    mkdir -p "$WINEPREFIX/drive_c/ProgramData/PairDesk"
-    touch "$WINEPREFIX/drive_c/ProgramData/PairDesk/allow-normal-desktop"
+    mkdir -p "$WINEPREFIX/drive_c/ProgramData/PocketDesk"
+    touch "$WINEPREFIX/drive_c/ProgramData/PocketDesk/allow-normal-desktop"
     "$WINEBIN" "$AGENT" --install-service >"$DATA/install.txt" 2>&1 ||
       { echo "installing the helper service failed:"; cat "$DATA/install.txt"; exit 1; }
     for _ in $(seq 300); do
-      ls "$WINEPREFIX/drive_c/ProgramData/PairDesk/bridge/"session-*.json >/dev/null 2>&1 && break
+      ls "$WINEPREFIX/drive_c/ProgramData/PocketDesk/bridge/"session-*.json >/dev/null 2>&1 && break
       sleep 0.2
     done
-    ls "$WINEPREFIX/drive_c/ProgramData/PairDesk/bridge/"session-*.json >/dev/null 2>&1 ||
-      { echo "the helper didn't start"; cat "$WINEPREFIX/drive_c/ProgramData/PairDesk/"*.log; exit 1; }
-    export PAIRDESK_TEST_SECURE_DESKTOP=1
+    ls "$WINEPREFIX/drive_c/ProgramData/PocketDesk/bridge/"session-*.json >/dev/null 2>&1 ||
+      { echo "the helper didn't start"; cat "$WINEPREFIX/drive_c/ProgramData/PocketDesk/"*.log; exit 1; }
+    export POCKETDESK_TEST_SECURE_DESKTOP=1
   fi
-  PAIRDESK_DOWNLOADS="Z:${DATA//\//\\}\\downloads" PAIRDESK_HOME="Z:${DATA//\//\\}" "$WINEBIN" "$AGENT" --background --port "$PORT" >"$DATA/out.txt" 2>&1 & APID=$!
+  POCKETDESK_DOWNLOADS="Z:${DATA//\//\\}\\downloads" POCKETDESK_HOME="Z:${DATA//\//\\}" "$WINEBIN" "$AGENT" --background --port "$PORT" >"$DATA/out.txt" 2>&1 & APID=$!
   WAIT=600
   # "Send to phone" as Explorer runs it, with the file as a Windows path.
   cat >"$DATA/send.sh" <<SEND
 #!/bin/sh
 p=\$(printf '%s' "\$1" | tr '/' '\\\\')
-export WINEDEBUG=-all WINEPREFIX='$WINEPREFIX' WINEDLLOVERRIDES='mscoree,mshtml=' PAIRDESK_HOME='Z:${DATA//\//\\}'
+export WINEDEBUG=-all WINEPREFIX='$WINEPREFIX' WINEDLLOVERRIDES='mscoree,mshtml=' POCKETDESK_HOME='Z:${DATA//\//\\}'
 exec '$WINEBIN' '$AGENT' --send "Z:\$p"
 SEND
   chmod +x "$DATA/send.sh"
@@ -86,12 +86,12 @@ SEND
 else
   # An installed app for the agent to find: a .desktop file in XDG_DATA_HOME.
   mkdir -p "$DATA/xdg/applications"
-  printf '[Desktop Entry]\nType=Application\nName=PairDesk E2E App\nExec=sh -c "touch %s/app-ran" %%U\n' "$DATA" \
-    >"$DATA/xdg/applications/pairdesk-e2e.desktop"
+  printf '[Desktop Entry]\nType=Application\nName=PocketDesk E2E App\nExec=sh -c "touch %s/app-ran" %%U\n' "$DATA" \
+    >"$DATA/xdg/applications/pocketdesk-e2e.desktop"
   export XDG_DATA_HOME="$DATA/xdg"
   E2E_PROGRAM=/bin/sh
   E2E_ARGS="-c \"touch '$DATA/shortcut-ran'\""
-  E2E_APP="PairDesk E2E App"
+  E2E_APP="PocketDesk E2E App"
   # A stand-in `tailscale` command, so the agent reports a Tailscale address.
   mkdir -p "$DATA/bin"
   cat >"$DATA/bin/tailscale" <<'TS'
@@ -104,8 +104,8 @@ TS
   # Clipboard checked with another X program; files sent like the file manager does.
   E2E_CLIP_CHECK="xclip -o -selection clipboard"
   E2E_CLIP_SET="printf 'copied on the computer' | xclip -selection clipboard >/dev/null 2>&1"
-  E2E_SEND_CMD="PAIRDESK_HOME='$DATA' '$AGENT' --send"
-  PATH="$DATA/bin:$PATH" PAIRDESK_DOWNLOADS="$DATA/downloads" PAIRDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & APID=$!
+  E2E_SEND_CMD="POCKETDESK_HOME='$DATA' '$AGENT' --send"
+  PATH="$DATA/bin:$PATH" POCKETDESK_DOWNLOADS="$DATA/downloads" POCKETDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & APID=$!
   WAIT=50
 fi
 for _ in $(seq $WAIT); do [ -s "$DATA/settings-url.txt" ] && break; sleep 0.2; done
@@ -113,16 +113,16 @@ SETTINGS=$(cat "$DATA/settings-url.txt" 2>/dev/null || true)
 [ -n "$SETTINGS" ] || { echo "agent did not start"; cat "$DATA/out.txt" "$DATA/agent.log" 2>/dev/null; exit 1; }
 
 # Ask the agent for a pairing code, the way the settings page does.
-LINK=$(curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/pair" |
+LINK=$(curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/pair" |
   python3 -c 'import json,sys; print(json.load(sys.stdin)["pairing"]["link"])')
 echo "agent link: ${LINK%%&t=*}&t=…"
 
-(cd "$ROOT/mobile" && PAIRDESK_E2E_LINK="$LINK" PAIRDESK_E2E_SETTINGS="$SETTINGS" \
-  PAIRDESK_E2E_OS="${WINE:+windows}" PAIRDESK_E2E_PROGRAM="$E2E_PROGRAM" \
-  PAIRDESK_E2E_PROGRAM_ARGS="$E2E_ARGS" PAIRDESK_E2E_APP="$E2E_APP" \
-  PAIRDESK_E2E_TAILSCALE="${E2E_TAILSCALE:-}" PAIRDESK_E2E_SCREEN_SIGNAL="$DATA/turn-green" \
-  PAIRDESK_E2E_DOWNLOADS="$DATA/downloads" PAIRDESK_E2E_CLIP_CHECK="${E2E_CLIP_CHECK:-}" \
-  PAIRDESK_E2E_CLIP_SET="${E2E_CLIP_SET:-}" PAIRDESK_E2E_SEND_CMD="${E2E_SEND_CMD:-}" \
+(cd "$ROOT/mobile" && POCKETDESK_E2E_LINK="$LINK" POCKETDESK_E2E_SETTINGS="$SETTINGS" \
+  POCKETDESK_E2E_OS="${WINE:+windows}" POCKETDESK_E2E_PROGRAM="$E2E_PROGRAM" \
+  POCKETDESK_E2E_PROGRAM_ARGS="$E2E_ARGS" POCKETDESK_E2E_APP="$E2E_APP" \
+  POCKETDESK_E2E_TAILSCALE="${E2E_TAILSCALE:-}" POCKETDESK_E2E_SCREEN_SIGNAL="$DATA/turn-green" \
+  POCKETDESK_E2E_DOWNLOADS="$DATA/downloads" POCKETDESK_E2E_CLIP_CHECK="${E2E_CLIP_CHECK:-}" \
+  POCKETDESK_E2E_CLIP_SET="${E2E_CLIP_SET:-}" POCKETDESK_E2E_SEND_CMD="${E2E_SEND_CMD:-}" \
   flutter test test/e2e_real_agent_test.dart)
 
 # Launched from the phone: the shortcut (and, on Linux, the installed app) ran.
@@ -144,7 +144,7 @@ assert (p.root_x, p.root_y) == (140, 130), "cursor did not move by (40, 30)"
 PY
 
 # Stopping from the settings page must end the process cleanly.
-curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/quit" >/dev/null
+curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/quit" >/dev/null
 for _ in $(seq 50); do kill -0 $APID 2>/dev/null || break; sleep 0.2; done
 if kill -0 $APID 2>/dev/null; then echo "agent did not stop after quit"; exit 1; fi
 [ -e "$DATA/settings-url.txt" ] && { echo "settings-url.txt left behind"; exit 1; }

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Spark } from "@/components/Devices";
 
-const GITHUB = "https://github.com/sandunMadhushan/pairdesk";
+const GITHUB = "https://github.com/LapaluLiyanage/pocketdesk";
 
 const STATS = [
   { n: 2, suffix: " min", label: "to set up, once" },
@@ -13,7 +13,7 @@ const STATS = [
 
 export function Stats() {
   return (
-    <section aria-label="PairDesk in numbers" className="px-3 sm:px-6">
+    <section aria-label="PocketDesk in numbers" className="px-3 sm:px-6">
       <div data-sheet className="mx-auto max-w-7xl overflow-hidden rounded-[clamp(28px,4vw,44px)] bg-pair text-white shadow-[0_40px_80px_-40px_var(--color-pair)]">
         <dl className="relative grid grid-cols-2 lg:grid-cols-4">
           <svg aria-hidden="true" viewBox="0 0 800 200" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 h-full w-full text-white/10" fill="none">
@@ -42,12 +42,12 @@ export function Stats() {
 const STEPS = [
   {
     title: "Install it on your computer",
-    body: "Run the Windows setup or install the Linux package. PairDesk opens and shows a pairing code.",
+    body: "Run the Windows setup or install the Linux package. PocketDesk opens and shows a pairing code.",
     icon: "M4 5h16v11H4zM2 19h20",
   },
   {
     title: "Get the app on your phone",
-    body: "Install PairDesk for Android. It asks for the camera only to read the code.",
+    body: "Install PocketDesk for Android. It asks for the camera only to read the code.",
     icon: "M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM11 18h2",
   },
   {
@@ -107,7 +107,7 @@ const SHOTS = [
 const MORE = [
   { title: "App launcher", body: "Open the computer's apps, websites and folders from your phone." },
   { title: "Power", body: "Lock, sleep, turn off the screen, restart or shut down, when you allow it." },
-  { title: "App lock", body: "Open PairDesk with your fingerprint, face or screen lock." },
+  { title: "App lock", body: "Open PocketDesk with your fingerprint, face or screen lock." },
   { title: "Several computers", body: "Pair the laptop, the desktop and the media PC, and switch with a tap." },
   { title: "Updates itself", body: "The computer installs new versions; the phone tells you when one is out." },
   { title: "Wayland and X11", body: "Works on GNOME and KDE, on Wayland or X11, and on Windows 10 and 11." },
@@ -210,7 +210,7 @@ const QUESTIONS: { q: string; a: React.ReactNode }[] = [
     a: (
       <>
         Not when the phone can reach the computer directly, at home or through Tailscale. Otherwise it goes through
-        the PairDesk relay, which only passes the encrypted connection along: it can&apos;t see your screen, what you
+        the PocketDesk relay, which only passes the encrypted connection along: it can&apos;t see your screen, what you
         type, files or sound. There&apos;s no account. See the{" "}
         <Link href="/privacy" className="link">
           privacy policy
@@ -221,17 +221,17 @@ const QUESTIONS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Can I use it away from home?",
-    a: "Yes. Open the app once at home so it learns the way to the computer; after that it connects from anywhere, through Tailscale if you use it, or else through the PairDesk relay. The computer must be awake.",
+    a: "Yes. Open the app once at home so it learns the way to the computer; after that it connects from anywhere, through Tailscale if you use it, or else through the PocketDesk relay. The computer must be awake.",
   },
   {
     q: "Can I help a friend with their computer?",
-    a: "Yes. They install PairDesk on their computer, press Get help and send you the link. You can see and control their screen, but not turn it off, take files or listen. It ends after two hours, when you leave, or when they press End help.",
+    a: "Yes. They install PocketDesk on their computer, press Get help and send you the link. You can see and control their screen, but not turn it off, take files or listen. It ends after two hours, when you leave, or when they press End help.",
   },
   {
     q: "Windows says the setup is from an unknown publisher.",
     a: (
       <>
-        PairDesk isn&apos;t code-signed yet (that&apos;s coming through the SignPath Foundation&apos;s free signing for
+        PocketDesk isn&apos;t code-signed yet (that&apos;s coming through the SignPath Foundation&apos;s free signing for
         open-source projects). Choose <i>More info</i>, then <i>Run anyway</i>. You can check the download against{" "}
         <code className="rounded bg-sky px-1.5 py-0.5 text-[0.9em]">SHA256SUMS.txt</code> on the release page.
       </>
@@ -239,11 +239,11 @@ const QUESTIONS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Wayland asks me to allow remote control.",
-    a: "On GNOME and KDE Wayland the desktop asks once whether PairDesk may share the screen and control the pointer and keyboard. Allow it, and PairDesk keeps the permission so it doesn't ask again after a restart.",
+    a: "On GNOME and KDE Wayland the desktop asks once whether PocketDesk may share the screen and control the pointer and keyboard. Allow it, and PocketDesk keeps the permission so it doesn't ask again after a restart.",
   },
   {
     q: "iPhone or Mac?",
-    a: "Not yet. PairDesk is Android plus Windows and Linux for now.",
+    a: "Not yet. PocketDesk is Android plus Windows and Linux for now.",
   },
 ];
 

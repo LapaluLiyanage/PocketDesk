@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Finding a paired computer on the local network after its address
-// changed. Computers announce `_pairdesk._tcp` with `id=<short id>`.
+// changed. Computers announce `_pocketdesk._tcp` with `id=<short id>`.
 // A found address is only a hint: the connection still checks the
 // pinned certificate.
 
@@ -16,7 +16,7 @@ abstract class LaptopFinder {
 }
 
 class NsdLaptopFinder implements LaptopFinder {
-  static const serviceType = '_pairdesk._tcp';
+  static const serviceType = '_pocketdesk._tcp';
 
   @override
   Future<List<String>> find(String shortId, {Duration timeout = const Duration(seconds: 5)}) async {

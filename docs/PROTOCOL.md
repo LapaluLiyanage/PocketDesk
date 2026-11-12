@@ -1,4 +1,4 @@
-# PairDesk protocol (v2)
+# PocketDesk protocol (v2)
 
 The phone talks to the desktop agent over a **WebSocket inside TLS** (`wss://`),
 port **47800** by default. Every message is one JSON text frame with a `t` (type)
@@ -12,7 +12,7 @@ pairing) is no longer accepted.
 
 | Who | Identity | Where it's kept |
 | --- | --- | --- |
-| Computer | Self-signed TLS certificate (ECDSA P-256), created on first run. Identified by the **SHA-256 fingerprint** of the certificate (DER). | `%APPDATA%\PairDesk` (Windows), `~/.config/pairdesk` (Linux) |
+| Computer | Self-signed TLS certificate (ECDSA P-256), created on first run. Identified by the **SHA-256 fingerprint** of the certificate (DER). | `%APPDATA%\PocketDesk` (Windows), `~/.config/pocketdesk` (Linux) |
 | Phone | **Ed25519** key pair, created on first launch. The phone's ID is its 32-byte public key, base64url without padding. | Android encrypted storage (Keystore-backed); excluded from backups |
 
 The phone never trusts a certificate authority. It accepts exactly one certificate:
@@ -25,7 +25,7 @@ All binary values on the wire are **base64url without padding**.
 The computer's settings page shows this link as a QR code:
 
 ```text
-pairdesk://pair?v=2&n=<name>&fp=<fingerprint>&t=<code>&p=<port>&a=<ip>,<ip>
+pocketdesk://pair?v=2&n=<name>&fp=<fingerprint>&t=<code>&p=<port>&a=<ip>,<ip>
 ```
 
 | Field | Meaning |
@@ -48,12 +48,12 @@ code replaces the previous one.
 The same query can be sent as a web link instead of shown as a QR code:
 
 ```text
-https://pairdesk.madhushan.me/p#v=2&n=<name>&fp=…&t=…&p=…&a=…&r=…&h=1
+https://pocketdesk.lapalu.me/p#v=2&n=<name>&fp=…&t=…&p=…&a=…&r=…&h=1
 ```
 
 Everything is after `#`, so it never reaches the web server. Android opens
-the link in PairDesk directly (verified app link, `/.well-known/assetlinks.json`);
-otherwise `site/p.html` offers "Open in PairDesk" (`intent://pair?…`) and the
+the link in PocketDesk directly (verified app link, `/.well-known/assetlinks.json`);
+otherwise `site/p.html` offers "Open in PocketDesk" (`intent://pair?…`) and the
 download. The app also accepts either link pasted or shared into it.
 
 Links only go **from the computer to the phone**: the phone connects to the
@@ -91,7 +91,7 @@ agent answers `not_paired`.
 The signature covers:
 
 ```text
-"pairdesk-auth-v2" || 0x00 || certificate fingerprint (32) || nonce (32) || phone public key (32)
+"pocketdesk-auth-v2" || 0x00 || certificate fingerprint (32) || nonce (32) || phone public key (32)
 ```
 
 - The **nonce** is fresh for every connection, so a recorded signature can't be replayed.
@@ -151,7 +151,7 @@ installed apps plus shortcuts the owner set up on the settings page.
 | `audio` | `id`, `codec` (`opus` or `pcm`), `rate`, `channels`, `frame_ms`, `pre_skip`, `sound`, `mic` | Answer to `audio_start`; "PDA1" messages follow (see [Sound](#sound)) |
 | `audio_stopped` | `msg` | Listening ended on the computer's side |
 | `pong` | — | Reply to `ping` |
-| `notice` | `msg` | Something for the person to read, e.g. "approve PairDesk on the computer" (since 0.6; older phones ignore it) |
+| `notice` | `msg` | Something for the person to read, e.g. "approve PocketDesk on the computer" (since 0.6; older phones ignore it) |
 | `error` | `code`, `msg` | See below |
 
 Error codes. Every code except `bad_message` is followed by the agent closing
@@ -332,23 +332,23 @@ either   → file_cancel   {fid, msg?}              stops it; the receiver delet
 - **Integrity:** the receiver checks the size and the SHA-256 before the file gets
   its name; until then it's a hidden part file, removed if anything goes wrong or
   the connection drops.
-- **On the computer:** files from phones go to `Downloads/PairDesk`
-  (`PAIRDESK_DOWNLOADS` overrides it). Names are cleaned (no folders, no
+- **On the computer:** files from phones go to `Downloads/PocketDesk`
+  (`POCKETDESK_DOWNLOADS` overrides it). Names are cleaned (no folders, no
   characters Windows forbids, no device names like `CON`) and never overwrite an
   existing file (`photo (2).jpg`).
-- **On the phone:** files from the computer go to `Download/PairDesk` (Android 10+,
-  through MediaStore; older Android: the app's own Download/PairDesk folder).
+- **On the phone:** files from the computer go to `Download/PocketDesk` (Android 10+,
+  through MediaStore; older Android: the app's own Download/PocketDesk folder).
 - **Sending from the computer:** the settings page's drop zone (`POST
-  api/upload?name=…&phone=…` with the file as the body), or `pairdesk-agent --send
+  api/upload?name=…&phone=…` with the file as the body), or `pocketdesk --send
   FILE…`, which hands the paths to the running agent (`POST api/send-paths`). On
-  start the agent adds that command to the file manager: a "PairDesk phone"
+  start the agent adds that command to the file manager: a "PocketDesk phone"
   shortcut in Windows' Send To folder, a GNOME Files script and a Dolphin service
   menu. Files go to every connected phone, or the one chosen.
 
 ## Reaching the computer from anywhere (Tailscale)
 
-Away from home PairDesk uses [Tailscale](https://tailscale.com) when the
-owner installed it on the computer and the phone, or else a PairDesk relay
+Away from home PocketDesk uses [Tailscale](https://tailscale.com) when the
+owner installed it on the computer and the phone, or else a PocketDesk relay
 (below). Both carry the same `wss://` connection; pinning and the signed
 sign-in are unchanged.
 
@@ -373,7 +373,7 @@ sign-in are unchanged.
 
 Since 0.11, when the phone can't reach the computer directly, both meet at a
 relay (`relay/` in this repository; hosting: [RELAY.md](RELAY.md)). The
-default is `relay.pairdesk.madhushan.me:443`; the owner can change it or
+default is `relay.lapalu.me:443`; the owner can change it or
 turn it off in the computer's settings.
 
 The relay speaks a one-line text handshake, after which it copies bytes in
@@ -401,7 +401,7 @@ therefore sees only TLS records, sizes and IP addresses.
 
 ## Finding the computer again
 
-The agent announces itself with mDNS / DNS-SD as `_pairdesk._tcp` with TXT
+The agent announces itself with mDNS / DNS-SD as `_pocketdesk._tcp` with TXT
 records `id=<first 8 bytes of the fingerprint, hex>` and `v=2`. When none of the
 saved addresses answer, the phone looks for its computer's `id` on the network
 and tries the addresses found. Discovery is only a hint: the certificate is
@@ -436,7 +436,7 @@ session (`XDG_SESSION_TYPE=wayland`) the agent uses the desktop's
 
 Only one agent runs per computer: the second one finds the port taken. It then
 reads `settings-url.txt` and asks the running agent for `api/state`. If that
-agent is an older release it sends `POST api/quit` (with `X-PairDesk: 1`), waits
+agent is an older release it sends `POST api/quit` (with `X-PocketDesk: 1`), waits
 up to 20 s for the port and takes over; otherwise it opens the running agent's
 settings page and exits. On every start, if start-at-sign-in is on, its entry is
 rewritten to point to the running program file (quoted, so paths with spaces work).
@@ -446,23 +446,23 @@ rewritten to point to the running program file (quoted, so paths with spaces wor
 The agent serves its settings page on `127.0.0.1` at a random port, under a
 random secret path (stored in `settings-url.txt` in the data folder while the
 agent runs). It refuses requests with any other `Host` header, and changes need
-an `X-PairDesk: 1` header, which other websites can't send without a CORS
+an `X-PocketDesk: 1` header, which other websites can't send without a CORS
 preflight that the agent never approves. It isn't reachable from the network.
 
 ## Updates (since 0.8.0)
 
-Not part of the phone protocol: how PairDesk finds and checks new releases.
+Not part of the phone protocol: how PocketDesk finds and checks new releases.
 
 Each GitHub release carries `latest.json` and `latest.json.sig`, read from
-`https://github.com/sandunMadhushan/pairdesk/releases/latest/download/`:
+`https://github.com/LapaluLiyanage/pocketdesk/releases/latest/download/`:
 
 ```json
 {
   "version": "0.8.0",
   "date": "2026-10-29",
-  "notes_url": "https://github.com/sandunMadhushan/pairdesk/releases/tag/v0.8.0",
+  "notes_url": "https://github.com/LapaluLiyanage/pocketdesk/releases/tag/v0.8.0",
   "assets": {
-    "windows-x64-setup": {"url": "https://…/PairDesk-Setup-0.8.0-x64.exe", "sha256": "…", "size": 2509594},
+    "windows-x64-setup": {"url": "https://…/PocketDesk-Setup-0.8.0-x64.exe", "sha256": "…", "size": 2509594},
     "windows-x64": {…}, "linux-x64": {…}, "linux-x64-appimage": {…},
     "linux-x64-deb": {…}, "linux-x64-rpm": {…},
     "android-arm64": {…}, "android-armv7": {…}, "android-x86_64": {…}
@@ -481,7 +481,7 @@ it. How it installs depends on how it was installed:
 
 | Install | Asset | Update |
 |---|---|---|
-| Windows setup (uninstaller next to the program) | `windows-x64-setup` | runs the setup with `/S /UPDATE`; the setup stops PairDesk (`--quit`), replaces it and starts it with `--background --updated` |
+| Windows setup (uninstaller next to the program) | `windows-x64-setup` | runs the setup with `/S /UPDATE`; the setup stops PocketDesk (`--quit`), replaces it and starts it with `--background --updated` |
 | Program file (Windows, Linux) | `windows-x64`, `linux-x64` | downloads next to the program, renames the running file to `.<name>.old`, moves the new one in and starts it with `--background --updated` (plus the old `--port`, `--bind`, `--no-tray`); it takes over the port |
 | AppImage | `linux-x64-appimage` | the same, on the AppImage file |
 | .deb / .rpm | – | the settings page links to the release |
@@ -495,17 +495,17 @@ Leftover `.old` files and downloaded setups are deleted at the next start.
 Optional, turned on from the settings page ("Sign-in screen and admin
 prompts"); Windows asks for administrator permission. See `agent/src/winsys`.
 
-- `pairdesk-agent --install-service` (elevated) copies the program to
-  `%ProgramFiles%\PairDesk` and registers the `PairDesk` service (LocalSystem,
-  automatic start, restarted on failure). `%ProgramData%\PairDesk` is limited
+- `pocketdesk --install-service` (elevated) copies the program to
+  `%ProgramFiles%\PocketDesk` and registers the `PocketDesk` service (LocalSystem,
+  automatic start, restarted on failure). `%ProgramData%\PocketDesk` is limited
   to SYSTEM and administrators. `--uninstall-service` removes both.
 - The service keeps `--session-helper` running as SYSTEM in the session at
   the screen (all its children end with the service through a job object),
   copies the signed-in user's `identity-*.der`, `paired-phones.json` and
-  `settings.json` to `%ProgramData%\PairDesk\system`, and updates itself
+  `settings.json` to `%ProgramData%\PocketDesk\system`, and updates itself
   from the signed manifest (asset `windows-x64`).
 - The helper listens on 127.0.0.1 (random port) with a random token, written
-  to `%ProgramData%\PairDesk\bridge\session-<n>.json`, readable by SYSTEM,
+  to `%ProgramData%\PocketDesk\bridge\session-<n>.json`, readable by SYSTEM,
   administrators and that session's user only. The agent connects when the
   input desktop isn't reachable (lock screen, sign-in, UAC) and sends input
   and asks for screen pictures through it. Messages: `u32 json length | JSON |
@@ -514,4 +514,4 @@ prompts"); Windows asks for administrator permission. See `agent/src/winsys`.
 - While nobody is signed in, the helper runs `--system-mode`: the phone
   server with the copied pairing (same identity, so paired phones connect as
   usual), input and capture following the input desktop. It is stopped as
-  soon as someone signs in; their PairDesk waits up to 30 s for the port.
+  soon as someone signs in; their PocketDesk waits up to 30 s for the port.

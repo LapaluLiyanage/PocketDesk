@@ -54,7 +54,7 @@ class AudioController extends ChangeNotifier {
   bool get busy => _busy;
   String? get error => _error;
 
-  /// The computer can do sound (PairDesk 0.10 or newer).
+  /// The computer can do sound (PocketDesk 0.10 or newer).
   bool get available => conn.features.contains('audio');
   bool get allowed => conn.allowed.audio;
   bool get micAllowed => conn.allowed.mic;
@@ -158,7 +158,7 @@ class AudioController extends ChangeNotifier {
       return false;
     });
     if (!ok) {
-      _error ??= 'PairDesk needs the microphone to talk to the computer. Allow it in Android settings.';
+      _error ??= 'PocketDesk needs the microphone to talk to the computer. Allow it in Android settings.';
       _talking = false;
       _handsFree = false;
       await backend.setCallMode(false);

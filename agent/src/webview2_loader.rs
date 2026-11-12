@@ -3,7 +3,7 @@
 //!
 //! The WebView2 bindings that wry uses import two functions from
 //! `WebView2Loader.dll`, a separate closed-source file that would have to
-//! ship next to the .exe; without it Windows wouldn't even start PairDesk.
+//! ship next to the .exe; without it Windows wouldn't even start PocketDesk.
 //! Its job is small: find the WebView2 runtime that Windows keeps up to
 //! date, and ask it to make a browser environment. This does the same,
 //! like the open-source `webview` library's built-in loader.

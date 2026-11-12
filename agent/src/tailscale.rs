@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! What PairDesk knows about Tailscale on this computer.
+//! What PocketDesk knows about Tailscale on this computer.
 //!
-//! PairDesk doesn't change Tailscale; it only reads `tailscale status
+//! PocketDesk doesn't change Tailscale; it only reads `tailscale status
 //! --json` (when the command exists) to show the status on the settings
 //! page and to tell phones the computer's Tailscale name.
 

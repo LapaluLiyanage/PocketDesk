@@ -88,7 +88,7 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
     _audio.addListener(_onAudioChanged);
   }
 
-  // Sound stops while PairDesk isn't on screen, and picks up again after.
+  // Sound stops while PocketDesk isn't on screen, and picks up again after.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -111,7 +111,7 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
     );
   }
 
-  /// "Share → PairDesk" from another app: files go to the computer, text
+  /// "Share → PocketDesk" from another app: files go to the computer, text
   /// to its clipboard.
   void _takeShared() {
     if (!mounted || _conn.status != ConnectionStatus.connected) return;

@@ -33,7 +33,7 @@ Gtk.StyleContext.add_provider_for_display(
 
 
 def on_activate(app):
-    win = Gtk.ApplicationWindow(application=app, title="PairDesk test")
+    win = Gtk.ApplicationWindow(application=app, title="PocketDesk test")
     win.add_css_class("red")
     win.set_decorated(False)
 
@@ -91,6 +91,6 @@ def on_activate(app):
     write("ready")
 
 
-app = Gtk.Application(application_id="me.madhushan.pairdesk.WaylandTest")
+app = Gtk.Application(application_id="me.lapalu.pocketdesk.WaylandTest")
 app.connect("activate", on_activate)
 app.run([])

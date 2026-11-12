@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Reaching a computer through a PairDesk relay, when it can't be reached
+// Reaching a computer through a PocketDesk relay, when it can't be reached
 // directly (another network, no Tailscale).
 //
 // The phone asks the relay for the computer by its relay id; once the
@@ -106,7 +106,7 @@ Future<int> openRelayTunnel(RelayRoute route, {required Duration timeout}) async
   if (line != 'OK') {
     upstream.destroy();
     throw RelayRefused(switch (line) {
-      'ERR offline' => 'The computer isn\'t connected to the relay. Is PairDesk running on it?',
+      'ERR offline' => 'The computer isn\'t connected to the relay. Is PocketDesk running on it?',
       'ERR no answer' => 'The computer didn\'t answer through the relay.',
       _ => 'The relay said: $line',
     });

@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  /// Something was shared with PairDesk while no computer is open: with
+  /// Something was shared with PocketDesk while no computer is open: with
   /// one computer, go straight to it (the control screen sends it).
   void _onShared() {
     if (!mounted) return;
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final clip = (await Clipboard.getData(Clipboard.kTextPlain))?.text?.trim() ?? '';
     if (!mounted) return;
     final controller = TextEditingController(
-      text: clip.startsWith('pairdesk://') || clip.startsWith('https://pairdesk.') ? clip : '',
+      text: clip.startsWith('pocketdesk://') || clip.startsWith('https://pocketdesk.') ? clip : '',
     );
     final link = await showDialog<String>(
       context: context,
@@ -112,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('A pairing or "Get help" link from PairDesk on a computer.'),
+            const Text('A pairing or "Get help" link from PocketDesk on a computer.'),
             const SizedBox(height: 12),
             TextField(
               controller: controller,
               autofocus: controller.text.isEmpty,
               maxLines: 3,
               minLines: 1,
-              decoration: const InputDecoration(hintText: 'https://pairdesk.madhushan.me/p#…'),
+              decoration: const InputDecoration(hintText: 'https://pocketdesk.lapalu.me/p#…'),
             ),
           ],
         ),
@@ -251,18 +251,18 @@ class _HomeScreenState extends State<HomeScreen> {
         'Can\'t reach the computer',
         'Check that:\n'
             '• the computer is on and not asleep\n'
-            '• PairDesk is running on it (look for the tray icon)\n'
+            '• PocketDesk is running on it (look for the tray icon)\n'
             '$network',
       ),
       FailureKind.wrongComputer => (
         'Different computer',
-        'Another device answered at this computer\'s address, so PairDesk didn\'t connect. '
+        'Another device answered at this computer\'s address, so PocketDesk didn\'t connect. '
             'Make sure the computer is on this Wi-Fi, or that Tailscale is on.',
       ),
       FailureKind.notPaired => (
         'Pair again',
         'This computer no longer recognises this phone. It may have been removed in '
-            'PairDesk settings on the computer. Remove it here and scan a new code.',
+            'PocketDesk settings on the computer. Remove it here and scan a new code.',
       ),
       FailureKind.badToken => (
         'Code expired',
@@ -303,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('Remove ${laptop.name}?'),
         content: const Text(
           'This phone will forget the computer. To use it again, scan a new pairing code. '
-          'To also remove this phone from the computer, use PairDesk settings there.',
+          'To also remove this phone from the computer, use PocketDesk settings there.',
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
@@ -339,7 +339,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (name != null && name.isNotEmpty) await _model.rename(laptop, name);
   }
 
-  /// Lets the owner type an address PairDesk hasn't seen, so a computer
+  /// Lets the owner type an address PocketDesk hasn't seen, so a computer
   /// paired before Tailscale was set up isn't a dead end.
   Future<void> _addAddress(Laptop laptop) async {
     final controller = TextEditingController();
@@ -382,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     if (!ok) {
       await _showMessage(
-        'Not an address PairDesk can use',
+        'Not an address PocketDesk can use',
         'Type an IP address (like 192.168.1.5 or 100.101.102.103) or a name '
             '(like pc.tail1234.ts.net or home.example.org), and ":port" after it if '
             'the port is not the usual one.',
@@ -402,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final installer = widget.installer;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('PairDesk'),
+            title: const Text('PocketDesk'),
             actions: [
               IconButton(
                 tooltip: 'Paste a link',
@@ -500,10 +500,10 @@ class _UpdateCardState extends State<_UpdateCard> {
       final go = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Let PairDesk install updates'),
+          title: const Text('Let PocketDesk install updates'),
           content: const Text(
             'Android asks for this once. On the next screen turn on "Allow from this source" '
-            'for PairDesk, then come back and press Update.',
+            'for PocketDesk, then come back and press Update.',
           ),
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
@@ -523,16 +523,16 @@ class _UpdateCardState extends State<_UpdateCard> {
     final installer = widget.installer;
     final theme = Theme.of(context);
     final (title, detail) = switch (installer.stage) {
-      UpdateStage.downloading => ('Downloading PairDesk ${update.version}', null),
+      UpdateStage.downloading => ('Downloading PocketDesk ${update.version}', null),
       UpdateStage.installing => ('Getting it ready\u2026', null),
       UpdateStage.waiting => (
         'Finish in Android',
-        'Android is asking you to confirm. PairDesk restarts once it is installed.',
+        'Android is asking you to confirm. PocketDesk restarts once it is installed.',
       ),
       UpdateStage.failed => ('Update failed', installer.error),
       UpdateStage.idle => (
-        'PairDesk ${update.version} is available',
-        'Press Update: PairDesk downloads it and Android installs it over this version.',
+        'PocketDesk ${update.version} is available',
+        'Press Update: PocketDesk downloads it and Android installs it over this version.',
       ),
     };
     return Card(
@@ -690,7 +690,7 @@ class _EmptyState extends StatelessWidget {
                 style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
               ),
               const SizedBox(height: 16),
-              step('1', 'Install PairDesk on your computer and open it.'),
+              step('1', 'Install PocketDesk on your computer and open it.'),
               step('2', 'It shows a QR code. Tap below and scan it.'),
               const SizedBox(height: 24),
               SizedBox(

@@ -86,7 +86,7 @@ export function Touchpad() {
       <div data-pop-item className="absolute top-1/2 left-1/2 w-[46%] max-w-[230px] -translate-x-1/2 -translate-y-1/2 rotate-[4deg]">
         <Phone>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/screenshots/3_buttons.png" alt="PairDesk's shortcut buttons screen" width={540} height={1170} loading="lazy" className="h-full w-full object-cover" />
+          <img src="/screenshots/3_buttons.png" alt="PocketDesk's shortcut buttons screen" width={540} height={1170} loading="lazy" className="h-full w-full object-cover" />
         </Phone>
       </div>
       <div data-pop-item className="absolute top-[10%] left-[2%] flex items-center gap-2 sm:left-[6%]">
@@ -178,17 +178,17 @@ export function Files() {
     <Feature
       id="files"
       title="Files, clipboard and sound, both ways"
-      body="Share a photo to PairDesk and it lands in the computer's Downloads. Copy on one, paste on the other. Hear what the computer plays, and talk through its speakers."
+      body="Share a photo to PocketDesk and it lands in the computer's Downloads. Copy on one, paste on the other. Hear what the computer plays, and talk through its speakers."
       points={[
         "Send files from any app's share menu",
-        "Drop a file on PairDesk on the computer to send it to the phone",
+        "Drop a file on PocketDesk on the computer to send it to the phone",
         "Talk and listen at the same time, with echo removed",
       ]}
     >
       <div data-pop-item className="absolute top-1/2 left-[2%] w-[40%] max-w-[210px] -translate-y-1/2 -rotate-[5deg]">
         <Phone>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/screenshots/5_clipboard_files.png" alt="PairDesk's clipboard and files sheet" width={540} height={1170} loading="lazy" className="h-full w-full object-cover" />
+          <img src="/screenshots/5_clipboard_files.png" alt="PocketDesk's clipboard and files sheet" width={540} height={1170} loading="lazy" className="h-full w-full object-cover" />
         </Phone>
       </div>
 
@@ -199,7 +199,7 @@ export function Files() {
             <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" fill="currentColor" opacity=".9" />
           </svg>
           <span className="leading-tight">
-            <b className="block text-[0.95rem] font-semibold">PairDesk</b>
+            <b className="block text-[0.95rem] font-semibold">PocketDesk</b>
             <span className="text-[0.8rem] text-slate">in Downloads, on the computer</span>
           </span>
         </div>

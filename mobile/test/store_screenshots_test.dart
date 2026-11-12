@@ -2,7 +2,7 @@
 // Store screenshots (F-Droid, the website), rendered from the real screens
 // with real fonts. Skipped unless asked for:
 //
-//   PAIRDESK_SCREENSHOTS=../fastlane/metadata/android/en-US/images/phoneScreenshots \
+//   POCKETDESK_SCREENSHOTS=../fastlane/metadata/android/en-US/images/phoneScreenshots \
 //     flutter test test/store_screenshots_test.dart
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -11,23 +11,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/app_model.dart';
-import 'package:pairdesk/files/native_files.dart';
-import 'package:pairdesk/files/share_inbox.dart';
-import 'package:pairdesk/files/transfers.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/laptop.dart';
-import 'package:pairdesk/screens/control_screen.dart';
-import 'package:pairdesk/screens/home_screen.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/app_model.dart';
+import 'package:pocketdesk/files/native_files.dart';
+import 'package:pocketdesk/files/share_inbox.dart';
+import 'package:pocketdesk/files/transfers.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/laptop.dart';
+import 'package:pocketdesk/screens/control_screen.dart';
+import 'package:pocketdesk/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final outDir = Platform.environment['PAIRDESK_SCREENSHOTS'];
+final outDir = Platform.environment['POCKETDESK_SCREENSHOTS'];
 
 class ShowcaseConnection extends AgentConnection {
   ShowcaseConnection({required super.tempDir})
     : super(
-        saveFile: (temp, name) async => SavedFile(where: 'Download/PairDesk/$name', uri: 'content://x'),
+        saveFile: (temp, name) async => SavedFile(where: 'Download/PocketDesk/$name', uri: 'content://x'),
       );
 
   @override
@@ -93,7 +93,7 @@ void main() {
   });
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-    tmp = Directory.systemTemp.createTempSync('pairdesk-shots');
+    tmp = Directory.systemTemp.createTempSync('pocketdesk-shots');
   });
   tearDown(() => tmp.deleteSync(recursive: true));
 

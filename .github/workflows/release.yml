@@ -53,8 +53,8 @@ jobs:
           if [ "${GITHUB_REF_TYPE}" = tag ]; then
             [ "${GITHUB_REF_NAME}" = "v$cargo" ] || { echo "::error::tag ${GITHUB_REF_NAME} isn't v$cargo"; exit 1; }
           fi
-          grep -q "<release version=\"$cargo\"" packaging/linux/me.madhushan.pairdesk.metainfo.xml ||
-            { echo "::error::add a <release version=\"$cargo\"> to packaging/linux/me.madhushan.pairdesk.metainfo.xml"; exit 1; }
+          grep -q "<release version=\"$cargo\"" packaging/linux/me.lapalu.pocketdesk.metainfo.xml ||
+            { echo "::error::add a <release version=\"$cargo\"> to packaging/linux/me.lapalu.pocketdesk.metainfo.xml"; exit 1; }
           echo "version=$cargo" >> "$GITHUB_OUTPUT"
 
   windows:
@@ -76,7 +76,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p out/bin
-          cp agent/target/release/pairdesk-agent.exe agent/target/release/pairdesk-startup.exe out/bin/
+          cp agent/target/release/pocketdesk.exe agent/target/release/pocketdesk-startup.exe out/bin/
       # Free code signing for open-source projects; skipped until SignPath is set up.
       - if: env.HAS_SIGNPATH == 'true'
         id: unsigned
@@ -98,10 +98,10 @@ jobs:
       - name: Store package (MSIX)
         shell: pwsh
         run: |
-          $id = if ("${{ vars.MSIX_IDENTITY_NAME }}") { "${{ vars.MSIX_IDENTITY_NAME }}" } else { "SandunMadhushan.PairDesk" }
-          $pub = if ("${{ vars.MSIX_PUBLISHER }}") { "${{ vars.MSIX_PUBLISHER }}" } else { "CN=Sandun Madhushan" }
-          $name = if ("${{ vars.MSIX_PUBLISHER_NAME }}") { "${{ vars.MSIX_PUBLISHER_NAME }}" } else { "Sandun Madhushan" }
-          packaging/windows/build-msix.ps1 -Version $env:VERSION -Agent out/bin -Out "out/PairDesk-$env:VERSION.msix" `
+          $id = if ("${{ vars.MSIX_IDENTITY_NAME }}") { "${{ vars.MSIX_IDENTITY_NAME }}" } else { "LapaluLiyanage.PocketDesk" }
+          $pub = if ("${{ vars.MSIX_PUBLISHER }}") { "${{ vars.MSIX_PUBLISHER }}" } else { "CN=Lapalu Liyanage" }
+          $name = if ("${{ vars.MSIX_PUBLISHER_NAME }}") { "${{ vars.MSIX_PUBLISHER_NAME }}" } else { "Lapalu Liyanage" }
+          packaging/windows/build-msix.ps1 -Version $env:VERSION -Agent out/bin -Out "out/PocketDesk-$env:VERSION.msix" `
             -IdentityName $id -Publisher $pub -PublisherName $name
       - uses: actions/upload-artifact@v5
         with:
@@ -132,15 +132,15 @@ jobs:
         working-directory: agent
       - run: |
           mkdir -p out
-          cp agent/target/x86_64-unknown-linux-gnu/release/pairdesk-agent out/pairdesk-agent-$VERSION-linux-x64
-          packaging/linux/build-packages.sh "$VERSION" out/pairdesk-agent-$VERSION-linux-x64 out
+          cp agent/target/x86_64-unknown-linux-gnu/release/pocketdesk out/pocketdesk-$VERSION-linux-x64
+          packaging/linux/build-packages.sh "$VERSION" out/pocketdesk-$VERSION-linux-x64 out
       # The relay, for whoever hosts one (docs/RELAY.md): static, any Linux.
       - run: |
           rustup target add x86_64-unknown-linux-musl aarch64-unknown-linux-musl
           cargo zigbuild --release --locked --target x86_64-unknown-linux-musl
           cargo zigbuild --release --locked --target aarch64-unknown-linux-musl
-          cp target/x86_64-unknown-linux-musl/release/pairdesk-relay ../out/pairdesk-relay-linux-x64
-          cp target/aarch64-unknown-linux-musl/release/pairdesk-relay ../out/pairdesk-relay-linux-arm64
+          cp target/x86_64-unknown-linux-musl/release/pocketdesk-relay ../out/pocketdesk-relay-linux-x64
+          cp target/aarch64-unknown-linux-musl/release/pocketdesk-relay ../out/pocketdesk-relay-linux-arm64
         working-directory: relay
       - uses: actions/upload-artifact@v5
         with:
@@ -175,24 +175,24 @@ jobs:
           fi
           echo "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/release.jks"
           {
-            echo "PAIRDESK_KEYSTORE=$RUNNER_TEMP/release.jks"
-            echo "PAIRDESK_KEYSTORE_PASSWORD=$PASSWORD"
-            echo "PAIRDESK_KEY_ALIAS=pairdesk"
-            echo "PAIRDESK_KEY_PASSWORD=$PASSWORD"
+            echo "POCKETDESK_KEYSTORE=$RUNNER_TEMP/release.jks"
+            echo "POCKETDESK_KEYSTORE_PASSWORD=$PASSWORD"
+            echo "POCKETDESK_KEY_ALIAS=pocketdesk"
+            echo "POCKETDESK_KEY_PASSWORD=$PASSWORD"
           } >> "$GITHUB_ENV"
       - run: flutter pub get
         working-directory: mobile
       - run: >
           flutter build apk --release --split-per-abi
           --target-platform android-arm,android-arm64,android-x64
-          --dart-define=PAIRDESK_UPDATES=github
+          --dart-define=POCKETDESK_UPDATES=github
         working-directory: mobile
       - run: |
           mkdir -p out
           d=mobile/build/app/outputs/flutter-apk
-          cp $d/app-arm64-v8a-release.apk out/pairdesk-$VERSION-android-arm64.apk
-          cp $d/app-armeabi-v7a-release.apk out/pairdesk-$VERSION-android-armv7.apk
-          cp $d/app-x86_64-release.apk out/pairdesk-$VERSION-android-x86_64.apk
+          cp $d/app-arm64-v8a-release.apk out/pocketdesk-$VERSION-android-arm64.apk
+          cp $d/app-armeabi-v7a-release.apk out/pocketdesk-$VERSION-android-armv7.apk
+          cp $d/app-x86_64-release.apk out/pocketdesk-$VERSION-android-x86_64.apk
           rm -f "$RUNNER_TEMP/release.jks"
       - uses: actions/upload-artifact@v5
         with:
@@ -217,12 +217,12 @@ jobs:
       - name: Windows setup
         run: |
           mkdir -p dist
-          cp art/windows/bin/pairdesk-agent.exe dist/pairdesk-agent-$VERSION-windows-x64.exe
+          cp art/windows/bin/pocketdesk.exe dist/pocketdesk-$VERSION-windows-x64.exe
           cd packaging/windows
-          makensis -V2 -DVERSION=$VERSION -DAGENT=../../art/windows/bin/pairdesk-agent.exe \
-            -DOUTFILE=../../dist/PairDesk-Setup-$VERSION-x64.exe installer.nsi
+          makensis -V2 -DVERSION=$VERSION -DAGENT=../../art/windows/bin/pocketdesk.exe \
+            -DOUTFILE=../../dist/PocketDesk-Setup-$VERSION-x64.exe installer.nsi
       - name: Test the setup under Wine (install, self-update, uninstall)
-        run: SETUP=dist/PairDesk-Setup-$VERSION-x64.exe PATH=$PATH:/usr/lib/wine tools/e2e-windows-setup.sh
+        run: SETUP=dist/PocketDesk-Setup-$VERSION-x64.exe PATH=$PATH:/usr/lib/wine tools/e2e-windows-setup.sh
       - name: Collect
         run: |
           cp art/linux/* art/android/* dist/
@@ -238,15 +238,15 @@ jobs:
           v = os.environ["VERSION"]; repo = os.environ["REPO"]
           base = f"https://github.com/{repo}/releases/download/v{v}/"
           files = {
-              "windows-x64-setup": f"PairDesk-Setup-{v}-x64.exe",
-              "windows-x64": f"pairdesk-agent-{v}-windows-x64.exe",
-              "linux-x64": f"pairdesk-agent-{v}-linux-x64",
-              "linux-x64-appimage": f"PairDesk-{v}-x86_64.AppImage",
-              "linux-x64-deb": f"pairdesk_{v}_amd64.deb",
-              "linux-x64-rpm": f"pairdesk-{v}-1.x86_64.rpm",
-              "android-arm64": f"pairdesk-{v}-android-arm64.apk",
-              "android-armv7": f"pairdesk-{v}-android-armv7.apk",
-              "android-x86_64": f"pairdesk-{v}-android-x86_64.apk",
+              "windows-x64-setup": f"PocketDesk-Setup-{v}-x64.exe",
+              "windows-x64": f"pocketdesk-{v}-windows-x64.exe",
+              "linux-x64": f"pocketdesk-{v}-linux-x64",
+              "linux-x64-appimage": f"PocketDesk-{v}-x86_64.AppImage",
+              "linux-x64-deb": f"pocketdesk_{v}_amd64.deb",
+              "linux-x64-rpm": f"pocketdesk-{v}-1.x86_64.rpm",
+              "android-arm64": f"pocketdesk-{v}-android-arm64.apk",
+              "android-armv7": f"pocketdesk-{v}-android-armv7.apk",
+              "android-x86_64": f"pocketdesk-{v}-android-x86_64.apk",
           }
           assets = {}
           for key, name in files.items():
@@ -276,7 +276,7 @@ jobs:
           fi
           umask 077
           printf '%s\n' "$KEY" > "$RUNNER_TEMP/key.pem"
-          # The key must match the public key built into PairDesk.
+          # The key must match the public key built into PocketDesk.
           pub=$(openssl pkey -in "$RUNNER_TEMP/key.pem" -pubout -outform DER | tail -c 32 | base64)
           grep -q "\"$pub\"" agent/src/update.rs ||
             { echo "::error::UPDATE_SIGNING_KEY doesn't match PUBLIC_KEY in agent/src/update.rs"; exit 1; }
@@ -289,7 +289,7 @@ jobs:
           dl="https://github.com/$REPO/releases/download/v$VERSION"
           notes=docs/releases/v$VERSION.md
           if [ -f "$notes" ]; then cp "$notes" notes.md; else
-            printf 'PairDesk %s.\n\nSee the [download guide](https://pairdesk.madhushan.me/#download).\n' "$VERSION" > notes.md
+            printf 'PocketDesk %s.\n\nSee the [download guide](https://pocketdesk.lapalu.me/#download).\n' "$VERSION" > notes.md
           fi
           cat >> notes.md <<EOF
 
@@ -297,12 +297,12 @@ jobs:
 
           | | |
           |---|---|
-          | **Windows** | [PairDesk-Setup-$VERSION-x64.exe]($dl/PairDesk-Setup-$VERSION-x64.exe) (recommended), or the [program file]($dl/pairdesk-agent-$VERSION-windows-x64.exe) |
-          | **Linux** | [.deb]($dl/pairdesk_${VERSION}_amd64.deb) (Ubuntu, Debian), [.rpm]($dl/pairdesk-$VERSION-1.x86_64.rpm) (Fedora, openSUSE), [AppImage]($dl/PairDesk-$VERSION-x86_64.AppImage) (any distribution) |
-          | **Android** | [arm64]($dl/pairdesk-$VERSION-android-arm64.apk) (most phones), [armv7]($dl/pairdesk-$VERSION-android-armv7.apk) (older phones) |
-          | **Relay** (for hosting your own, see [RELAY.md](https://github.com/$REPO/blob/main/docs/RELAY.md)) | [Linux x64]($dl/pairdesk-relay-linux-x64), [Linux arm64]($dl/pairdesk-relay-linux-arm64) |
+          | **Windows** | [PocketDesk-Setup-$VERSION-x64.exe]($dl/PocketDesk-Setup-$VERSION-x64.exe) (recommended), or the [program file]($dl/pocketdesk-$VERSION-windows-x64.exe) |
+          | **Linux** | [.deb]($dl/pocketdesk_${VERSION}_amd64.deb) (Ubuntu, Debian), [.rpm]($dl/pocketdesk-$VERSION-1.x86_64.rpm) (Fedora, openSUSE), [AppImage]($dl/PocketDesk-$VERSION-x86_64.AppImage) (any distribution) |
+          | **Android** | [arm64]($dl/pocketdesk-$VERSION-android-arm64.apk) (most phones), [armv7]($dl/pocketdesk-$VERSION-android-armv7.apk) (older phones) |
+          | **Relay** (for hosting your own, see [RELAY.md](https://github.com/$REPO/blob/main/docs/RELAY.md)) | [Linux x64]($dl/pocketdesk-relay-linux-x64), [Linux arm64]($dl/pocketdesk-relay-linux-arm64) |
 
-          Check downloads against \`SHA256SUMS.txt\`. PairDesk checks its own updates against \`latest.json.sig\`.
+          Check downloads against \`SHA256SUMS.txt\`. PocketDesk checks its own updates against \`latest.json.sig\`.
           EOF
       - if: env.DRY_RUN == 'true'
         uses: actions/upload-artifact@v5
@@ -323,4 +323,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "v$VERSION" dist/* --target "$GITHUB_SHA" \
-            --title "PairDesk $VERSION" --notes-file notes.md --latest
+            --title "PocketDesk $VERSION" --notes-file notes.md --latest

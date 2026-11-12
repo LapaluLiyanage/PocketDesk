@@ -2,4 +2,4 @@
 • The app now installs its own updates: press Update and Android does the rest
 • Settings → About → Check for updates asks GitHub right away
 • New in a computer's menu: "Add an address", to type one yourself
-• On Windows, Remote access can allow PairDesk through the firewall on every kind of network
+• On Windows, Remote access can allow PocketDesk through the firewall on every kind of network

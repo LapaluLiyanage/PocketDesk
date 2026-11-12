@@ -4,12 +4,12 @@ import Header from "@/components/Header";
 import LinkLanding from "@/components/LinkLanding";
 import { page } from "@/lib/seo";
 
-// Shown only when a pairing link didn't open PairDesk by itself. The
+// Shown only when a pairing link didn't open PocketDesk by itself. The
 // pairing details are after the # and never leave the browser.
 export const metadata: Metadata = {
   ...page({
-    title: "Open this link in PairDesk",
-    description: "Someone sent you a PairDesk link. Tap it on your Android phone with PairDesk installed to connect.",
+    title: "Open this link in PocketDesk",
+    description: "Someone sent you a PocketDesk link. Tap it on your Android phone with PocketDesk installed to connect.",
     path: "/p/",
     standalone: true,
   }),

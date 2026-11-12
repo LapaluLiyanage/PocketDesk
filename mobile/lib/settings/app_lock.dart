@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Optional app lock: asks for the phone's fingerprint, face or screen lock
-// when PairDesk opens, and again after it was in the background.
+// when PocketDesk opens, and again after it was in the background.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,7 +95,7 @@ class _AppLockGateState extends State<AppLockGate> with WidgetsBindingObserver {
     if (_authenticating || !_locked) return;
     _authenticating = true;
     try {
-      final ok = await widget.authenticate('Unlock PairDesk');
+      final ok = await widget.authenticate('Unlock PocketDesk');
       if (ok && mounted) setState(() => _locked = false);
     } finally {
       _authenticating = false;
@@ -136,7 +136,7 @@ class _LockScreen extends StatelessWidget {
               children: [
                 Icon(Icons.lock_outline, size: 56, color: theme.colorScheme.primary),
                 const SizedBox(height: 16),
-                Text('PairDesk is locked', style: theme.textTheme.headlineSmall),
+                Text('PocketDesk is locked', style: theme.textTheme.headlineSmall),
                 const SizedBox(height: 8),
                 Text('Unlock with your fingerprint, face or screen lock.', style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 24),

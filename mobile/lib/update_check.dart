@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // "A new version is available" for the APK from GitHub Releases.
 //
-// Only in builds made with --dart-define=PAIRDESK_UPDATES=github (the
+// Only in builds made with --dart-define=POCKETDESK_UPDATES=github (the
 // release workflow's APKs). F-Droid builds leave it off: F-Droid updates
 // the app itself.
 //
@@ -18,8 +18,8 @@ import 'package:cryptography/cryptography.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const updatesFrom = String.fromEnvironment('PAIRDESK_UPDATES');
-const manifestUrl = 'https://github.com/sandunMadhushan/pairdesk/releases/latest/download/latest.json';
+const updatesFrom = String.fromEnvironment('POCKETDESK_UPDATES');
+const manifestUrl = 'https://github.com/LapaluLiyanage/pocketdesk/releases/latest/download/latest.json';
 
 /// The release workflow's public key (raw Ed25519, base64); the same as the
 /// computer's (agent/src/update.rs).
@@ -207,7 +207,7 @@ class UpdateChecker extends ChangeNotifier {
         publicKey: SimplePublicKey(base64.decode(publicKey), type: KeyPairType.ed25519),
       ),
     );
-    if (!ok) throw const FormatException('the update information is not signed by PairDesk');
+    if (!ok) throw const FormatException('the update information is not signed by PocketDesk');
     final m = jsonDecode(utf8.decode(body)) as Map<String, dynamic>;
     final version = m['version'] as String;
     if (!isOlderVersion(currentVersion, version)) return null;
@@ -224,7 +224,7 @@ class UpdateChecker extends ChangeNotifier {
       size: asset['size'] as int? ?? 0,
       notes: notes != null && notes.scheme == 'https'
           ? notes
-          : Uri.parse('https://github.com/sandunMadhushan/pairdesk/releases/latest'),
+          : Uri.parse('https://github.com/LapaluLiyanage/pocketdesk/releases/latest'),
     );
   }
 

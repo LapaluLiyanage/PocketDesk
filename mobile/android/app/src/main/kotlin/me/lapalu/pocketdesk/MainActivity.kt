@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package me.madhushan.pairdesk
+package me.lapalu.pocketdesk
 
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
@@ -24,10 +24,10 @@ import java.util.concurrent.Executors
 
 // FragmentActivity is needed for the fingerprint / screen-lock prompt (app lock).
 //
-// The "pairdesk/files" channel does what Dart can't on Android:
+// The "pocketdesk/files" channel does what Dart can't on Android:
 //  - pickFiles: the system file picker; picked files are copied to the cache
-//  - takeShared: files and text other apps shared with PairDesk
-//  - saveToDownloads: moves a received file to Download/PairDesk
+//  - takeShared: files and text other apps shared with PocketDesk
+//  - saveToDownloads: moves a received file to Download/PocketDesk
 //  - openFile: opens a received file in the app that handles it
 class MainActivity : FlutterFragmentActivity() {
     private var channel: MethodChannel? = null
@@ -98,7 +98,7 @@ class MainActivity : FlutterFragmentActivity() {
         VideoChannel(flutterEngine)
         audio = AudioChannel(flutterEngine, this)
         updates = UpdateChannel(flutterEngine, this)
-        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "pairdesk/files").apply {
+        channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "pocketdesk/files").apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
                     "pickFiles" -> {
@@ -162,7 +162,7 @@ class MainActivity : FlutterFragmentActivity() {
         if (intent == null) return false
         if (intent.action == Intent.ACTION_VIEW) {
             val link = intent.dataString ?: return false
-            if (!link.startsWith("pairdesk://pair") && !link.startsWith("https://pairdesk.madhushan.me/p")) return false
+            if (!link.startsWith("pocketdesk://pair") && !link.startsWith("https://pocketdesk.lapalu.me/p")) return false
             sharedLink = link
             setIntent(Intent(Intent.ACTION_MAIN))
             return true
@@ -211,14 +211,14 @@ class MainActivity : FlutterFragmentActivity() {
         MimeTypeMap.getSingleton().getMimeTypeFromExtension(name.substringAfterLast('.', "").lowercase())
             ?: "application/octet-stream"
 
-    /// Android 10+: MediaStore, into Download/PairDesk (no permission
-    /// needed). Older: the app's own Download/PairDesk folder.
+    /// Android 10+: MediaStore, into Download/PocketDesk (no permission
+    /// needed). Older: the app's own Download/PocketDesk folder.
     private fun saveToDownloads(temp: File, name: String): Map<String, String> {
         if (Build.VERSION.SDK_INT >= 29) {
             val values = ContentValues().apply {
                 put(MediaStore.Downloads.DISPLAY_NAME, name)
                 put(MediaStore.Downloads.MIME_TYPE, mimeOf(name))
-                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/PairDesk")
+                put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/PocketDesk")
                 put(MediaStore.Downloads.IS_PENDING, 1)
             }
             val uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
@@ -237,9 +237,9 @@ class MainActivity : FlutterFragmentActivity() {
             contentResolver.query(uri, arrayOf(MediaStore.Downloads.DISPLAY_NAME), null, null, null)?.use { c ->
                 if (c.moveToFirst() && !c.isNull(0)) saved = c.getString(0)
             }
-            return mapOf("uri" to uri.toString(), "where" to "Download/PairDesk/$saved")
+            return mapOf("uri" to uri.toString(), "where" to "Download/PocketDesk/$saved")
         }
-        val dir = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir, "PairDesk")
+        val dir = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: filesDir, "PocketDesk")
         dir.mkdirs()
         var dest = File(dir, name)
         var n = 2

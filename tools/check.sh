@@ -63,7 +63,7 @@ if [ "$want" = all ] || [ "$want" = phone ]; then
     step "flutter analyze" flutter analyze
     step "flutter test" flutter test
     if [ "$extra" = apk ]; then
-      step "flutter build apk" env PAIRDESK_UNSIGNED=1 flutter build apk --release \
+      step "flutter build apk" env POCKETDESK_UNSIGNED=1 flutter build apk --release \
         --split-per-abi --target-platform=android-arm64
     fi
     exit "$fail"

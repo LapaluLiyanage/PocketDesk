@@ -41,7 +41,7 @@ class PlatformAudioBackend implements AudioBackend {
     });
   }
 
-  static const _channel = MethodChannel('pairdesk/audio');
+  static const _channel = MethodChannel('pocketdesk/audio');
 
   @override
   void Function(String message)? onPlayerError;

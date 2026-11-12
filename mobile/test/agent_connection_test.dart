@@ -11,12 +11,12 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart' show sha256;
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/pairing/codec.dart';
-import 'package:pairdesk/pairing/discovery.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/laptop.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/pairing/codec.dart';
+import 'package:pocketdesk/pairing/discovery.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/laptop.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
 
 const fixtures = 'test/fixtures';
 
@@ -81,7 +81,7 @@ class FakeAgent {
           case 'auth':
             final ok = await Ed25519().verify(
               [
-                ...utf8.encode('pairdesk-auth-v2'),
+                ...utf8.encode('pocketdesk-auth-v2'),
                 0,
                 ...agentFingerprint,
                 ...nonce!,
@@ -122,7 +122,7 @@ class FakeAgent {
                 'id': msg['id'],
                 'ok': ok,
                 if (!ok) 'code': 'not_allowed',
-                if (!ok) 'msg': 'This is turned off in PairDesk settings on the computer.',
+                if (!ok) 'msg': 'This is turned off in PocketDesk settings on the computer.',
               }),
             );
             return;
@@ -443,7 +443,7 @@ void main() {
       throwsA(
         isA<RequestException>()
             .having((e) => e.code, 'code', 'unsupported')
-            .having((e) => e.message, 'message', contains('Stop PairDesk'))
+            .having((e) => e.message, 'message', contains('Stop PocketDesk'))
             .having((e) => e.message, 'message', contains('next to the clock')),
       ),
     );
@@ -453,7 +453,7 @@ void main() {
     agent.version = '0.5.1';
     await conn.connect(laptop, me, phoneName: 'p');
     expect(conn.agentVersion, '0.5.1');
-    expect(conn.outdatedComputerMessage(), contains('PairDesk 0.5.1'));
+    expect(conn.outdatedComputerMessage(), contains('PocketDesk 0.5.1'));
     await conn.disconnect();
   });
 
@@ -461,8 +461,8 @@ void main() {
     final conn = AgentConnection(pingInterval: const Duration(hours: 1));
     await conn.pair(infoFor(agent), me, phoneName: 'p');
     final got = conn.notices.first;
-    agent.socket!.add(jsonEncode({'t': 'notice', 'msg': 'Approve PairDesk on the computer.'}));
-    expect(await got.timeout(const Duration(seconds: 2)), 'Approve PairDesk on the computer.');
+    agent.socket!.add(jsonEncode({'t': 'notice', 'msg': 'Approve PocketDesk on the computer.'}));
+    expect(await got.timeout(const Duration(seconds: 2)), 'Approve PocketDesk on the computer.');
     await conn.disconnect();
   });
 

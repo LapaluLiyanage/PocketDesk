@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Installing a newer PairDesk over this one.
+// Installing a newer PocketDesk over this one.
 //
 // The app downloads the APK itself (Dart side) and hands the file here.
-// Android's PackageInstaller takes it, shows its own "update PairDesk?"
+// Android's PackageInstaller takes it, shows its own "update PocketDesk?"
 // screen, and replaces the app. It only accepts an APK signed with the
 // same key as the copy already installed, so a downloaded file can't
 // turn into a different app.
 //
-// Android needs the owner's permission to install apps from PairDesk
+// Android needs the owner's permission to install apps from PocketDesk
 // (Settings → "Install unknown apps"); `canInstall` reports it and
 // `requestPermission` opens that page.
 
-package me.madhushan.pairdesk
+package me.lapalu.pocketdesk
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -27,11 +27,11 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
-private const val ACTION_INSTALLED = "me.madhushan.pairdesk.INSTALLED"
+private const val ACTION_INSTALLED = "me.lapalu.pocketdesk.INSTALLED"
 
 class UpdateChannel(engine: FlutterEngine, private val activity: Activity) {
     private val channel =
-        MethodChannel(engine.dartExecutor.binaryMessenger, "pairdesk/update").apply {
+        MethodChannel(engine.dartExecutor.binaryMessenger, "pocketdesk/update").apply {
             setMethodCallHandler { call, result ->
                 when (call.method) {
                     "canInstall" -> result.success(canInstall())
@@ -57,7 +57,7 @@ class UpdateChannel(engine: FlutterEngine, private val activity: Activity) {
             }
         }
 
-    /** Whether Android lets PairDesk install an app. Always true before Android 8. */
+    /** Whether Android lets PocketDesk install an app. Always true before Android 8. */
     private fun canInstall(): Boolean =
         Build.VERSION.SDK_INT < Build.VERSION_CODES.O || activity.packageManager.canRequestPackageInstalls()
 
@@ -84,7 +84,7 @@ class UpdateChannel(engine: FlutterEngine, private val activity: Activity) {
         }
         val id = installer.createSession(params)
         installer.openSession(id).use { session ->
-            session.openWrite("pairdesk", 0, apk.length()).use { out ->
+            session.openWrite("pocketdesk", 0, apk.length()).use { out ->
                 apk.inputStream().use { it.copyTo(out) }
                 session.fsync(out)
             }

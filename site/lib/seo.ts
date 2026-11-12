@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import type { Metadata } from "next";
 
-export const SITE = "https://pairdesk.madhushan.me";
-export const NAME = "PairDesk";
+export const SITE = "https://pocketdesk.lapalu.me";
+export const NAME = "PocketDesk";
 export const TAGLINE = "Your phone is the remote for your computer";
 export const DESCRIPTION =
   "Free, open-source remote control for Windows and Linux from your Android phone: touchpad, keyboard, screen view, file transfer and two-way sound. No account needed.";
-export const AUTHOR = { name: "Sandun Madhushan", url: "https://madhushan.me" };
+export const AUTHOR = { name: "Lapalu Liyanage", url: "https://pocketdesk.lapalu.me" };
 
 export const OG_IMAGE = {
   url: "/og.jpg",
   width: 1200,
   height: 630,
-  alt: "PairDesk: an Android phone used as the touchpad for a laptop",
+  alt: "PocketDesk: an Android phone used as the touchpad for a laptop",
 };
 
 /** Metadata for one page: its own title, description and address, with the
@@ -26,7 +26,7 @@ export function page({
   title: string;
   description: string;
   path: string;
-  /** Use the title as it is, without "| PairDesk". */
+  /** Use the title as it is, without "| PocketDesk". */
   standalone?: boolean;
 }): Metadata {
   const full = standalone ? title : `${title} | ${NAME}`;

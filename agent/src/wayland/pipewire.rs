@@ -225,7 +225,7 @@ impl Stream {
             stream: Mutex::new(std::ptr::null_mut()),
         });
         unsafe {
-            let name = CString::new("pairdesk-screen").unwrap();
+            let name = CString::new("pocketdesk-screen").unwrap();
             let lp = (api.pw_thread_loop_new)(name.as_ptr(), std::ptr::null());
             if lp.is_null() {
                 return Err("PipeWire: no loop".into());
@@ -272,7 +272,7 @@ impl Stream {
             }
             let props =
                 CString::new("media.type=Video media.category=Capture media.role=Screen").unwrap();
-            let name = CString::new("PairDesk").unwrap();
+            let name = CString::new("PocketDesk").unwrap();
             self.stream = (api.pw_stream_new)(
                 self.core,
                 name.as_ptr(),

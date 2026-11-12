@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! Linux: sound through PulseAudio's "simple" API, which PipeWire also
 //! provides (pipewire-pulse) on current desktops. The library is loaded
-//! at run time, so PairDesk still starts where it's missing.
+//! at run time, so PocketDesk still starts where it's missing.
 //!
 //! The computer's sound is recorded from the default output's monitor
 //! (`@DEFAULT_MONITOR@`); PulseAudio converts every stream to and from
@@ -141,7 +141,7 @@ impl Stream {
                 fragsize: u32::MAX,
             }
         };
-        let app = CString::new("PairDesk").expect("no NUL");
+        let app = CString::new("PocketDesk").expect("no NUL");
         let name = CString::new(what).expect("no NUL");
         let dev = device.map(|d| CString::new(d).expect("no NUL"));
         let mut err = 0;
@@ -219,7 +219,7 @@ fn spawn(
     let (tx, rx) = std::sync::mpsc::channel();
     let flag = stop.clone();
     let thread = std::thread::Builder::new()
-        .name(format!("pairdesk-{what}"))
+        .name(format!("pocketdesk-{what}"))
         .spawn(move || match open() {
             Ok(s) => {
                 let _ = tx.send(Ok(()));

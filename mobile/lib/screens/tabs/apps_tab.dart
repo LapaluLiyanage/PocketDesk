@@ -140,7 +140,7 @@ class _AppsBrowserState extends State<AppsBrowser> {
           child: all.isEmpty
               ? const _Message(
                   icon: Icons.apps_outlined,
-                  text: 'No apps found on the computer. Add shortcuts in PairDesk settings there.',
+                  text: 'No apps found on the computer. Add shortcuts in PocketDesk settings there.',
                 )
               : ListView(
                   padding: const EdgeInsets.only(bottom: 24),

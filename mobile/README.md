@@ -1,6 +1,6 @@
-# PairDesk phone app
+# PocketDesk phone app
 
-Flutter app that turns your phone into a touchpad and keyboard for the PairDesk
+Flutter app that turns your phone into a touchpad and keyboard for the PocketDesk
 desktop agent. Android now; iPhone later.
 
 ```bash
@@ -9,7 +9,7 @@ flutter run                         # phone connected over USB with USB debuggin
 flutter build apk --release --split-per-abi
 ```
 
-App ID: `me.madhushan.pairdesk` (must never change after the first public release).
+App ID: `me.lapalu.pocketdesk` (must never change after the first public release).
 
 | File | What it does |
 | --- | --- |

@@ -6,7 +6,7 @@
 //! longer, so a quick reconnect doesn't restart it). The first time, the
 //! desktop asks the owner; "Remember" makes later sessions start silently.
 //! Desktops that can't remember keep the session open for as long as
-//! PairDesk runs, so they ask only once per sign-in.
+//! PocketDesk runs, so they ask only once per sign-in.
 
 pub mod keys;
 pub mod pipewire;
@@ -156,7 +156,7 @@ impl Remote {
         self.set_status(Status::Asking);
         if token.is_none() {
             self.notify_phones(
-                "Approve PairDesk on the computer: tick \u{201c}Allow Remote Interaction\u{201d}, then press Share.",
+                "Approve PocketDesk on the computer: tick \u{201c}Allow Remote Interaction\u{201d}, then press Share.",
             );
         }
         info!(
@@ -188,7 +188,7 @@ impl Remote {
                 });
                 if !control {
                     self.notify_phones(
-                        "The computer shares its screen but doesn't allow control. On the computer, open PairDesk and choose Allow control, then tick \u{201c}Allow Remote Interaction\u{201d}.",
+                        "The computer shares its screen but doesn't allow control. On the computer, open PocketDesk and choose Allow control, then tick \u{201c}Allow Remote Interaction\u{201d}.",
                     );
                 }
                 self.watch_closed(session.clone());
@@ -198,7 +198,7 @@ impl Remote {
                 let (status, msg) = match &e {
                     StartError::Cancelled => (
                         Status::Denied,
-                        "Control wasn't allowed on the computer. On the computer, open PairDesk and choose Allow control.".to_string(),
+                        "Control wasn't allowed on the computer. On the computer, open PocketDesk and choose Allow control.".to_string(),
                     ),
                     StartError::NoPortal(_) => (
                         Status::NoPortal,
@@ -299,7 +299,7 @@ impl Remote {
     pub fn monitors(self: &Arc<Self>) -> Result<Vec<crate::screen::Monitor>, String> {
         let session = self.blocking_ensure(Duration::from_secs(60))?;
         if session.streams.is_empty() {
-            return Err("No screen was shared on the computer. On the computer, open PairDesk, choose Allow control and pick a screen.".into());
+            return Err("No screen was shared on the computer. On the computer, open PocketDesk, choose Allow control and pick a screen.".into());
         }
         Ok(session
             .streams
@@ -325,10 +325,10 @@ impl Remote {
         match self.status() {
             Status::Idle | Status::Asking => {}
             Status::Denied => {
-                return Err("Screen view wasn't allowed on the computer. On the computer, open PairDesk and choose Allow control.".into());
+                return Err("Screen view wasn't allowed on the computer. On the computer, open PocketDesk and choose Allow control.".into());
             }
             Status::Stopped => {
-                return Err("Remote control was stopped on the computer. Reconnect, or choose Allow control in PairDesk on the computer.".into());
+                return Err("Remote control was stopped on the computer. Reconnect, or choose Allow control in PocketDesk on the computer.".into());
             }
             Status::NoPortal => {
                 return Err("This desktop doesn't let apps see the screen (no remote desktop portal). Sign in with an X11 session on the computer.".into());

@@ -481,7 +481,7 @@ fn parse_desktop_entry(text: &str) -> Option<DesktopEntry> {
 }
 
 /// Turns a `.desktop` `Exec=` value into argv: handles quoting and drops
-/// the `%f`/`%u`… placeholders (PairDesk opens apps without files).
+/// the `%f`/`%u`… placeholders (PocketDesk opens apps without files).
 #[cfg_attr(windows, allow(dead_code))]
 pub fn parse_exec(exec: &str, name: &str) -> Option<Vec<String>> {
     // String-level escapes first (\\ → \, \s → space).

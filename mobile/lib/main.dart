@@ -18,7 +18,7 @@ Future<void> main() async {
   ShareInbox.instance.start();
   final updates = await _updateChecker();
   runApp(
-    PairDeskApp(
+    PocketDeskApp(
       model: model,
       updates: updates,
       installer: updates == null ? null : UpdateInstaller(cacheDir: _updateCache),
@@ -29,9 +29,9 @@ Future<void> main() async {
 
 /// Where a downloaded APK waits until Android installs it: the app's own
 /// temporary space, which Android clears by itself if the install never
-/// happens. Only PairDesk can read it.
+/// happens. Only PocketDesk can read it.
 Future<Directory> _updateCache() async {
-  final dir = Directory('${Directory.systemTemp.path}/pairdesk-updates');
+  final dir = Directory('${Directory.systemTemp.path}/pocketdesk-updates');
   if (!dir.existsSync()) await dir.create(recursive: true);
   // One update at a time: drop anything an earlier try left behind.
   for (final old in dir.listSync()) {
@@ -54,8 +54,8 @@ Future<UpdateChecker?> _updateChecker() async {
   }
 }
 
-class PairDeskApp extends StatelessWidget {
-  const PairDeskApp({super.key, required this.model, this.updates, this.installer});
+class PocketDeskApp extends StatelessWidget {
+  const PocketDeskApp({super.key, required this.model, this.updates, this.installer});
 
   final AppModel model;
   final UpdateChecker? updates;
@@ -67,7 +67,7 @@ class PairDeskApp extends StatelessWidget {
   Widget build(BuildContext context) {
     const seed = Color(0xFF2457D6);
     return MaterialApp(
-      title: 'PairDesk',
+      title: 'PocketDesk',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: seed)),
       darkTheme: ThemeData(

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! One PairDesk per computer, and upgrades that just work.
+//! One PocketDesk per computer, and upgrades that just work.
 //!
-//! When the phone port is already taken it's almost always PairDesk itself.
+//! When the phone port is already taken it's almost always PocketDesk itself.
 //! If that copy is an older release (the user just downloaded a new one),
 //! the new copy asks it to stop through its settings page and takes its
 //! place. Otherwise the running copy stays and its settings page is shown.
@@ -14,7 +14,7 @@ use std::net::{TcpStream, ToSocketAddrs};
 use std::path::Path;
 use std::time::Duration;
 
-/// The copy of PairDesk that holds the port.
+/// The copy of PocketDesk that holds the port.
 #[derive(Debug, PartialEq)]
 pub struct Running {
     /// Its settings page.
@@ -61,7 +61,7 @@ pub fn ask_to_quit(url: &str) -> Result<(), String> {
     }
 }
 
-/// Asks the running PairDesk to show itself (its window, on Windows).
+/// Asks the running PocketDesk to show itself (its window, on Windows).
 pub fn ask_to_show(url: &str) -> Result<(), String> {
     match request(url, "POST", "api/show")? {
         (200, _) => Ok(()),
@@ -75,7 +75,7 @@ fn request(url: &str, method: &str, path: &str) -> Result<(u16, String), String>
     request_with(url, method, path, "")
 }
 
-/// Asks the running PairDesk to send files to the connected phone(s).
+/// Asks the running PocketDesk to send files to the connected phone(s).
 pub fn send_paths(url: &str, paths: &[std::path::PathBuf]) -> Result<String, String> {
     let body = serde_json::json!({
         "paths": paths.iter().map(|p| p.display().to_string()).collect::<Vec<_>>(),
@@ -107,7 +107,7 @@ fn request_with(url: &str, method: &str, path: &str, body: &str) -> Result<(u16,
     let mut req = format!("{method} /{base}/{path} HTTP/1.0\r\nHost: {host}\r\n");
     if method == "POST" {
         req.push_str(&format!(
-            "X-PairDesk: 1\r\nContent-Type: application/json\r\nContent-Length: {}\r\n",
+            "X-PocketDesk: 1\r\nContent-Type: application/json\r\nContent-Length: {}\r\n",
             body.len()
         ));
     }
@@ -203,7 +203,7 @@ mod tests {
             post.starts_with("POST /s3cret/api/quit HTTP/1.0\r\n"),
             "{post}"
         );
-        assert!(post.contains("X-PairDesk: 1\r\n"), "{post}");
+        assert!(post.contains("X-PocketDesk: 1\r\n"), "{post}");
     }
 
     #[test]

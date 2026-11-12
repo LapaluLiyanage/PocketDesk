@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   publisher: AUTHOR.name,
   category: "technology",
   keywords: [
-    "PairDesk",
+    "PocketDesk",
     "phone as touchpad",
     "phone as mouse and keyboard",
     "control PC from Android",

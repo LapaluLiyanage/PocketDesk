@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import Link from "next/link";
 
-const GITHUB = "https://github.com/sandunMadhushan/pairdesk";
+const GITHUB = "https://github.com/LapaluLiyanage/pocketdesk";
 
 export default function Footer() {
   return (
@@ -16,20 +16,20 @@ export default function Footer() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/icon.svg" alt="" width={26} height={26} />
             </span>
-            PairDesk
+            PocketDesk
           </p>
           <p className="mt-4 text-white/80">Free software under the GPL-3.0-or-later licence.</p>
           <p className="mt-2 text-white/80">
             Built by{" "}
             <a
-              href="https://madhushan.me"
+              href="https://pocketdesk.lapalu.me"
               className="font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
             >
-              Sandun Madhushan
+              Lapalu Liyanage
             </a>
           </p>
           <a href="/#download" className="btn btn-white mt-7">
-            Download PairDesk
+            Download PocketDesk
           </a>
         </div>
         <nav aria-label="Project">
@@ -69,7 +69,7 @@ export default function Footer() {
         </nav>
       </div>
       <p aria-hidden="true" className="relative -mb-[0.18em] text-center text-[clamp(4rem,20vw,17rem)] leading-[0.8] font-bold tracking-[-0.05em] text-white/[0.08] select-none">
-        PairDesk
+        PocketDesk
       </p>
     </footer>
   );

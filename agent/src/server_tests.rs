@@ -125,7 +125,7 @@ async fn connect(port: u16, fp: [u8; 32]) -> Result<Client, String> {
     .with_no_client_auth();
     let tcp = TcpStream::connect(("127.0.0.1", port)).await.unwrap();
     let tls = tokio_rustls::TlsConnector::from(Arc::new(config))
-        .connect(ServerName::try_from("pairdesk.local").unwrap(), tcp)
+        .connect(ServerName::try_from("pocketdesk.local").unwrap(), tcp)
         .await
         .map_err(|e| e.to_string())?;
     let (ws, _) = tokio_tungstenite::client_async(format!("wss://127.0.0.1:{port}/"), tls)
@@ -441,7 +441,7 @@ async fn combo_reaches_the_input_thread() {
 #[tokio::test]
 async fn power_actions_follow_the_owners_permissions() {
     // Never really lock or shut down the machine running the tests.
-    unsafe { std::env::set_var("PAIRDESK_POWER_DRY_RUN", "1") };
+    unsafe { std::env::set_var("POCKETDESK_POWER_DRY_RUN", "1") };
     let agent = start_agent().await;
     agent
         .state
@@ -455,7 +455,7 @@ async fn power_actions_follow_the_owners_permissions() {
     let ack = recv(&mut ws).await;
     assert_eq!(
         ack,
-        json!({"t":"ack","id":1,"ok":false,"code":"not_allowed","msg":"This is turned off in PairDesk settings on the computer."})
+        json!({"t":"ack","id":1,"ok":false,"code":"not_allowed","msg":"This is turned off in PocketDesk settings on the computer."})
     );
 
     send(&mut ws, json!({"t":"power","id":2,"a":"lock"})).await;
@@ -741,7 +741,7 @@ fn downloads() -> &'static std::path::Path {
     DIR.get_or_init(|| {
         let d = tempfile::tempdir().unwrap();
         // SAFETY: set once, before any test reads it.
-        unsafe { std::env::set_var("PAIRDESK_DOWNLOADS", d.path()) };
+        unsafe { std::env::set_var("POCKETDESK_DOWNLOADS", d.path()) };
         d
     })
     .path()
@@ -886,7 +886,7 @@ async fn a_phone_that_disconnects_mid_file_leaves_no_part_file() {
         !e.unwrap()
             .file_name()
             .to_string_lossy()
-            .contains("pairdesk-")
+            .contains("pocketdesk-")
     }));
 }
 

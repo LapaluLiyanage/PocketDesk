@@ -123,7 +123,7 @@ class PowerTab extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 16),
             child: Text(
-              'Greyed-out actions are turned off in PairDesk settings on the computer.',
+              'Greyed-out actions are turned off in PocketDesk settings on the computer.',
               style: theme.textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),

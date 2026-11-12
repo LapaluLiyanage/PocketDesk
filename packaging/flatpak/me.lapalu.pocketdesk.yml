@@ -1,20 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Flatpak build of the PairDesk agent, for testing PairDesk in a Flatpak
+# Flatpak build of the PocketDesk agent, for testing PocketDesk in a Flatpak
 # sandbox. Written with AI assistance, so it is NOT for submission to
 # Flathub (Flathub doesn't accept AI-assisted manifests; see docs/STORES.md).
 #
 # Test build (from the repository root; uses the release tag below):
-#   flatpak-builder --user --install --force-clean build-dir packaging/flatpak/me.madhushan.pairdesk.yml
+#   flatpak-builder --user --install --force-clean build-dir packaging/flatpak/me.lapalu.pocketdesk.yml
 #
 # Regenerate cargo-sources.json when dependencies change
 # (packaging/flatpak/cargo-sources.py agent/Cargo.lock).
-id: me.madhushan.pairdesk
+id: me.lapalu.pocketdesk
 runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
-command: pairdesk-agent
+command: pocketdesk
 finish-args:
   # Phones connect over the network; the settings page is on 127.0.0.1.
   - --share=network
@@ -30,37 +30,37 @@ finish-args:
   # Tray icon.
   - --talk-name=org.kde.StatusNotifierWatcher
   # Launching the computer's apps and power actions (lock, sleep, restart,
-  # shut down) run on the host through flatpak-spawn --host: PairDesk is a
+  # shut down) run on the host through flatpak-spawn --host: PocketDesk is a
   # remote control for the whole computer.
   - --talk-name=org.freedesktop.Flatpak
   # The list of installed apps the phone can open (read only).
   - --filesystem=host-os:ro
   - --filesystem=/var/lib/flatpak/exports/share/applications:ro
   - --filesystem=xdg-data/flatpak/exports/share/applications:ro
-  # Files sent from the phone are saved in Downloads/PairDesk.
-  - --filesystem=xdg-download/PairDesk:create
+  # Files sent from the phone are saved in Downloads/PocketDesk.
+  - --filesystem=xdg-download/PocketDesk:create
 build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
 modules:
-  - name: pairdesk
+  - name: pocketdesk
     buildsystem: simple
     build-options:
       env:
-        CARGO_HOME: /run/build/pairdesk/cargo
+        CARGO_HOME: /run/build/pocketdesk/cargo
         CARGO_NET_OFFLINE: 'true'
     build-commands:
-      - cargo build --release --locked --offline --manifest-path agent/Cargo.toml --bin pairdesk-agent
-      - install -Dm755 agent/target/release/pairdesk-agent /app/bin/pairdesk-agent
-      - install -Dm644 packaging/linux/me.madhushan.pairdesk.desktop /app/share/applications/me.madhushan.pairdesk.desktop
-      - install -Dm644 packaging/linux/me.madhushan.pairdesk.metainfo.xml /app/share/metainfo/me.madhushan.pairdesk.metainfo.xml
-      - install -Dm644 packaging/icons/pairdesk.svg /app/share/icons/hicolor/scalable/apps/me.madhushan.pairdesk.svg
+      - cargo build --release --locked --offline --manifest-path agent/Cargo.toml --bin pocketdesk
+      - install -Dm755 agent/target/release/pocketdesk /app/bin/pocketdesk
+      - install -Dm644 packaging/linux/me.lapalu.pocketdesk.desktop /app/share/applications/me.lapalu.pocketdesk.desktop
+      - install -Dm644 packaging/linux/me.lapalu.pocketdesk.metainfo.xml /app/share/metainfo/me.lapalu.pocketdesk.metainfo.xml
+      - install -Dm644 packaging/icons/pocketdesk.svg /app/share/icons/hicolor/scalable/apps/me.lapalu.pocketdesk.svg
       - |
         for s in 16 24 32 48 64 128 256 512; do
-          install -Dm644 packaging/icons/hicolor/${s}x${s}/apps/me.madhushan.pairdesk.png \
-            /app/share/icons/hicolor/${s}x${s}/apps/me.madhushan.pairdesk.png
+          install -Dm644 packaging/icons/hicolor/${s}x${s}/apps/me.lapalu.pocketdesk.png \
+            /app/share/icons/hicolor/${s}x${s}/apps/me.lapalu.pocketdesk.png
         done
     sources:
       - type: git
-        url: https://github.com/sandunMadhushan/pairdesk.git
+        url: https://github.com/LapaluLiyanage/pocketdesk.git
         tag: v0.11.0
       - cargo-sources.json

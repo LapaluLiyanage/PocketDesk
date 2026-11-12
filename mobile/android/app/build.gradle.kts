@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "me.madhushan.pairdesk"
+    namespace = "me.lapalu.pocketdesk"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "me.madhushan.pairdesk"
+        applicationId = "me.lapalu.pocketdesk"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = maxOf(flutter.minSdkVersion, 23) // flutter_secure_storage needs 23
@@ -29,18 +29,18 @@ android {
     }
 
     // Release signing. The release workflow sets these from GitHub secrets:
-    //   PAIRDESK_KEYSTORE (path to the .jks), PAIRDESK_KEYSTORE_PASSWORD,
-    //   PAIRDESK_KEY_ALIAS, PAIRDESK_KEY_PASSWORD.
-    // PAIRDESK_UNSIGNED=1 builds an unsigned APK (F-Droid signs its own).
+    //   POCKETDESK_KEYSTORE (path to the .jks), POCKETDESK_KEYSTORE_PASSWORD,
+    //   POCKETDESK_KEY_ALIAS, POCKETDESK_KEY_PASSWORD.
+    // POCKETDESK_UNSIGNED=1 builds an unsigned APK (F-Droid signs its own).
     // Otherwise release builds use the debug key, so `flutter run --release` works.
-    val keystore = System.getenv("PAIRDESK_KEYSTORE")
+    val keystore = System.getenv("POCKETDESK_KEYSTORE")
     signingConfigs {
         if (keystore != null) {
             create("release") {
                 storeFile = file(keystore)
-                storePassword = System.getenv("PAIRDESK_KEYSTORE_PASSWORD")
-                keyAlias = System.getenv("PAIRDESK_KEY_ALIAS")
-                keyPassword = System.getenv("PAIRDESK_KEY_PASSWORD")
+                storePassword = System.getenv("POCKETDESK_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("POCKETDESK_KEY_ALIAS")
+                keyPassword = System.getenv("POCKETDESK_KEY_PASSWORD")
             }
         }
     }
@@ -48,7 +48,7 @@ android {
     buildTypes {
         release {
             signingConfig = when {
-                System.getenv("PAIRDESK_UNSIGNED") == "1" -> null
+                System.getenv("POCKETDESK_UNSIGNED") == "1" -> null
                 keystore != null -> signingConfigs.getByName("release")
                 else -> signingConfigs.getByName("debug")
             }

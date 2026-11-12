@@ -2,10 +2,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/pairing/codec.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/laptop.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/pairing/codec.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/laptop.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
 
 List<int> fromHex(String h) => [
   for (var i = 0; i < h.length; i += 2) int.parse(h.substring(i, i + 2), radix: 16),
@@ -14,7 +14,7 @@ List<int> fromHex(String h) => [
 void main() {
   final fp = b64Encode(List.filled(32, 0xAB));
   String link({String v = '2', String fpv = '', String t = 'abcdefghijklmnopqrstuv', String p = '47800'}) =>
-      'pairdesk://pair?v=$v&n=Sandun%27s%20laptop&fp=${fpv.isEmpty ? fp : fpv}&t=$t&p=$p&a=192.168.1.5,bogus,10.0.0.2';
+      'pocketdesk://pair?v=$v&n=Sandun%27s%20laptop&fp=${fpv.isEmpty ? fp : fpv}&t=$t&p=$p&a=192.168.1.5,bogus,10.0.0.2';
 
   group('pairing link', () {
     test('parses what the agent produces', () {
@@ -29,13 +29,13 @@ void main() {
     test('rejects other codes, damaged codes and version mismatches', () {
       Matcher fails(String text) =>
           throwsA(isA<PairingLinkException>().having((e) => e.message, 'message', contains(text)));
-      expect(() => parsePairingLink('https://example.com'), fails('isn\'t a PairDesk code'));
-      expect(() => parsePairingLink('hello'), fails('isn\'t a PairDesk code'));
+      expect(() => parsePairingLink('https://example.com'), fails('isn\'t a PocketDesk code'));
+      expect(() => parsePairingLink('hello'), fails('isn\'t a PocketDesk code'));
       expect(() => parsePairingLink(link(fpv: 'short')), fails('damaged'));
       expect(() => parsePairingLink(link(t: 'x')), fails('damaged'));
       expect(() => parsePairingLink(link(p: '99999')), fails('damaged'));
       expect(() => parsePairingLink(link(v: '3')), fails('Update this app'));
-      expect(() => parsePairingLink(link(v: '1')), fails('older PairDesk'));
+      expect(() => parsePairingLink(link(v: '1')), fails('older PocketDesk'));
     });
   });
 
@@ -64,7 +64,7 @@ void main() {
     test('signs the agent\'s auth message layout', () async {
       final id = await PhoneIdentity.fromSeed(List.filled(32, 1));
       final msg = id.authMessage(List.filled(32, 2), List.filled(32, 3));
-      expect(msg.length, 'pairdesk-auth-v2'.length + 1 + 96);
+      expect(msg.length, 'pocketdesk-auth-v2'.length + 1 + 96);
       expect(msg.sublist(16, 17), [0]);
       expect(msg.sublist(msg.length - 32), id.publicKey);
     });

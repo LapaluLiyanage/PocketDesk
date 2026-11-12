@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Files and text other apps shared with PairDesk ("Share → PairDesk"),
+// Files and text other apps shared with PocketDesk ("Share → PocketDesk"),
 // waiting until a computer is connected to take them.
 
 import 'package:flutter/foundation.dart';
@@ -32,8 +32,8 @@ class ShareInbox extends ChangeNotifier {
     try {
       final s = await _take();
       if (s.isEmpty) return;
-      // A PairDesk link (opened, or shared as text) pairs; it isn't sent.
-      final link = s.link ?? (_isPairDeskLink(s.text) ? s.text!.trim() : null);
+      // A PocketDesk link (opened, or shared as text) pairs; it isn't sent.
+      final link = s.link ?? (_isPocketDeskLink(s.text) ? s.text!.trim() : null);
       if (link != null) _link = link;
       final text = link != null && s.link == null ? null : s.text;
       if (s.files.isNotEmpty || (text != null && text.isNotEmpty)) {
@@ -60,9 +60,9 @@ class ShareInbox extends ChangeNotifier {
     return l;
   }
 
-  static bool _isPairDeskLink(String? text) {
+  static bool _isPocketDeskLink(String? text) {
     final t = text?.trim() ?? '';
-    return t.startsWith('pairdesk://pair?') || t.startsWith('https://pairdesk.madhushan.me/p#');
+    return t.startsWith('pocketdesk://pair?') || t.startsWith('https://pocketdesk.lapalu.me/p#');
   }
 
   /// Takes everything waiting; null if nothing.

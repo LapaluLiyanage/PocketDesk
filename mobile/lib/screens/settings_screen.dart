@@ -67,7 +67,7 @@ class SettingsScreen extends StatelessWidget {
             SwitchListTile(
               secondary: const Icon(Icons.fingerprint),
               title: const Text('App lock'),
-              subtitle: const Text('Ask for fingerprint, face or screen lock to open PairDesk'),
+              subtitle: const Text('Ask for fingerprint, face or screen lock to open PocketDesk'),
               value: settings.appLock,
               onChanged: (on) => _toggleLock(context, on),
             ),
@@ -86,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.public),
               title: const Text('Connect from anywhere'),
-              subtitle: const Text('Use PairDesk away from home with Tailscale'),
+              subtitle: const Text('Use PocketDesk away from home with Tailscale'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () =>
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RemoteHelpScreen())),
@@ -118,10 +118,10 @@ class SettingsScreen extends StatelessWidget {
               future: PackageInfo.fromPlatform(),
               builder: (_, snap) => ListTile(
                 leading: const Icon(Icons.info_outline),
-                title: const Text('PairDesk'),
+                title: const Text('PocketDesk'),
                 subtitle: Text(
                   '${snap.hasData ? 'Version ${snap.data!.version} · ' : ''}Free software, GPL-3.0-or-later\n'
-                  'github.com/sandunMadhushan/pairdesk',
+                  'github.com/LapaluLiyanage/pocketdesk',
                 ),
                 isThreeLine: true,
               ),
@@ -158,7 +158,7 @@ class _CheckForUpdatesState extends State<_CheckForUpdates> {
       final found = await widget.updates.checkNow();
       answer = found == null
           ? 'This is the newest version.'
-          : 'PairDesk ${found.version} is available \u2014 see the Home screen.';
+          : 'PocketDesk ${found.version} is available \u2014 see the Home screen.';
     } catch (_) {
       answer = 'Couldn\'t reach GitHub. Check the phone\'s connection.';
     }
@@ -173,7 +173,7 @@ class _CheckForUpdatesState extends State<_CheckForUpdates> {
   Widget build(BuildContext context) => ListTile(
     leading: const Icon(Icons.system_update_outlined),
     title: const Text('Check for updates'),
-    subtitle: Text(_answer ?? 'PairDesk also checks by itself once a day'),
+    subtitle: Text(_answer ?? 'PocketDesk also checks by itself once a day'),
     trailing: _busy
         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
         : null,

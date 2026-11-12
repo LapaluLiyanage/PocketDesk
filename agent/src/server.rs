@@ -224,7 +224,7 @@ async fn check_version(ws: &mut Ws, v: Option<u32>) -> Result<(), String> {
         fail(
             ws,
             ErrorCode::Version,
-            &format!("this computer runs PairDesk protocol v{PROTOCOL_VERSION}; update the app"),
+            &format!("this computer runs PocketDesk protocol v{PROTOCOL_VERSION}; update the app"),
         )
         .await
     }
@@ -796,7 +796,7 @@ fn stop_listener(listener: &mut Option<crate::audio::Listener>, state: &AppState
     }
 }
 
-const NOT_ALLOWED: &str = "This is turned off in PairDesk settings on the computer.";
+const NOT_ALLOWED: &str = "This is turned off in PocketDesk settings on the computer.";
 
 fn ack(id: Option<u64>, result: Result<(), (AckCode, String)>) -> ServerMsg {
     match result {

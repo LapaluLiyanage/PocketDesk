@@ -2544,7 +2544,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "pairdesk-agent"
+name = "pocketdesk"
 version = "0.11.3"
 dependencies = [
  "aec3",

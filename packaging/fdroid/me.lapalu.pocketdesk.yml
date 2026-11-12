@@ -1,22 +1,22 @@
-# F-Droid build recipe for PairDesk: the file to submit to
-# https://gitlab.com/fdroid/fdroiddata as metadata/me.madhushan.pairdesk.yml
+# F-Droid build recipe for PocketDesk: the file to submit to
+# https://gitlab.com/fdroid/fdroiddata as metadata/me.lapalu.pocketdesk.yml
 # (see docs/STORES.md). The app's listing text, icon and changelogs come
 # from fastlane/metadata/android in this repository.
 Categories:
   - Connectivity
   - System
 License: GPL-3.0-or-later
-AuthorName: Sandun Madhushan
-AuthorEmail: contact@madhushan.me
-WebSite: https://pairdesk.madhushan.me
-SourceCode: https://github.com/sandunMadhushan/pairdesk
-IssueTracker: https://github.com/sandunMadhushan/pairdesk/issues
-Changelog: https://github.com/sandunMadhushan/pairdesk/releases
+AuthorName: Lapalu Liyanage
+AuthorEmail: lapaluliyanage@gmail.com
+WebSite: https://pocketdesk.lapalu.me
+SourceCode: https://github.com/LapaluLiyanage/pocketdesk
+IssueTracker: https://github.com/LapaluLiyanage/pocketdesk/issues
+Changelog: https://github.com/LapaluLiyanage/pocketdesk/releases
 
-AutoName: PairDesk
+AutoName: PocketDesk
 
 RepoType: git
-Repo: https://github.com/sandunMadhushan/pairdesk.git
+Repo: https://github.com/LapaluLiyanage/pocketdesk.git
 
 Builds:
   - versionName: 0.11.0
@@ -33,7 +33,7 @@ Builds:
     scandelete:
       - mobile/.pub-cache
     build:
-      - export PUB_CACHE=$(pwd)/.pub-cache PAIRDESK_UNSIGNED=1
+      - export PUB_CACHE=$(pwd)/.pub-cache POCKETDESK_UNSIGNED=1
       - $$flutter$$/bin/flutter build apk --release --split-per-abi --target-platform=android-arm
 
   - versionName: 0.11.0
@@ -50,7 +50,7 @@ Builds:
     scandelete:
       - mobile/.pub-cache
     build:
-      - export PUB_CACHE=$(pwd)/.pub-cache PAIRDESK_UNSIGNED=1
+      - export PUB_CACHE=$(pwd)/.pub-cache POCKETDESK_UNSIGNED=1
       - $$flutter$$/bin/flutter build apk --release --split-per-abi --target-platform=android-arm64
 
   - versionName: 0.11.0
@@ -67,7 +67,7 @@ Builds:
     scandelete:
       - mobile/.pub-cache
     build:
-      - export PUB_CACHE=$(pwd)/.pub-cache PAIRDESK_UNSIGNED=1
+      - export PUB_CACHE=$(pwd)/.pub-cache POCKETDESK_UNSIGNED=1
       - $$flutter$$/bin/flutter build apk --release --split-per-abi --target-platform=android-x64
 
 AutoUpdateMode: Version

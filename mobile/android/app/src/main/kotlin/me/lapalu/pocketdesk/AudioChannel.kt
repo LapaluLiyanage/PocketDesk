@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package me.madhushan.pairdesk
+package me.lapalu.pocketdesk
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -27,7 +27,7 @@ import java.nio.ByteOrder
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 
-// The "pairdesk/audio" channel: the computer's sound on the phone, and the
+// The "pocketdesk/audio" channel: the computer's sound on the phone, and the
 // phone's voice for the computer.
 //  - opusSupported → whether this phone can decode Opus
 //  - startPlayer {codec, rate, channels, preSkip} / play {data} / stopPlayer
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit
 // thread.
 class AudioChannel(engine: FlutterEngine, private val activity: MainActivity) :
     MethodChannel.MethodCallHandler {
-    private val channel = MethodChannel(engine.dartExecutor.binaryMessenger, "pairdesk/audio")
+    private val channel = MethodChannel(engine.dartExecutor.binaryMessenger, "pocketdesk/audio")
     private val main = Handler(Looper.getMainLooper())
     private var player: Player? = null
     private var mic: Mic? = null
@@ -198,7 +198,7 @@ class AudioChannel(engine: FlutterEngine, private val activity: MainActivity) :
         private val queue = LinkedBlockingQueue<ByteArray>(100)
         @Volatile private var running = true
         @Volatile private var track: AudioTrack? = null
-        private val thread = Thread({ run() }, "pairdesk-audio-out").apply {
+        private val thread = Thread({ run() }, "pocketdesk-audio-out").apply {
             setUncaughtExceptionHandler { _, e -> fail(e) }
             start()
         }
@@ -342,7 +342,7 @@ class AudioChannel(engine: FlutterEngine, private val activity: MainActivity) :
     /// The phone's microphone: 16 kHz mono, echo cancelled, as µ-law.
     private inner class Mic {
         @Volatile private var running = true
-        private val thread = Thread({ run() }, "pairdesk-audio-in").apply {
+        private val thread = Thread({ run() }, "pocketdesk-audio-in").apply {
             setUncaughtExceptionHandler { _, e -> fail(e) }
             start()
         }

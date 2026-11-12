@@ -14,7 +14,7 @@
 # (run inside dbus-run-session if there's no session bus)
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-AGENT=$(realpath "${AGENT:-$ROOT/agent/target/release/pairdesk-agent}")
+AGENT=$(realpath "${AGENT:-$ROOT/agent/target/release/pocketdesk}")
 PORT=${PORT:-47812}
 DATA=$(mktemp -d)
 export XDG_RUNTIME_DIR="$DATA/run"
@@ -56,16 +56,16 @@ if [ -n "${WINE:-}" ]; then
   export WINEDEBUG=-all WINEPREFIX="$DATA/wine" WINEDLLOVERRIDES="mscoree,mshtml="
   WINEBIN=$(command -v wine || command -v wine64 || echo /usr/lib/wine/wine64)
   "$WINEBIN" wineboot -i >/dev/null 2>&1
-  PAIRDESK_HOME="Z:${DATA//\//\\}" "$WINEBIN" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
+  POCKETDESK_HOME="Z:${DATA//\//\\}" "$WINEBIN" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
   WAIT=600
 else
-  PAIRDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
+  POCKETDESK_HOME="$DATA" "$AGENT" --background --no-tray --port "$PORT" >"$DATA/out.txt" 2>&1 & PIDS+=($!)
   WAIT=50
 fi
 for _ in $(seq $WAIT); do [ -s "$DATA/settings-url.txt" ] && break; sleep 0.2; done
 [ -s "$DATA/settings-url.txt" ] || { echo "agent did not start"; cat "$DATA/out.txt"; exit 1; }
 SETTINGS=$(cat "$DATA/settings-url.txt")
-LINK=$(curl -sf -X POST -H 'X-PairDesk: 1' "${SETTINGS}api/pair" |
+LINK=$(curl -sf -X POST -H 'X-PocketDesk: 1' "${SETTINGS}api/pair" |
   python3 -c 'import json,sys; print(json.load(sys.stdin)["pairing"]["link"])')
 
 # Plays the computer's tone when the test asks; records the speakers
@@ -98,8 +98,8 @@ rec.terminate(); rec.wait()
 open(f"{d}/recorded", "w").close()
 PY
 
-(cd "$ROOT/mobile" && PAIRDESK_E2E_LINK="$LINK" PAIRDESK_E2E_SETTINGS="$SETTINGS" PAIRDESK_E2E_AUDIO="$DATA" \
-  PAIRDESK_E2E_LOOPBACK="${LOOPBACK:-1}" \
+(cd "$ROOT/mobile" && POCKETDESK_E2E_LINK="$LINK" POCKETDESK_E2E_SETTINGS="$SETTINGS" POCKETDESK_E2E_AUDIO="$DATA" \
+  POCKETDESK_E2E_LOOPBACK="${LOOPBACK:-1}" \
   flutter test test/e2e_audio_test.dart)
 
 for _ in $(seq 50); do [ -e "$DATA/recorded" ] && break; sleep 0.1; done

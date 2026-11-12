@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const GITHUB = "https://github.com/sandunMadhushan/pairdesk";
+const GITHUB = "https://github.com/LapaluLiyanage/pocketdesk";
 
 export default function Header({ home = false }: { home?: boolean }) {
   const at = (id: string) => (home ? `#${id}` : `/#${id}`);
@@ -26,7 +26,7 @@ export default function Header({ home = false }: { home?: boolean }) {
         <Link href="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icon.svg" alt="" width={32} height={32} />
-          PairDesk
+          PocketDesk
         </Link>
         <nav aria-label="Main" className="flex items-center gap-1 text-[0.95rem] font-medium text-slate">
           <a href={at("touchpad")} className="hidden rounded-full px-3.5 py-2 hover:text-ink md:inline">

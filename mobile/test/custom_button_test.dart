@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/buttons/custom_button.dart';
-import 'package:pairdesk/settings/app_settings.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/buttons/custom_button.dart';
+import 'package:pocketdesk/settings/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

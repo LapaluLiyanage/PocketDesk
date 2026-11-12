@@ -15,7 +15,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
-  final _qrKey = GlobalKey(debugLabel: 'pairdesk-qr');
+  final _qrKey = GlobalKey(debugLabel: 'pocketdesk-qr');
   QRViewController? _controller;
   StreamSubscription<Barcode>? _sub;
   bool _done = false;
@@ -45,12 +45,12 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
     _sub = controller.scannedDataStream.listen((barcode) {
       final code = barcode.code;
       if (_done || code == null) return;
-      if (code.startsWith('pairdesk://')) {
+      if (code.startsWith('pocketdesk://')) {
         _finish(code);
       } else if (!_warnedOtherCode && mounted) {
         _warnedOtherCode = true;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('That\'s not a PairDesk code. Scan the code on your computer.')),
+          const SnackBar(content: Text('That\'s not a PocketDesk code. Scan the code on your computer.')),
         );
       }
     });
@@ -68,7 +68,7 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
     final clip = await Clipboard.getData(Clipboard.kTextPlain);
     if (!mounted) return;
     final controller = TextEditingController(
-      text: (clip?.text ?? '').startsWith('pairdesk://') ? clip!.text : '',
+      text: (clip?.text ?? '').startsWith('pocketdesk://') ? clip!.text : '',
     );
     final link = await showDialog<String>(
       context: context,
@@ -79,8 +79,8 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
           autofocus: true,
           maxLines: 3,
           decoration: const InputDecoration(
-            hintText: 'pairdesk://pair?…',
-            helperText: 'Shown under the QR code when you run\npairdesk-agent --pair',
+            hintText: 'pocketdesk://pair?…',
+            helperText: 'Shown under the QR code when you run\npocketdesk --pair',
           ),
         ),
         actions: [
@@ -137,7 +137,7 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
                   Icon(Icons.no_photography_outlined, size: 48, color: scheme.onSurfaceVariant),
                   const SizedBox(height: 16),
                   const Text(
-                    'PairDesk needs the camera to scan the code on your computer. '
+                    'PocketDesk needs the camera to scan the code on your computer. '
                     'Allow camera access in Android settings, or paste the link instead.',
                     textAlign: TextAlign.center,
                   ),
@@ -156,7 +156,7 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
               right: 24,
               bottom: 32,
               child: Text(
-                'On your computer, open PairDesk and choose "Pair a phone".',
+                'On your computer, open PocketDesk and choose "Pair a phone".',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge
                     ?.copyWith(color: Colors.white, shadows: const [Shadow(blurRadius: 6)]),

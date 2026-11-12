@@ -2,7 +2,7 @@
 import type { NextConfig } from "next";
 
 // A static site: `next build` writes it to out/, which GitHub Pages serves
-// at pairdesk.madhushan.me (see .github/workflows/pages.yml).
+// at pocketdesk.lapalu.me (see .github/workflows/pages.yml).
 const config: NextConfig = {
   output: "export",
   images: { unoptimized: true },

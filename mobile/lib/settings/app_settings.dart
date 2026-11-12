@@ -18,11 +18,11 @@ enum LockAfter {
 class AppSettings extends ChangeNotifier {
   AppSettings._(this._prefs);
 
-  static const _kLock = 'pairdesk.settings.appLock';
-  static const _kLockAfter = 'pairdesk.settings.lockAfter';
-  static const _kSpeed = 'pairdesk.settings.pointerSpeed';
-  static const _kNatural = 'pairdesk.settings.naturalScroll';
-  static const _kScreenTouchpad = 'pairdesk.settings.screenTouchpad';
+  static const _kLock = 'pocketdesk.settings.appLock';
+  static const _kLockAfter = 'pocketdesk.settings.lockAfter';
+  static const _kSpeed = 'pocketdesk.settings.pointerSpeed';
+  static const _kNatural = 'pocketdesk.settings.naturalScroll';
+  static const _kScreenTouchpad = 'pocketdesk.settings.screenTouchpad';
 
   static const minSpeed = 0.5;
   static const maxSpeed = 2.5;

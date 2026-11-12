@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-package me.madhushan.pairdesk
+package me.lapalu.pocketdesk
 
 import android.media.MediaCodec
 import android.media.MediaCodecList
@@ -14,7 +14,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.view.TextureRegistry
 import java.util.concurrent.atomic.AtomicBoolean
 
-// The "pairdesk/video" channel: the computer's screen as H.264, decoded by
+// The "pocketdesk/video" channel: the computer's screen as H.264, decoded by
 // the phone's (hardware) decoder straight onto a Flutter texture.
 //  - supported → whether this phone has an H.264 decoder
 //  - start {width, height} → texture id
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 // Events to Dart: "error" (the decoder failed: use JPEG) and "lost" (the
 // surface went away, e.g. the app was hidden: start again).
 class VideoChannel(engine: FlutterEngine) : MethodChannel.MethodCallHandler {
-    private val channel = MethodChannel(engine.dartExecutor.binaryMessenger, "pairdesk/video")
+    private val channel = MethodChannel(engine.dartExecutor.binaryMessenger, "pocketdesk/video")
     private val textures: TextureRegistry = engine.renderer
     private val main = Handler(Looper.getMainLooper())
     private var session: Session? = null
@@ -91,7 +91,7 @@ class VideoChannel(engine: FlutterEngine) : MethodChannel.MethodCallHandler {
 
     // One decoder on its own thread, drawing onto one Flutter texture.
     //
-    // Threads: the codec and its queues live on "pairdesk-video"; anything
+    // Threads: the codec and its queues live on "pocketdesk-video"; anything
     // that touches Flutter (scheduleFrame, release, channel calls) must run
     // on the main thread, where Flutter checks for it and throws otherwise.
     // Nothing here may throw on the decoder thread: an uncaught exception
@@ -100,7 +100,7 @@ class VideoChannel(engine: FlutterEngine) : MethodChannel.MethodCallHandler {
     private inner class Session(width: Int, height: Int) {
         private val producer: TextureRegistry.SurfaceProducer
         val textureId: Long
-        private val thread = HandlerThread("pairdesk-video")
+        private val thread = HandlerThread("pocketdesk-video")
         private val handler: Handler
         private var codec: MediaCodec? = null
 

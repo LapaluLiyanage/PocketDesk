@@ -4,12 +4,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/audio/audio_controller.dart';
-import 'package:pairdesk/audio/audio_packet.dart';
-import 'package:pairdesk/audio/native_audio.dart';
-import 'package:pairdesk/audio/sound_sheet.dart';
-import 'package:pairdesk/audio/ulaw.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/audio/audio_controller.dart';
+import 'package:pocketdesk/audio/audio_packet.dart';
+import 'package:pocketdesk/audio/native_audio.dart';
+import 'package:pocketdesk/audio/sound_sheet.dart';
+import 'package:pocketdesk/audio/ulaw.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FakeAudioConnection extends AgentConnection {
@@ -33,7 +33,7 @@ class FakeAudioConnection extends AgentConnection {
   @override
   Future<AudioInfo> startAudio({required bool sound, required bool mic, required List<String> codecs}) async {
     calls.add('start sound=$sound mic=$mic ${codecs.join(',')}');
-    if (mic && !allow.mic) throw RequestException('not_allowed', 'This is turned off in PairDesk settings.');
+    if (mic && !allow.mic) throw RequestException('not_allowed', 'This is turned off in PocketDesk settings.');
     return AudioInfo(
       codec: codecs.first,
       rate: 48000,
@@ -177,7 +177,7 @@ void main() {
     final conn = FakeAudioConnection();
     final audio = AudioController(conn, backend: FakeBackend());
     await audio.setSound(true);
-    conn.stopped.add('This was turned off in PairDesk settings on the computer.');
+    conn.stopped.add('This was turned off in PocketDesk settings on the computer.');
     await Future<void>.delayed(Duration.zero);
     expect(audio.sound, isFalse);
     expect(audio.error, contains('turned off'));
@@ -229,7 +229,7 @@ void main() {
         home: Scaffold(body: SoundSheet(audio: audio)),
       ),
     );
-    expect(find.textContaining('Update PairDesk on the computer'), findsOneWidget);
+    expect(find.textContaining('Update PocketDesk on the computer'), findsOneWidget);
     final sw = tester.widget<SwitchListTile>(find.widgetWithText(SwitchListTile, 'Computer sound'));
     expect(sw.onChanged, isNull);
     audio.dispose();

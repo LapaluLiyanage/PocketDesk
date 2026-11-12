@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! How this copy of PairDesk was installed. That decides how it updates
+//! How this copy of PocketDesk was installed. That decides how it updates
 //! itself and a few other things (start at sign-in, the Send To menu).
 
 use std::path::{Path, PathBuf};
 
 /// Name of the uninstaller the Windows setup puts next to the program.
-pub const WINDOWS_UNINSTALLER: &str = "Uninstall PairDesk.exe";
+pub const WINDOWS_UNINSTALLER: &str = "Uninstall PocketDesk.exe";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Kind {
-    /// Windows setup (per-user, in %LOCALAPPDATA%\Programs\PairDesk).
+    /// Windows setup (per-user, in %LOCALAPPDATA%\Programs\PocketDesk).
     /// Updates by running the new setup.
     WindowsSetup,
     /// Microsoft Store (MSIX). The Store updates it.
@@ -44,7 +44,7 @@ impl Kind {
         }
     }
 
-    /// Updates come from a store; PairDesk doesn't look for them itself.
+    /// Updates come from a store; PocketDesk doesn't look for them itself.
     pub fn store_updates(&self) -> bool {
         matches!(self, Kind::Store | Kind::Flatpak)
     }
@@ -100,7 +100,7 @@ fn detect(exe: &Path, env: impl Fn(&str) -> Option<PathBuf>, packaged: bool) -> 
 }
 
 fn writable(dir: &Path) -> bool {
-    let probe = dir.join(format!(".pairdesk-probe-{}", std::process::id()));
+    let probe = dir.join(format!(".pocketdesk-probe-{}", std::process::id()));
     match std::fs::File::create(&probe) {
         Ok(_) => {
             let _ = std::fs::remove_file(&probe);
@@ -110,7 +110,7 @@ fn writable(dir: &Path) -> bool {
     }
 }
 
-/// The file to start PairDesk from (sign-in, the file manager's menu): the
+/// The file to start PocketDesk from (sign-in, the file manager's menu): the
 /// AppImage itself when running from one, not its temporary mount.
 pub fn program_path() -> std::io::Result<PathBuf> {
     match current() {
@@ -158,7 +158,7 @@ mod tests {
 
     #[test]
     fn stores_and_bundles_come_first() {
-        let exe = Path::new("/home/jane/pairdesk-agent");
+        let exe = Path::new("/home/jane/pocketdesk");
         assert_eq!(detect(exe, none, true), Kind::Store);
         assert_eq!(
             detect(exe, |k| (k == "FLATPAK_ID").then(|| "x".into()), false),
@@ -179,7 +179,7 @@ mod tests {
     #[test]
     fn setup_is_recognised_by_its_uninstaller() {
         let dir = tempfile::tempdir().unwrap();
-        let exe = dir.path().join("pairdesk-agent.exe");
+        let exe = dir.path().join("pocketdesk.exe");
         if cfg!(windows) {
             assert_eq!(detect(&exe, none, false), Kind::Portable);
             std::fs::write(dir.path().join(WINDOWS_UNINSTALLER), b"").unwrap();
@@ -199,7 +199,7 @@ mod tests {
             return;
         }
         assert_eq!(
-            detect(Path::new("/usr/bin/pairdesk-agent"), none, false),
+            detect(Path::new("/usr/bin/pocketdesk"), none, false),
             Kind::SystemPackage
         );
     }

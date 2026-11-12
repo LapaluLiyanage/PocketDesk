@@ -104,7 +104,7 @@ class Laptop {
 }
 
 class LaptopStore {
-  static const _prefsKey = 'pairdesk.laptops.v1';
+  static const _prefsKey = 'pocketdesk.laptops.v1';
 
   Future<List<Laptop>> load() async {
     final prefs = await SharedPreferences.getInstance();

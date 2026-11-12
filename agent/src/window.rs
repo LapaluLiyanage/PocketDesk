@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Windows: the PairDesk window.
+//! Windows: the PocketDesk window.
 //!
 //! The settings page, shown in a window of its own instead of a browser
 //! tab. It uses WebView2, the web view built into Windows 10 and 11 (the
-//! same engine as Edge). Where WebView2 is missing, PairDesk falls back to
+//! same engine as Edge). Where WebView2 is missing, PocketDesk falls back to
 //! the browser.
 //!
 //! Everything here runs on the main thread, which owns the message loop
@@ -122,13 +122,13 @@ pub fn show(url: &str, home: &str) -> bool {
             true
         }
         Err(e) => {
-            log::warn!("can't open the PairDesk window: {e}");
+            log::warn!("can't open the PocketDesk window: {e}");
             false
         }
     }
 }
 
-/// Closes the window (when PairDesk stops).
+/// Closes the window (when PocketDesk stops).
 pub fn close() {
     let Some(mut w) = WINDOW.with(|cell| cell.try_borrow_mut().ok().and_then(|mut c| c.take()))
     else {
@@ -211,8 +211,8 @@ fn make_window() -> Result<HWND, String> {
     unsafe {
         let instance = GetModuleHandleW(std::ptr::null());
         let class = CLASS.get_or_init(|| {
-            let name = wide("PairDeskWindow");
-            // Icon 1 in the .exe's resources (pairdesk.rc.in).
+            let name = wide("PocketDeskWindow");
+            // Icon 1 in the .exe's resources (pocketdesk.rc.in).
             let icon = LoadImageW(instance, 1 as _, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
             let small = LoadImageW(instance, 1 as _, IMAGE_ICON, 16, 16, 0);
             let wc = WNDCLASSEXW {
@@ -232,7 +232,7 @@ fn make_window() -> Result<HWND, String> {
         let dpi = GetDpiForSystem().max(96) as i32;
         let width = (1040 * dpi / 96).min(GetSystemMetrics(SM_CXSCREEN) * 9 / 10);
         let height = (740 * dpi / 96).min(GetSystemMetrics(SM_CYSCREEN) * 9 / 10);
-        let title = wide("PairDesk");
+        let title = wide("PocketDesk");
         let hwnd = CreateWindowExW(
             0,
             class.as_ptr(),

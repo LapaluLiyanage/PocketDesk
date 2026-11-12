@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart' show sha256;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/files/transfers.dart';
+import 'package:pocketdesk/files/transfers.dart';
 
 /// Plays the computer's side, the way the agent does (agent/src/files.rs).
 class FakeComputer implements TransferLink {
@@ -68,7 +68,7 @@ void main() {
   late List<(String, String)> saved;
 
   setUp(() {
-    tmp = Directory.systemTemp.createTempSync('pairdesk-test');
+    tmp = Directory.systemTemp.createTempSync('pocketdesk-test');
     computer = FakeComputer();
     saved = [];
     phone = FileTransfers(
@@ -78,7 +78,7 @@ void main() {
         final dest = File('${tmp.path}/saved-$name');
         await temp.rename(dest.path);
         saved.add((dest.path, name));
-        return SavedFile(where: 'Download/PairDesk/$name', uri: 'content://test/$name');
+        return SavedFile(where: 'Download/PocketDesk/$name', uri: 'content://test/$name');
       },
     );
     computer.phone = phone;
@@ -136,7 +136,7 @@ void main() {
   });
 
   test('a refusal or damage on the way is reported', () async {
-    computer.refuse = 'This is turned off in PairDesk settings on the computer.';
+    computer.refuse = 'This is turned off in PocketDesk settings on the computer.';
     await expectLater(
       phone.send(makeFile(10)),
       throwsA(isA<TransferException>().having((e) => e.message, 'message', contains('turned off'))),
@@ -184,7 +184,7 @@ void main() {
     await computerSends(agentFids + 1, 'report.pdf', data);
     final t = await got.timeout(const Duration(seconds: 2));
     expect(t.state, TransferState.done);
-    expect(t.savedWhere, 'Download/PairDesk/report.pdf');
+    expect(t.savedWhere, 'Download/PocketDesk/report.pdf');
     expect(File(saved.single.$1).readAsBytesSync(), data);
     final progress = computer.sent.where((m) => m['t'] == 'file_progress').map((m) => m['received']);
     expect(progress, [progressEvery, data.length]);
@@ -195,7 +195,7 @@ void main() {
     await computerSends(agentFids + 2, 'x.bin', [1, 2, 3], sha: '00');
     expect(computer.sent.last['ok'], false);
     expect(saved, isEmpty);
-    expect(Directory('${tmp.path}/pairdesk-in').listSync(), isEmpty);
+    expect(Directory('${tmp.path}/pocketdesk-in').listSync(), isEmpty);
     // Offers with a phone-side id are refused.
     phone.handleMessage({'t': 'file_offer', 'fid': 5, 'name': 'y', 'size': 1});
     expect(computer.sent.last['t'], 'file_cancel');

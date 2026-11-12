@@ -5,7 +5,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { Cursor, Desktop, Laptop, Phone, Spark, Squiggle } from "@/components/Devices";
 
-const GITHUB = "https://github.com/sandunMadhushan/pairdesk";
+const GITHUB = "https://github.com/LapaluLiyanage/pocketdesk";
 const WORDS = "Your phone is the remote for your computer.".split(" ");
 
 /* The touchpad area inside 2_touchpad.png (540 × 1170), as fractions. */
@@ -187,7 +187,7 @@ export default function Hero() {
           </p>
           <div data-hero-copy className="mt-9 flex flex-wrap items-center gap-3">
             <a href="#download" className="btn btn-ink">
-              Download PairDesk
+              Download PocketDesk
             </a>
             <a href={GITHUB} className="btn btn-line">
               View the source
@@ -220,7 +220,7 @@ export default function Hero() {
           <div data-phone className="absolute bottom-[-14%] left-[-1%] w-[30%] min-w-[120px] rotate-[-6deg]">
             <Phone>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/screenshots/2_touchpad.png" alt="The PairDesk touchpad screen" width={540} height={1170} className="h-full w-full object-cover select-none" draggable={false} />
+              <img src="/screenshots/2_touchpad.png" alt="The PocketDesk touchpad screen" width={540} height={1170} className="h-full w-full object-cover select-none" draggable={false} />
               <div
                 ref={pad}
                 role="img"

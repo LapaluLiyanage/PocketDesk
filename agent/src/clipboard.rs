@@ -13,7 +13,7 @@ use std::sync::Mutex;
 /// Largest clipboard text exchanged with a phone (bytes of UTF-8).
 pub const MAX_BYTES: usize = 200_000;
 
-/// Kept alive for the agent's lifetime: on X11 the text PairDesk copied is
+/// Kept alive for the agent's lifetime: on X11 the text PocketDesk copied is
 /// only available while a clipboard object exists.
 static NATIVE: Mutex<Option<arboard::Clipboard>> = Mutex::new(None);
 

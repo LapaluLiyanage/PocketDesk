@@ -2,25 +2,25 @@
 //! Windows: control at the sign-in screen and on administrator (UAC) prompts.
 //!
 //! Windows shows the lock screen, the sign-in screen and UAC prompts on the
-//! "secure desktop", which only SYSTEM can see or control. PairDesk runs as
-//! the signed-in user, so on its own it can't. The optional *PairDesk helper*
+//! "secure desktop", which only SYSTEM can see or control. PocketDesk runs as
+//! the signed-in user, so on its own it can't. The optional *PocketDesk helper*
 //! service fixes that (turned on from the settings page, with one
 //! administrator prompt):
 //!
-//! - `--install-service` (elevated) copies PairDesk to Program Files, where
+//! - `--install-service` (elevated) copies PocketDesk to Program Files, where
 //!   only administrators can change it, and registers the service.
 //! - `--service` (the service, SYSTEM) keeps one `--session-helper` running
 //!   as SYSTEM in the session at the screen, mirrors the signed-in user's
 //!   pairing (identity, paired phones, settings) into a protected folder,
 //!   and keeps itself up to date (signed updates, like the agent).
 //! - `--session-helper` (SYSTEM, in the user's session) serves the bridge
-//!   (`bridge.rs`): while the secure desktop is up, PairDesk sends input and
+//!   (`bridge.rs`): while the secure desktop is up, PocketDesk sends input and
 //!   reads the screen through it. When nobody is signed in it runs
-//!   `--system-mode`: PairDesk's phone server with the mirrored pairing, so
+//!   `--system-mode`: PocketDesk's phone server with the mirrored pairing, so
 //!   the phone works at the sign-in screen after a restart. It stops that as
-//!   soon as someone signs in and their own PairDesk starts.
+//!   soon as someone signs in and their own PocketDesk starts.
 //!
-//! The folder `%ProgramData%\PairDesk` is readable by SYSTEM and
+//! The folder `%ProgramData%\PocketDesk` is readable by SYSTEM and
 //! administrators only; each bridge endpoint file there is also readable by
 //! the user of its session.
 
@@ -45,10 +45,10 @@ pub mod service;
 pub mod session;
 
 /// Service name in the Windows service manager.
-pub const SERVICE_NAME: &str = "PairDesk";
+pub const SERVICE_NAME: &str = "PocketDesk";
 
 /// The pairing files the sign-in screen needs, copied from the user's
-/// PairDesk folder.
+/// PocketDesk folder.
 pub const MIRRORED: [&str; 4] = [
     "identity-cert.der",
     "identity-key.der",
@@ -139,7 +139,7 @@ pub fn set_enabled(on: bool) {
     });
 }
 
-/// `%ProgramData%\PairDesk` (`base`) layout.
+/// `%ProgramData%\PocketDesk` (`base`) layout.
 pub fn system_data_dir(base: &Path) -> PathBuf {
     base.join("system")
 }

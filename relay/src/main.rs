@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! PairDesk relay.
+//! PocketDesk relay.
 //!
 //! Connects a phone to a computer when neither can reach the other
 //! directly (different networks, no Tailscale). Both connect *out* to the
 //! relay; the relay pairs the two connections and copies bytes between
-//! them. PairDesk's own TLS runs end to end inside, with the computer's
+//! them. PocketDesk's own TLS runs end to end inside, with the computer's
 //! certificate pinned on the phone, so the relay sees only encrypted
 //! bytes: it can't read or change screens, keystrokes or files.
 //!
@@ -290,7 +290,7 @@ async fn join(phone: TcpStream, early: Vec<u8>, computer: TcpStream) {
 
 fn usage() -> ! {
     eprintln!(
-        "PairDesk relay {}\n\nUsage: pairdesk-relay [--listen ADDRESS:PORT]...\n\n\
+        "PocketDesk relay {}\n\nUsage: pocketdesk-relay [--listen ADDRESS:PORT]...\n\n\
          Default: --listen 0.0.0.0:47900. Listen on several, e.g. 443 as well, for\n\
          networks that block other ports. Log detail: RUST_LOG=info (default) or debug.",
         env!("CARGO_PKG_VERSION")
@@ -307,7 +307,7 @@ async fn main() {
         match a.as_str() {
             "--listen" => listens.push(args.next().unwrap_or_else(|| usage())),
             "--version" => {
-                println!("pairdesk-relay {}", env!("CARGO_PKG_VERSION"));
+                println!("pocketdesk-relay {}", env!("CARGO_PKG_VERSION"));
                 return;
             }
             _ => usage(),
@@ -326,7 +326,7 @@ async fn main() {
             }
         };
         info!(
-            "PairDesk relay {} listening on {addr}",
+            "PocketDesk relay {} listening on {addr}",
             env!("CARGO_PKG_VERSION")
         );
         let relay = relay.clone();

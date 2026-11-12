@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The `pairdesk://pair?...` link inside the QR code on the computer, and
-// the same as `https://pairdesk.madhushan.me/p#...` to send in a message
+// The `pocketdesk://pair?...` link inside the QR code on the computer, and
+// the same as `https://pocketdesk.lapalu.me/p#...` to send in a message
 // (the part after `#` never leaves the phone).
 
 import 'dart:typed_data';
@@ -10,7 +10,7 @@ import 'host.dart';
 import 'relay_route.dart';
 
 /// Where shared links point.
-const shareLinkHost = 'pairdesk.madhushan.me';
+const shareLinkHost = 'pocketdesk.lapalu.me';
 
 /// Protocol version this app speaks (see docs/PROTOCOL.md).
 const int protocolVersion = 2;
@@ -43,7 +43,7 @@ class PairingInfo {
   final bool help;
 }
 
-/// Thrown when a scanned code isn't a usable PairDesk pairing link.
+/// Thrown when a scanned code isn't a usable PocketDesk pairing link.
 class PairingLinkException implements Exception {
   PairingLinkException(this.message);
   final String message;
@@ -56,10 +56,10 @@ PairingInfo parsePairingLink(String text) {
   try {
     uri = Uri.parse(text.trim());
   } on FormatException {
-    throw PairingLinkException('This isn\'t a PairDesk code.');
+    throw PairingLinkException('This isn\'t a PocketDesk code.');
   }
   final Map<String, String> q;
-  if (uri.scheme == 'pairdesk' && uri.host == 'pair') {
+  if (uri.scheme == 'pocketdesk' && uri.host == 'pair') {
     q = uri.queryParameters;
   } else if (uri.scheme == 'https' &&
       uri.host == shareLinkHost &&
@@ -68,26 +68,26 @@ PairingInfo parsePairingLink(String text) {
     try {
       q = Uri.splitQueryString(uri.fragment);
     } on ArgumentError {
-      throw PairingLinkException('This PairDesk link is damaged.');
+      throw PairingLinkException('This PocketDesk link is damaged.');
     }
   } else {
-    throw PairingLinkException('This isn\'t a PairDesk code.');
+    throw PairingLinkException('This isn\'t a PocketDesk code.');
   }
 
   final v = int.tryParse(q['v'] ?? '');
-  if (v == null) throw PairingLinkException('This PairDesk code is incomplete.');
+  if (v == null) throw PairingLinkException('This PocketDesk code is incomplete.');
   if (v > protocolVersion) {
-    throw PairingLinkException('The computer runs a newer PairDesk. Update this app first.');
+    throw PairingLinkException('The computer runs a newer PocketDesk. Update this app first.');
   }
   if (v < protocolVersion) {
-    throw PairingLinkException('The computer runs an older PairDesk. Update it on the computer first.');
+    throw PairingLinkException('The computer runs an older PocketDesk. Update it on the computer first.');
   }
 
   final fp = b64Decode(q['fp'] ?? '');
   final token = q['t'] ?? '';
   final port = int.tryParse(q['p'] ?? '');
   if (fp == null || fp.length != 32 || token.length < 16 || port == null || port < 1 || port > 65535) {
-    throw PairingLinkException('This PairDesk code is damaged. Show a new code on the computer.');
+    throw PairingLinkException('This PocketDesk code is damaged. Show a new code on the computer.');
   }
 
   final addresses = (q['a'] ?? '').split(',').map((a) => a.trim()).where(isUsableHost).toList();

@@ -26,7 +26,7 @@ String formatSize(int n) {
   return '${v.toStringAsFixed(v < 10 ? 1 : 0)} ${units[i]}';
 }
 
-/// Clipboard actions, shared by the sheet and "Share → PairDesk".
+/// Clipboard actions, shared by the sheet and "Share → PocketDesk".
 class Exchange {
   Exchange(this.conn, this.say, {this.nativeFiles});
   final AgentConnection conn;
@@ -91,7 +91,7 @@ class Exchange {
         } catch (_) {}
       }
     }
-    final where = conn.agentOs == 'windows' ? 'Downloads\\PairDesk' : 'Downloads/PairDesk';
+    final where = conn.agentOs == 'windows' ? 'Downloads\\PocketDesk' : 'Downloads/PocketDesk';
     if (lastError != null) {
       say(ok == 0 ? lastError : '$ok of ${picked.length} files sent. $lastError');
     } else {
@@ -110,7 +110,7 @@ class Exchange {
   Future<void> open(Transfer t) async {
     final uri = t.openUri;
     if (uri == null || !await files.open(uri, t.name)) {
-      say('No app on this phone opens that file. It\'s in ${t.savedWhere ?? 'Download/PairDesk'}.');
+      say('No app on this phone opens that file. It\'s in ${t.savedWhere ?? 'Download/PocketDesk'}.');
     }
   }
 }
@@ -129,12 +129,12 @@ class ExchangeSheet extends StatelessWidget {
     final clipWhy = !clipOk
         ? conn.outdatedComputerMessage()
         : !conn.allowed.clipboard
-        ? 'Turned off in PairDesk settings on the computer.'
+        ? 'Turned off in PocketDesk settings on the computer.'
         : null;
     final filesWhy = !filesOk
         ? conn.outdatedComputerMessage()
         : !conn.allowed.files
-        ? 'Turned off in PairDesk settings on the computer.'
+        ? 'Turned off in PocketDesk settings on the computer.'
         : null;
 
     void run(Future<void> Function() action) {
@@ -186,7 +186,7 @@ class ExchangeSheet extends StatelessWidget {
                   leading: const Icon(Icons.upload_file),
                   title: const Text('Send files to computer'),
                   subtitle: Text(
-                    'Saved in ${conn.agentOs == 'windows' ? 'Downloads\\PairDesk' : 'Downloads/PairDesk'} there',
+                    'Saved in ${conn.agentOs == 'windows' ? 'Downloads\\PocketDesk' : 'Downloads/PocketDesk'} there',
                   ),
                   onTap: () => run(exchange.pickAndSend),
                 ),
@@ -194,10 +194,10 @@ class ExchangeSheet extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                 child: Text(
                   conn.agentOs == 'windows'
-                      ? 'To send files to this phone, drop them on PairDesk\'s page on the computer, '
-                            'or right-click a file → Send to → PairDesk phone.'
-                      : 'To send files to this phone, drop them on PairDesk\'s page on the computer, '
-                            'or use "Send to phone (PairDesk)" in the file manager\'s menu.',
+                      ? 'To send files to this phone, drop them on PocketDesk\'s page on the computer, '
+                            'or right-click a file → Send to → PocketDesk phone.'
+                      : 'To send files to this phone, drop them on PocketDesk\'s page on the computer, '
+                            'or use "Send to phone (PocketDesk)" in the file manager\'s menu.',
                   style: theme.textTheme.bodySmall,
                 ),
               ),
@@ -225,7 +225,7 @@ class _TransferTile extends StatelessWidget {
       TransferState.waiting => 'Waiting…',
       TransferState.active => '${formatSize(t.done)} of ${formatSize(t.size)}',
       TransferState.done =>
-        t.incoming ? 'Saved in ${t.savedWhere ?? 'Download/PairDesk'}' : 'Sent · ${formatSize(t.size)}',
+        t.incoming ? 'Saved in ${t.savedWhere ?? 'Download/PocketDesk'}' : 'Sent · ${formatSize(t.size)}',
       TransferState.failed => t.message ?? 'Failed',
     };
     return ListTile(

@@ -2,7 +2,7 @@
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/screen/viewport.dart';
+import 'package:pocketdesk/screen/viewport.dart';
 
 void main() {
   const view = Size(400, 300);

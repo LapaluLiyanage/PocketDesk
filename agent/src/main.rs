@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! PairDesk desktop agent.
+//! PocketDesk desktop agent.
 //!
 //! Runs in the background (tray icon), accepts encrypted connections only
 //! from phones paired through the QR code on the settings page, and turns
@@ -64,9 +64,9 @@ struct Args {
     /// Print a pairing QR code in the terminal.
     pair: bool,
     no_tray: bool,
-    /// `--send FILE…`: hand files to the running PairDesk for the phone.
+    /// `--send FILE…`: hand files to the running PocketDesk for the phone.
     send: Vec<std::path::PathBuf>,
-    /// `--quit`: stop the running PairDesk (used by the setup and uninstaller).
+    /// `--quit`: stop the running PocketDesk (used by the setup and uninstaller).
     quit: bool,
     /// Started by an update: like --background, and noted in the log.
     updated: bool,
@@ -94,14 +94,14 @@ enum Mode {
 
 fn usage() -> String {
     format!(
-        "PairDesk agent {}\n\n\
-         USAGE: pairdesk-agent [OPTIONS]\n\n\
+        "PocketDesk agent {}\n\n\
+         USAGE: pocketdesk [OPTIONS]\n\n\
          OPTIONS:\n  \
            --pair          print a pairing QR code in this terminal\n  \
            --background    start quietly (used when starting at sign-in)\n  \
            --no-tray       don't show a tray icon\n  \
-           --send FILE...  send files to the connected phone (PairDesk must be running)\n  \
-           --quit          stop the running PairDesk\n  \
+           --send FILE...  send files to the connected phone (PocketDesk must be running)\n  \
+           --quit          stop the running PocketDesk\n  \
            --port <PORT>   port for phones (default {DEFAULT_PORT})\n  \
            --bind <ADDR>   address to listen on (default 0.0.0.0)\n  \
            --version       print the version\n\n\
@@ -163,7 +163,7 @@ fn parse_args() -> Result<Args, String> {
                 }
             }
             "--version" | "-V" => {
-                println!("pairdesk-agent {}", env!("CARGO_PKG_VERSION"));
+                println!("pocketdesk {}", env!("CARGO_PKG_VERSION"));
                 std::process::exit(0);
             }
             "--help" | "-h" => {
@@ -182,7 +182,7 @@ fn init_logging(data_dir: &Path) {
     );
     // Without a console (Windows release, or started at sign-in) log to a file.
     let to_file = cfg!(all(windows, not(debug_assertions)));
-    // Appended to (starting PairDesk again mustn't wipe the running copy's
+    // Appended to (starting PocketDesk again mustn't wipe the running copy's
     // log), and started afresh once it gets big.
     let path = data_dir.join("agent.log");
     let big = std::fs::metadata(&path).is_ok_and(|m| m.len() > 2 * 1024 * 1024);
@@ -214,7 +214,7 @@ fn main() {
     windows_modes(&args);
     let data_dir = match config::data_dir() {
         Ok(d) => d,
-        Err(e) => fatal(&format!("cannot create the PairDesk data folder: {e}")),
+        Err(e) => fatal(&format!("cannot create the PocketDesk data folder: {e}")),
     };
     if !args.send.is_empty() {
         send_files(&data_dir, &args.send);
@@ -236,7 +236,7 @@ fn main() {
             winsys::read_endpoint(&winsys::endpoint_file(&base, session?))
         }));
         if winsys::helper_available() {
-            info!("the PairDesk helper is on: sign-in screen and admin prompts work");
+            info!("the PocketDesk helper is on: sign-in screen and admin prompts work");
         }
     }
     if args.updated {
@@ -244,7 +244,7 @@ fn main() {
     }
 
     // Only one agent per computer. If the port is taken it's most likely
-    // PairDesk already running: an older release gives way to this one,
+    // PocketDesk already running: an older release gives way to this one,
     // otherwise its settings page is shown.
     let listener = match std::net::TcpListener::bind((args.bind.as_str(), args.port)) {
         Ok(l) => l,
@@ -467,7 +467,7 @@ fn main() {
     runtime.shutdown_timeout(std::time::Duration::from_millis(500));
 }
 
-/// The port is taken. Replaces an older PairDesk; otherwise shows the
+/// The port is taken. Replaces an older PocketDesk; otherwise shows the
 /// running one's settings page and exits.
 fn take_over(args: &Args, data_dir: &Path) -> std::net::TcpListener {
     const OURS: &str = env!("CARGO_PKG_VERSION");
@@ -487,7 +487,7 @@ fn take_over(args: &Args, data_dir: &Path) -> std::net::TcpListener {
             }
         }
         fatal(&format!(
-            "port {} is used by another program; start PairDesk with --port <another port>",
+            "port {} is used by another program; start PocketDesk with --port <another port>",
             args.port
         ));
     };
@@ -499,7 +499,7 @@ fn take_over(args: &Args, data_dir: &Path) -> std::net::TcpListener {
         .filter(|v| args.updated || instance::is_older(v, OURS));
     let Some(old) = older else {
         if !args.background {
-            info!("PairDesk is already running; showing it");
+            info!("PocketDesk is already running; showing it");
             // Older versions don't know how: their page in the browser.
             if let Err(e) = instance::ask_to_show(&running.url) {
                 info!("({e}); opening its page in the browser");
@@ -509,24 +509,24 @@ fn take_over(args: &Args, data_dir: &Path) -> std::net::TcpListener {
         std::process::exit(0);
     };
 
-    info!("PairDesk {old} is running; replacing it with {OURS}");
+    info!("PocketDesk {old} is running; replacing it with {OURS}");
     if let Err(e) = instance::ask_to_quit(&running.url) {
-        warn!("could not ask PairDesk {old} to stop: {e}");
+        warn!("could not ask PocketDesk {old} to stop: {e}");
     }
     // It closes within a second or so; give it plenty of time.
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
     loop {
         match std::net::TcpListener::bind((args.bind.as_str(), args.port)) {
             Ok(l) => {
-                info!("took over from PairDesk {old}");
+                info!("took over from PocketDesk {old}");
                 return l;
             }
             Err(e) if e.kind() == ErrorKind::AddrInUse && std::time::Instant::now() < deadline => {
                 std::thread::sleep(std::time::Duration::from_millis(200));
             }
             Err(_) => fatal(&format!(
-                "an older PairDesk ({old}) is still running. Stop it from its tray icon \
-                 (Stop PairDesk), then open PairDesk {OURS} again."
+                "an older PocketDesk ({old}) is still running. Stop it from its tray icon \
+                 (Stop PocketDesk), then open PocketDesk {OURS} again."
             )),
         }
     }
@@ -552,9 +552,9 @@ fn windows_modes(args: &Args) {
             if args.mode == Mode::InstallService {
                 log_to("service-setup.log");
             } else if let Ok(f) =
-                std::fs::File::create(std::env::temp_dir().join("pairdesk-uninstall.log"))
+                std::fs::File::create(std::env::temp_dir().join("pocketdesk-uninstall.log"))
             {
-                // Not in ProgramData\PairDesk, which is being deleted.
+                // Not in ProgramData\PocketDesk, which is being deleted.
                 let _ = env_logger::Builder::from_env(
                     env_logger::Env::default().default_filter_or("info"),
                 )
@@ -571,7 +571,7 @@ fn windows_modes(args: &Args) {
                 Ok(()) => std::process::exit(0),
                 Err(e) => {
                     error!("{e}");
-                    eprintln!("PairDesk: {e}");
+                    eprintln!("PocketDesk: {e}");
                     std::process::exit(1);
                 }
             }
@@ -584,14 +584,14 @@ fn windows_modes(args: &Args) {
                     Ok(()) => std::process::exit(0),
                     Err(e) => {
                         error!("{e}");
-                        eprintln!("PairDesk: {e}");
+                        eprintln!("PocketDesk: {e}");
                         std::process::exit(1);
                     }
                 }
             }
             #[cfg(not(windows))]
             {
-                eprintln!("PairDesk: --allow-firewall is only for Windows.");
+                eprintln!("PocketDesk: --allow-firewall is only for Windows.");
                 std::process::exit(1);
             }
         }
@@ -608,12 +608,12 @@ fn windows_modes(args: &Args) {
             winsys::set_system_mode();
             let dir = winsys::system_data_dir(&base);
             // SAFETY: still single-threaded at this point.
-            unsafe { std::env::set_var("PAIRDESK_HOME", &dir) };
+            unsafe { std::env::set_var("POCKETDESK_HOME", &dir) };
         }
     }
 }
 
-/// `--quit`: asks the running PairDesk to stop and waits until it has.
+/// `--quit`: asks the running PocketDesk to stop and waits until it has.
 /// Exits 0 when none is running (any more).
 fn quit_running(data_dir: &Path) -> ! {
     let file = data_dir.join(SETTINGS_URL_FILE);
@@ -625,7 +625,7 @@ fn quit_running(data_dir: &Path) -> ! {
         std::process::exit(0);
     }
     if let Err(e) = instance::ask_to_quit(&running.url) {
-        eprintln!("PairDesk: could not ask PairDesk to stop: {e}");
+        eprintln!("PocketDesk: could not ask PocketDesk to stop: {e}");
         std::process::exit(1);
     }
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
@@ -637,7 +637,7 @@ fn quit_running(data_dir: &Path) -> ! {
         }
         std::thread::sleep(std::time::Duration::from_millis(200));
     }
-    eprintln!("PairDesk: it didn't stop within 20 seconds");
+    eprintln!("PocketDesk: it didn't stop within 20 seconds");
     std::process::exit(1);
 }
 
@@ -650,7 +650,7 @@ fn send_files(data_dir: &Path, paths: &[std::path::PathBuf]) -> ! {
         .collect();
     let result = std::fs::read_to_string(data_dir.join(SETTINGS_URL_FILE))
         .map_err(|_| {
-            "PairDesk isn't running. Start PairDesk, open it on your phone, then try again."
+            "PocketDesk isn't running. Start PocketDesk, open it on your phone, then try again."
                 .to_string()
         })
         .and_then(|url| instance::send_paths(url.trim(), &paths));
@@ -660,7 +660,7 @@ fn send_files(data_dir: &Path, paths: &[std::path::PathBuf]) -> ! {
             std::process::exit(0);
         }
         Err(e) => {
-            eprintln!("PairDesk: {e}");
+            eprintln!("PocketDesk: {e}");
             tray::show_error(&e);
             std::process::exit(1);
         }
@@ -669,14 +669,14 @@ fn send_files(data_dir: &Path, paths: &[std::path::PathBuf]) -> ! {
 
 fn fatal(msg: &str) -> ! {
     error!("{msg}");
-    eprintln!("PairDesk: {msg}");
+    eprintln!("PocketDesk: {msg}");
     tray::show_error(msg);
     std::process::exit(1);
 }
 
 fn print_banner(state: &AppState, settings_url: &str) {
     println!(
-        "PairDesk agent {} on \"{}\"",
+        "PocketDesk agent {} on \"{}\"",
         env!("CARGO_PKG_VERSION"),
         state.name
     );
@@ -711,7 +711,7 @@ fn print_terminal_qr(state: &AppState) {
                 .quiet_zone(true)
                 .build();
             println!(
-                "\nIn PairDesk on your phone, tap Scan pairing code and scan this:\n\n{text}\n"
+                "\nIn PocketDesk on your phone, tap Scan pairing code and scan this:\n\n{text}\n"
             );
         }
         Err(e) => warn!("cannot draw QR code: {e}"),

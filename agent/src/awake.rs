@@ -78,7 +78,7 @@ mod platform {
             if ready_rx.recv().unwrap_or(false) {
                 Ok(Self { stop, thread })
             } else {
-                Err("Windows didn't allow PairDesk to keep the computer awake.".into())
+                Err("Windows didn't allow PocketDesk to keep the computer awake.".into())
             }
         }
 
@@ -102,7 +102,7 @@ mod platform {
             let mut child = crate::install::host_command("systemd-inhibit")
                 .args([
                     "--what=sleep:idle",
-                    "--who=PairDesk",
+                    "--who=PocketDesk",
                     "--why=Phones can connect from anywhere",
                     "--mode=block",
                     "sleep",
@@ -119,7 +119,7 @@ mod platform {
             std::thread::sleep(std::time::Duration::from_millis(150));
             if let Ok(Some(status)) = child.try_wait() {
                 return Err(format!(
-                    "This computer didn't allow PairDesk to keep it awake (systemd-inhibit {status})."
+                    "This computer didn't allow PocketDesk to keep it awake (systemd-inhibit {status})."
                 ));
             }
             Ok(Self { child })

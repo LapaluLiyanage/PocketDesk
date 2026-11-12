@@ -92,8 +92,8 @@ class AppModel extends ChangeNotifier {
   }
 
   /// Adds an address the owner typed in, e.g. the computer's Tailscale
-  /// address copied from its PairDesk page. Returns false if it isn't one
-  /// PairDesk can dial.
+  /// address copied from its PocketDesk page. Returns false if it isn't one
+  /// PocketDesk can dial.
   Future<bool> addAddress(Laptop laptop, String address) async {
     final host = address.trim();
     if (host.isEmpty || !isTypedHost(host)) return false;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // End-to-end test against the real agent in a GNOME Wayland session
 // (headless mutter, the real portals and PipeWire). Run through
-// tools/e2e-wayland.sh, which sets PAIRDESK_E2E_LINK, PAIRDESK_E2E_STAGE and
+// tools/e2e-wayland.sh, which sets POCKETDESK_E2E_LINK, POCKETDESK_E2E_STAGE and
 // a few file paths.
 
 import 'dart:async';
@@ -10,15 +10,15 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart' show Color;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/pairing/identity.dart';
-import 'package:pairdesk/pairing/pairing_link.dart';
-import 'package:pairdesk/screen/compositor.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/pairing/identity.dart';
+import 'package:pocketdesk/pairing/pairing_link.dart';
+import 'package:pocketdesk/screen/compositor.dart';
 
 void main() {
   final env = Platform.environment;
-  final link = env['PAIRDESK_E2E_LINK'];
-  final stage = env['PAIRDESK_E2E_STAGE'] ?? 'first';
+  final link = env['POCKETDESK_E2E_LINK'];
+  final stage = env['POCKETDESK_E2E_STAGE'] ?? 'first';
   final skip = link == null ? 'run through tools/e2e-wayland.sh' : null;
 
   Future<AgentConnection> connect(int seed) async {
@@ -35,7 +35,7 @@ void main() {
 
   /// Waits for an app-log line (the test window records what it receives).
   Future<void> appSaw(String line) async {
-    final log = File(env['PAIRDESK_E2E_APP_LOG']!);
+    final log = File(env['POCKETDESK_E2E_APP_LOG']!);
     final deadline = DateTime.now().add(const Duration(seconds: 5));
     while (DateTime.now().isBefore(deadline)) {
       if (log.readAsLinesSync().contains(line)) return;
@@ -82,7 +82,7 @@ void main() {
 
       if (stage == 'first') {
         await waitFor((_) async => isRed(await pixelAt(640, 400)), 'the red window');
-        File(env['PAIRDESK_E2E_SCREEN_SIGNAL']!).writeAsStringSync('go');
+        File(env['POCKETDESK_E2E_SCREEN_SIGNAL']!).writeAsStringSync('go');
         await waitFor((_) async => isGreen(await pixelAt(640, 400)), 'the window turning green');
       } else {
         await waitFor((_) async => isGreen(await pixelAt(640, 400)), 'the green window');
@@ -129,7 +129,7 @@ void main() {
         await appSaw('clipboard from the phone ✓');
         await conn.clipboardSet('pasted from the phone', paste: true);
         await appSaw('key ctrl+v');
-        File('${env['PAIRDESK_E2E_SCREEN_SIGNAL']!}.clip').writeAsStringSync('go');
+        File('${env['POCKETDESK_E2E_SCREEN_SIGNAL']!}.clip').writeAsStringSync('go');
         final deadline = DateTime.now().add(const Duration(seconds: 5));
         var text = '';
         while (DateTime.now().isBefore(deadline) && text != 'copied in gtk') {

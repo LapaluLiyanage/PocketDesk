@@ -92,7 +92,7 @@ fn header_value<'a>(request: &'a Request, name: &str) -> Option<&'a str> {
 }
 
 /// Same checks as every change request: our Host, our secret, POST with
-/// the PairDesk header and no foreign Origin.
+/// the PocketDesk header and no foreign Origin.
 fn is_our_post(request: &Request, secret: &str, host: &str, route: &str) -> bool {
     let url = request.url();
     let path = url.split('?').next().unwrap_or("");
@@ -100,7 +100,7 @@ fn is_our_post(request: &Request, secret: &str, host: &str, route: &str) -> bool
     *request.method() == Method::Post
         && header_value(request, "Host") == Some(host)
         && path.strip_prefix('/').and_then(|p| p.strip_prefix(secret)) == Some(route)
-        && header_value(request, "X-PairDesk") == Some("1")
+        && header_value(request, "X-PocketDesk") == Some("1")
         && origin_ok
 }
 
@@ -152,7 +152,7 @@ fn handle(
     if method == Method::Post {
         let origin_ok =
             header_value(&request, "Origin").is_none_or(|o| o == format!("http://{host}"));
-        if header_value(&request, "X-PairDesk") != Some("1") || !origin_ok {
+        if header_value(&request, "X-PocketDesk") != Some("1") || !origin_ok {
             return status(request, 403, "forbidden");
         }
     }
@@ -275,7 +275,7 @@ fn handle(
                     if b.screen == Some(false) {
                         state.stop_viewing(None);
                     }
-                    const OFF: &str = "This was turned off in PairDesk settings on the computer.";
+                    const OFF: &str = "This was turned off in PocketDesk settings on the computer.";
                     if b.audio == Some(false) {
                         state.stop_listening(None, false, OFF);
                     } else if b.mic == Some(false) {
@@ -416,7 +416,7 @@ fn handle(
                 return status(
                     request,
                     409,
-                    "No phone is connected. Open PairDesk on your phone first.",
+                    "No phone is connected. Open PocketDesk on your phone first.",
                 );
             }
             let mut sent = 0;
@@ -489,7 +489,7 @@ fn handle(
             send_state(request, state)
         }
         (Method::Post, "/api/show") => {
-            // Started again: show the window of the PairDesk already running.
+            // Started again: show the window of the PocketDesk already running.
             crate::tray::show(false);
             status(request, 200, "shown");
         }
@@ -703,10 +703,10 @@ fn upload(mut request: Request, state: &Arc<AppState>) {
         return status(
             request,
             409,
-            "No phone is connected. Open PairDesk on your phone first.",
+            "No phone is connected. Open PocketDesk on your phone first.",
         );
     }
-    let dir = std::env::temp_dir().join("pairdesk-outgoing");
+    let dir = std::env::temp_dir().join("pocketdesk-outgoing");
     let path = dir.join(crate::config::b64(&crate::config::random_bytes::<9>()));
     let saved = std::fs::create_dir_all(&dir)
         .and_then(|_| std::fs::File::create(&path))

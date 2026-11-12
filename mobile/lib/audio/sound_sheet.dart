@@ -29,12 +29,12 @@ class SoundSheet extends StatelessWidget {
                 if (!audio.available)
                   const _Note(
                     icon: Icons.system_update_alt,
-                    text: 'Update PairDesk on the computer (0.10 or newer) to hear it and talk to it.',
+                    text: 'Update PocketDesk on the computer (0.10 or newer) to hear it and talk to it.',
                   )
                 else if (!audio.allowed)
                   const _Note(
                     icon: Icons.block,
-                    text: 'Sound is turned off on the computer: PairDesk → Permissions → Sound and talking.',
+                    text: 'Sound is turned off on the computer: PocketDesk → Permissions → Sound and talking.',
                   ),
                 if (audio.error != null) _Note(icon: Icons.error_outline, text: audio.error!, error: true),
                 const _Header('Listen'),
@@ -51,7 +51,7 @@ class SoundSheet extends StatelessWidget {
                   subtitle: Text(
                     audio.micAllowed
                         ? 'Hear people near the computer. The computer shows that you\'re listening.'
-                        : 'Off on the computer. To allow it: PairDesk → Permissions → Hear the microphone.',
+                        : 'Off on the computer. To allow it: PocketDesk → Permissions → Hear the microphone.',
                   ),
                   value: audio.mic,
                   onChanged: usable && audio.micAllowed && !audio.busy ? audio.setMic : null,

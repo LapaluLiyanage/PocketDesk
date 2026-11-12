@@ -181,7 +181,7 @@ List<CustomButton> defaultButtons({String? os}) {
 }
 
 class ButtonStore {
-  static const _key = 'pairdesk.buttons.v1';
+  static const _key = 'pocketdesk.buttons.v1';
 
   /// Saved buttons, or null if the user never changed the defaults.
   Future<List<CustomButton>?> load() async {
@@ -208,7 +208,7 @@ class ButtonStore {
 
 /// Favourite apps, per computer.
 class FavouriteStore {
-  static String _key(String laptopKey) => 'pairdesk.favs.v1.$laptopKey';
+  static String _key(String laptopKey) => 'pocketdesk.favs.v1.$laptopKey';
 
   Future<List<String>> load(String laptopKey) async {
     final prefs = await SharedPreferences.getInstance();

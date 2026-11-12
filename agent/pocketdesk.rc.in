@@ -16,13 +16,13 @@ BEGIN
   BEGIN
     BLOCK "040904b0"
     BEGIN
-      VALUE "CompanyName", "Sandun Madhushan"
-      VALUE "FileDescription", "PairDesk"
+      VALUE "CompanyName", "Lapalu Liyanage"
+      VALUE "FileDescription", "PocketDesk"
       VALUE "FileVersion", "@VERSION@"
-      VALUE "InternalName", "pairdesk-agent"
+      VALUE "InternalName", "pocketdesk"
       VALUE "LegalCopyright", "GPL-3.0-or-later"
-      VALUE "OriginalFilename", "pairdesk-agent.exe"
-      VALUE "ProductName", "PairDesk"
+      VALUE "OriginalFilename", "pocketdesk.exe"
+      VALUE "ProductName", "PocketDesk"
       VALUE "ProductVersion", "@VERSION@"
     END
   END

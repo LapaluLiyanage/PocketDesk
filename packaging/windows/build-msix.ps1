@@ -1,26 +1,26 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Builds the Microsoft Store package (unsigned .msix; the Store signs it).
 #
-#   ./build-msix.ps1 -Version 0.8.0 -Agent ..\..\agent\target\release -Out PairDesk.msix `
-#     -IdentityName 12345SandunMadhushan.PairDesk -Publisher "CN=…" -PublisherName "Sandun Madhushan"
+#   ./build-msix.ps1 -Version 0.8.0 -Agent ..\..\agent\target\release -Out PocketDesk.msix `
+#     -IdentityName 12345LapaluLiyanage.PocketDesk -Publisher "CN=…" -PublisherName "Lapalu Liyanage"
 #
-# The identity values are on Partner Center → PairDesk → Product identity.
+# The identity values are on Partner Center → PocketDesk → Product identity.
 # Needs makeappx.exe from the Windows SDK (on GitHub's Windows runners).
 param(
   [Parameter(Mandatory)] [string] $Version,
-  [Parameter(Mandatory)] [string] $Agent,   # folder with pairdesk-agent.exe and pairdesk-startup.exe
+  [Parameter(Mandatory)] [string] $Agent,   # folder with pocketdesk.exe and pocketdesk-startup.exe
   [Parameter(Mandatory)] [string] $Out,
-  [string] $IdentityName = "SandunMadhushan.PairDesk",
-  [string] $Publisher = "CN=Sandun Madhushan",
-  [string] $PublisherName = "Sandun Madhushan"
+  [string] $IdentityName = "LapaluLiyanage.PocketDesk",
+  [string] $Publisher = "CN=Lapalu Liyanage",
+  [string] $PublisherName = "Lapalu Liyanage"
 )
 $ErrorActionPreference = "Stop"
 $here = $PSScriptRoot
-$stage = Join-Path ([IO.Path]::GetTempPath()) ("pairdesk-msix-" + [Guid]::NewGuid())
+$stage = Join-Path ([IO.Path]::GetTempPath()) ("pocketdesk-msix-" + [Guid]::NewGuid())
 New-Item -ItemType Directory -Path (Join-Path $stage "Assets") | Out-Null
 
-Copy-Item (Join-Path $Agent "pairdesk-agent.exe") $stage
-Copy-Item (Join-Path $Agent "pairdesk-startup.exe") $stage
+Copy-Item (Join-Path $Agent "pocketdesk.exe") $stage
+Copy-Item (Join-Path $Agent "pocketdesk-startup.exe") $stage
 Copy-Item (Join-Path $here "..\icons\msix\*.png") (Join-Path $stage "Assets")
 Copy-Item (Join-Path $here "..\..\LICENSE") (Join-Path $stage "LICENSE.txt")
 

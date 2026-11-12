@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Starting PairDesk when the user signs in.
+//! Starting PocketDesk when the user signs in.
 //!
 //! Windows: a value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
-//! Linux: `~/.config/autostart/PairDesk.desktop`.
+//! Linux: `~/.config/autostart/PocketDesk.desktop`.
 //! Neither needs administrator rights.
 //!
 //! Microsoft Store copy: a startup task in the package manifest, which the
@@ -21,7 +21,7 @@ fn launcher() -> Result<AutoLaunch, String> {
     let exe = crate::install::program_path().map_err(|e| e.to_string())?;
     let exe = exe.to_str().ok_or("the program path isn't valid text")?;
     AutoLaunchBuilder::new()
-        .set_app_name("PairDesk")
+        .set_app_name("PocketDesk")
         .set_app_path(&quoted(exe))
         .set_args(&["--background"])
         .build()
@@ -50,7 +50,7 @@ fn quoted(exe: &str) -> String {
     }
 }
 
-/// Who manages start at sign-in when it isn't PairDesk: "windows" for the
+/// Who manages start at sign-in when it isn't PocketDesk: "windows" for the
 /// Microsoft Store copy.
 pub fn managed_by() -> Option<&'static str> {
     (crate::install::current() == crate::install::Kind::Store).then_some("windows")
@@ -71,7 +71,7 @@ pub fn is_enabled() -> bool {
 
 pub fn set_enabled(enabled: bool) -> Result<(), String> {
     if managed_by().is_some() {
-        return Err("Windows manages this: Settings → Apps → Startup → PairDesk.".into());
+        return Err("Windows manages this: Settings → Apps → Startup → PocketDesk.".into());
     }
     #[cfg(target_os = "linux")]
     if crate::install::current() == crate::install::Kind::Flatpak {
@@ -103,7 +103,7 @@ pub fn refresh() {
     }
 }
 
-/// Turns auto-start on the first time PairDesk runs, so the computer is
+/// Turns auto-start on the first time PocketDesk runs, so the computer is
 /// reachable after every restart without the user doing anything.
 pub fn enable_on_first_run(data_dir: &Path) {
     let marker = data_dir.join(INITIALIZED);
@@ -112,7 +112,7 @@ pub fn enable_on_first_run(data_dir: &Path) {
     }
     match set_enabled(true) {
         Ok(()) => {
-            log::info!("PairDesk will start when you sign in (change this in settings)");
+            log::info!("PocketDesk will start when you sign in (change this in settings)");
             let _ = std::fs::write(&marker, b"1");
         }
         Err(e) => log::warn!("could not turn on start at sign-in: {e}"),
@@ -142,13 +142,13 @@ mod flatpak {
         let mut options: HashMap<&str, Value> = HashMap::new();
         options.insert(
             "reason",
-            Value::from("Start PairDesk when you sign in, so your phone can reach this computer"),
+            Value::from("Start PocketDesk when you sign in, so your phone can reach this computer"),
         );
         options.insert("autostart", Value::from(enabled));
         options.insert(
             "commandline",
             Value::from(vec![
-                "pairdesk-agent".to_string(),
+                "pocketdesk".to_string(),
                 "--background".to_string(),
             ]),
         );
@@ -173,15 +173,15 @@ mod tests {
     #[cfg(windows)]
     fn quotes_the_windows_path() {
         assert_eq!(
-            quoted(r"C:\Users\Jane Doe\pairdesk-agent.exe"),
-            r#""C:\Users\Jane Doe\pairdesk-agent.exe""#
+            quoted(r"C:\Users\Jane Doe\pocketdesk.exe"),
+            r#""C:\Users\Jane Doe\pocketdesk.exe""#
         );
     }
 
     #[test]
     #[cfg(not(windows))]
     fn quotes_desktop_entry_paths_only_when_needed() {
-        assert_eq!(quoted("/opt/pairdesk/agent"), "/opt/pairdesk/agent");
+        assert_eq!(quoted("/opt/pocketdesk/agent"), "/opt/pocketdesk/agent");
         assert_eq!(
             quoted("/home/jane/My Apps/agent"),
             "\"/home/jane/My Apps/agent\""

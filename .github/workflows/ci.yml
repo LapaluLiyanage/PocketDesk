@@ -32,17 +32,17 @@ jobs:
       - run: cargo clippy --release -- -D warnings
       - run: cargo test
       - run: cargo build --release
-      # The PairDesk window (WebView2): it opens and loads the page; the
+      # The PocketDesk window (WebView2): it opens and loads the page; the
       # screenshot is kept for a look. Then a second start shows it again.
-      - name: PairDesk window (Windows)
+      - name: PocketDesk window (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $data = Join-Path $env:RUNNER_TEMP pdhome
           New-Item -ItemType Directory -Force $data | Out-Null
-          $env:PAIRDESK_HOME = $data
+          $env:POCKETDESK_HOME = $data
           $log = Join-Path $data agent.log
-          $agent = Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--port','47955' -PassThru
+          $agent = Start-Process -FilePath target\release\pocketdesk.exe -ArgumentList '--port','47955' -PassThru
           $loaded = $false
           for ($i = 0; $i -lt 90 -and -not $loaded; $i++) {
             Start-Sleep 1
@@ -53,19 +53,19 @@ jobs:
           $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
           $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
           [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
-          $bmp.Save((Join-Path $env:RUNNER_TEMP 'pairdesk-window.png'))
-          Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--port','47955' -Wait
+          $bmp.Save((Join-Path $env:RUNNER_TEMP 'pocketdesk-window.png'))
+          Start-Process -FilePath target\release\pocketdesk.exe -ArgumentList '--port','47955' -Wait
           Start-Sleep 2
           Get-Content $log
-          Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--quit' -Wait
+          Start-Process -FilePath target\release\pocketdesk.exe -ArgumentList '--quit' -Wait
           Stop-Process -Id $agent.Id -Force -ErrorAction SilentlyContinue
-          if (-not $loaded) { throw "the PairDesk window didn't load the page" }
+          if (-not $loaded) { throw "the PocketDesk window didn't load the page" }
           if (-not (Select-String -Path $log -Pattern 'already running; showing it' -Quiet)) { throw "a second start didn't show the window" }
       - if: runner.os == 'Windows' && always()
         uses: actions/upload-artifact@v5
         with:
-          name: pairdesk-window-screenshot
-          path: ${{ runner.temp }}/pairdesk-window.png
+          name: pocketdesk-window-screenshot
+          path: ${{ runner.temp }}/pocketdesk-window.png
           if-no-files-found: ignore
       # Linux release builds target glibc 2.31 (Ubuntu 20.04, Debian 11 and newer).
       - if: runner.os == 'Linux'
@@ -73,13 +73,13 @@ jobs:
           pip install ziglang
           cargo install cargo-zigbuild --locked
           cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.31
-          cp target/x86_64-unknown-linux-gnu/release/pairdesk-agent target/release/pairdesk-agent
+          cp target/x86_64-unknown-linux-gnu/release/pocketdesk target/release/pocketdesk
       - uses: actions/upload-artifact@v5
         with:
-          name: pairdesk-agent-${{ runner.os }}
+          name: pocketdesk-${{ runner.os }}
           path: |
-            agent/target/release/pairdesk-agent
-            agent/target/release/pairdesk-agent.exe
+            agent/target/release/pocketdesk
+            agent/target/release/pocketdesk.exe
           if-no-files-found: error
 
   mobile:
@@ -105,7 +105,7 @@ jobs:
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v5
         with:
-          name: pairdesk-android
+          name: pocketdesk-android
           path: mobile/build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
 
@@ -170,9 +170,9 @@ jobs:
       - run: tools/e2e.sh
       # "Get help" through the relay: pairing link, screen, limits, ending.
       - run: >-
-          AGENT=agent/target/release/pairdesk-agent RELAY=relay/target/release/pairdesk-relay
+          AGENT=agent/target/release/pocketdesk RELAY=relay/target/release/pocketdesk-relay
           tools/e2e-relay.sh
-      - run: AGENT=agent/target/release/pairdesk-agent tools/e2e-update.sh
+      - run: AGENT=agent/target/release/pocketdesk tools/e2e-update.sh
 
   e2e-wayland:
     name: End to end on GNOME Wayland (portal + PipeWire)
@@ -228,9 +228,9 @@ jobs:
         working-directory: mobile
       - run: >
           PATH=$PATH:/usr/lib/wine HELPER=1 WINE=1
-          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pairdesk-agent.exe tools/e2e.sh
+          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pocketdesk.exe tools/e2e.sh
       # Sound on the Windows build (WASAPI through Wine's PulseAudio driver).
       - run: >
           PATH=$PATH:/usr/lib/wine WINE=1
-          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pairdesk-agent.exe
+          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pocketdesk.exe
           dbus-run-session -- tools/e2e-audio.sh

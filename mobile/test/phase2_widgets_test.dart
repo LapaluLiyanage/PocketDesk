@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/buttons/custom_button.dart';
-import 'package:pairdesk/screens/button_editor.dart';
-import 'package:pairdesk/screens/remote_help_screen.dart';
-import 'package:pairdesk/screens/settings_screen.dart';
-import 'package:pairdesk/screens/tabs/apps_tab.dart';
-import 'package:pairdesk/screens/tabs/buttons_tab.dart';
-import 'package:pairdesk/screens/tabs/power_tab.dart';
-import 'package:pairdesk/settings/app_lock.dart';
-import 'package:pairdesk/settings/app_settings.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/buttons/custom_button.dart';
+import 'package:pocketdesk/screens/button_editor.dart';
+import 'package:pocketdesk/screens/remote_help_screen.dart';
+import 'package:pocketdesk/screens/settings_screen.dart';
+import 'package:pocketdesk/screens/tabs/apps_tab.dart';
+import 'package:pocketdesk/screens/tabs/buttons_tab.dart';
+import 'package:pocketdesk/screens/tabs/power_tab.dart';
+import 'package:pocketdesk/settings/app_lock.dart';
+import 'package:pocketdesk/settings/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Records what the screens ask the computer to do.
@@ -70,7 +70,7 @@ void main() {
       await tester.tap(find.text('Shut down'));
       await tester.pumpAndSettle();
       expect(conn.calls, isEmpty);
-      expect(find.textContaining('turned off in PairDesk settings'), findsOneWidget);
+      expect(find.textContaining('turned off in PocketDesk settings'), findsOneWidget);
       await tester.tap(find.text('Lock'));
       await tester.pumpAndSettle();
       expect(conn.calls, ['power lock']);
@@ -218,12 +218,12 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(asked, 1, reason: 'asks straight away on open');
-      expect(find.text('PairDesk is locked'), findsOneWidget);
+      expect(find.text('PocketDesk is locked'), findsOneWidget);
 
       allow = true;
       await tester.tap(find.text('Unlock'));
       await tester.pumpAndSettle();
-      expect(find.text('PairDesk is locked'), findsNothing);
+      expect(find.text('PocketDesk is locked'), findsNothing);
       expect(find.text('secret controls'), findsOneWidget);
 
       // Background, then back after the delay: locked again.
@@ -236,7 +236,7 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
       expect(asked, 3);
-      expect(find.text('PairDesk is locked'), findsNothing, reason: 'the fake unlock said yes');
+      expect(find.text('PocketDesk is locked'), findsNothing, reason: 'the fake unlock said yes');
     });
 
     testWidgets('settings turn the lock on only after a successful check', (tester) async {

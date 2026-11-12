@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Where PairDesk keeps its files, and small helpers for writing them safely.
+//! Where PocketDesk keeps its files, and small helpers for writing them safely.
 
 use std::fs;
 use std::io::{self, Write};
@@ -7,21 +7,21 @@ use std::path::{Path, PathBuf};
 
 /// Directory holding the identity, paired phones and settings.
 ///
-/// - Windows: `%APPDATA%\PairDesk`
-/// - Linux: `$XDG_CONFIG_HOME/pairdesk` (usually `~/.config/pairdesk`)
+/// - Windows: `%APPDATA%\PocketDesk`
+/// - Linux: `$XDG_CONFIG_HOME/pocketdesk` (usually `~/.config/pocketdesk`)
 ///
-/// `PAIRDESK_HOME` overrides it (used by tests and portable setups).
+/// `POCKETDESK_HOME` overrides it (used by tests and portable setups).
 pub fn data_dir() -> io::Result<PathBuf> {
-    let dir = if let Some(custom) = std::env::var_os("PAIRDESK_HOME") {
+    let dir = if let Some(custom) = std::env::var_os("POCKETDESK_HOME") {
         PathBuf::from(custom)
     } else if cfg!(windows) {
         let base = directories::BaseDirs::new()
             .ok_or_else(|| io::Error::other("cannot find the user's AppData folder"))?;
-        base.config_dir().join("PairDesk")
+        base.config_dir().join("PocketDesk")
     } else {
         let base = directories::BaseDirs::new()
             .ok_or_else(|| io::Error::other("cannot find the user's config folder"))?;
-        base.config_dir().join("pairdesk")
+        base.config_dir().join("pocketdesk")
     };
     fs::create_dir_all(&dir)?;
     #[cfg(unix)]

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-//! Reaching this computer through a PairDesk relay, when a phone can't
+//! Reaching this computer through a PocketDesk relay, when a phone can't
 //! reach it directly (another network, no Tailscale).
 //!
 //! The computer keeps one connection open to the relay. When a phone asks
@@ -19,8 +19,8 @@ use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpStream;
 use tokio::sync::mpsc;
 
-/// The relay PairDesk uses unless the owner picks another (Settings).
-pub const DEFAULT_RELAY: &str = "relay.pairdesk.madhushan.me:443";
+/// The relay PocketDesk uses unless the owner picks another (Settings).
+pub const DEFAULT_RELAY: &str = "relay.lapalu.me:443";
 
 const TOKEN_FILE: &str = "relay-token";
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);

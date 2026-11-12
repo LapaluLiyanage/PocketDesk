@@ -1,4 +1,4 @@
-# Contributing to PairDesk
+# Contributing to PocketDesk
 
 Thanks for helping. A few ground rules keep the project healthy.
 
@@ -6,7 +6,7 @@ Thanks for helping. A few ground rules keep the project healthy.
 
 Before your first pull request is merged you will be asked to sign a short
 contributor licence agreement (CLA) through CLA Assistant. It lets the maintainer
-keep offering PairDesk under GPL-3.0 and, if needed later, under other terms.
+keep offering PocketDesk under GPL-3.0 and, if needed later, under other terms.
 You keep the copyright to your work.
 
 ## Before opening a pull request
@@ -30,4 +30,4 @@ You keep the copyright to your work.
 
 Please do not open a public issue for anything that lets someone control a computer
 they have not paired with. Email the maintainer through the contact on
-<https://pairdesk.madhushan.me> instead.
+<https://pocketdesk.lapalu.me> instead.

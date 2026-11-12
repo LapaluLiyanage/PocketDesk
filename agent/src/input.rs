@@ -60,7 +60,7 @@ impl InputHandle {
         if let Some(remote) = crate::wayland::global() {
             let remote = remote.clone();
             thread::Builder::new()
-                .name("pairdesk-input".into())
+                .name("pocketdesk-input".into())
                 .spawn(move || {
                     info!("input goes through the remote desktop portal (Wayland)");
                     run(rx, |cmd| remote.apply(cmd));
@@ -70,7 +70,7 @@ impl InputHandle {
         }
 
         thread::Builder::new()
-            .name("pairdesk-input".into())
+            .name("pocketdesk-input".into())
             .spawn(move || match Enigo::new(&Settings::default()) {
                 Ok(mut enigo) => {
                     let _ = ready_tx.send(Ok(()));
@@ -154,7 +154,7 @@ fn apply_routed(enigo: &mut Enigo, cmd: &InputCmd) -> Result<(), String> {
         Some(helper) => helper.input(cmd),
         None => Err(
             "the lock screen or an administrator prompt is showing; turn on \
-                     \"Sign-in screen and admin prompts\" in PairDesk's settings to use it"
+                     \"Sign-in screen and admin prompts\" in PocketDesk's settings to use it"
                 .into(),
         ),
     }

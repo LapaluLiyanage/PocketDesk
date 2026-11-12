@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! Announces this computer on the local network (mDNS / DNS-SD) as
-//! `_pairdesk._tcp`, so a paired phone can find it again after its IP
+//! `_pocketdesk._tcp`, so a paired phone can find it again after its IP
 //! address changes. Discovery only helps find the address; the phone
 //! still checks the pinned certificate before trusting it.
 
 use mdns_sd::{ServiceDaemon, ServiceInfo};
 
-pub const SERVICE_TYPE: &str = "_pairdesk._tcp.local.";
+pub const SERVICE_TYPE: &str = "_pocketdesk._tcp.local.";
 
 pub struct Announcer {
     daemon: ServiceDaemon,

@@ -70,7 +70,7 @@ pub struct Transfer {
 const MAX_TRANSFERS: usize = 30;
 
 pub struct PairingLinks {
-    /// `pairdesk://pair?…`, shown as the QR code.
+    /// `pocketdesk://pair?…`, shown as the QR code.
     pub qr: String,
     /// `https://…/p#…`, to send in a message.
     pub share: String,

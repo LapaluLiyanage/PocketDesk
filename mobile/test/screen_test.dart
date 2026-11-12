@@ -5,11 +5,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pairdesk/agent_connection.dart';
-import 'package:pairdesk/screen/compositor.dart';
-import 'package:pairdesk/screen/frame.dart';
-import 'package:pairdesk/screen/video.dart';
-import 'package:pairdesk/screens/tabs/screen_tab.dart';
+import 'package:pocketdesk/agent_connection.dart';
+import 'package:pocketdesk/screen/compositor.dart';
+import 'package:pocketdesk/screen/frame.dart';
+import 'package:pocketdesk/screen/video.dart';
+import 'package:pocketdesk/screens/tabs/screen_tab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Builds a frame exactly as the agent does (see agent/src/screen/encode.rs).
@@ -442,9 +442,9 @@ void main() {
     });
 
     testWidgets('explains when screen view is turned off', (tester) async {
-      await showTab(tester, refuse: 'This is turned off in PairDesk settings on the computer.');
+      await showTab(tester, refuse: 'This is turned off in PocketDesk settings on the computer.');
       await tester.pump();
-      expect(find.text('This is turned off in PairDesk settings on the computer.'), findsOneWidget);
+      expect(find.text('This is turned off in PocketDesk settings on the computer.'), findsOneWidget);
       expect(find.text('Try again'), findsOneWidget);
     });
 

@@ -1,4 +1,4 @@
-# Releasing PairDesk
+# Releasing PocketDesk
 
 Releases are built, tested and published by GitHub Actions
 (`.github/workflows/release.yml`). Nothing is built on a laptop.
@@ -10,7 +10,7 @@ Repository → Settings → Secrets and variables → Actions:
 | Secret | What |
 |---|---|
 | `UPDATE_SIGNING_KEY` | The Ed25519 private key (PEM) that signs `latest.json`. Its public half is `PUBLIC_KEY` in `agent/src/update.rs` and `updatePublicKey` in `mobile/lib/update_check.dart`. |
-| `ANDROID_KEYSTORE_BASE64` | The release keystore (`pairdesk-release.jks`), base64-encoded. Alias `pairdesk`. |
+| `ANDROID_KEYSTORE_BASE64` | The release keystore (`pocketdesk-release.jks`), base64-encoded. Alias `pocketdesk`. |
 | `ANDROID_KEYSTORE_PASSWORD` | Its password (the key has the same one). |
 | `SIGNPATH_API_TOKEN` | Optional, once SignPath accepts the project (Windows code signing). |
 
@@ -25,10 +25,10 @@ public key, and copies older than that release must be updated by hand.
 
 ## Each release
 
-1. Bump the version in `agent/Cargo.toml` (then `cargo update -p pairdesk-agent`)
+1. Bump the version in `agent/Cargo.toml` (then `cargo update -p pocketdesk`)
    and `mobile/pubspec.yaml` (`x.y.z+N`; increase `N` by one each release).
 2. Add a `<release version="x.y.z" date="…">` entry to
-   `packaging/linux/me.madhushan.pairdesk.metainfo.xml`.
+   `packaging/linux/me.lapalu.pocketdesk.metainfo.xml`.
 3. Write `docs/releases/vx.y.z.md` (the release notes) and
    `fastlane/metadata/android/en-US/changelogs/{1000+N,2000+N,4000+N}.txt`
    (the phone changelog F-Droid shows, at most 500 characters).
@@ -39,7 +39,7 @@ public key, and copies older than that release must be updated by hand.
 The workflow checks the versions match, builds the Windows, Linux and Android
 downloads, tests the Windows setup under Wine (install, self-update,
 uninstall), writes `SHA256SUMS.txt` and the signed `latest.json`, and
-publishes the release as *Latest*. Computers running PairDesk see the update
+publishes the release as *Latest*. Computers running PocketDesk see the update
 within a day.
 
 Never mark a release as a pre-release: `releases/latest` (and so the

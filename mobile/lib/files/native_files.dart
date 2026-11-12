@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Android side of files (MainActivity.kt): picking files, saving received
-// ones to Download/PairDesk, opening them, and what other apps shared.
+// ones to Download/PocketDesk, opening them, and what other apps shared.
 
 import 'dart:async';
 import 'dart:io';
@@ -16,13 +16,13 @@ class PickedFile {
   final String name;
 }
 
-/// What another app shared with PairDesk.
+/// What another app shared with PocketDesk.
 class SharedItems {
   const SharedItems({this.files = const [], this.text, this.link});
   final List<PickedFile> files;
   final String? text;
 
-  /// A PairDesk link that opened the app (pairing or "Get help").
+  /// A PocketDesk link that opened the app (pairing or "Get help").
   final String? link;
   bool get isEmpty => files.isEmpty && (text == null || text!.isEmpty) && link == null;
 }
@@ -30,11 +30,11 @@ class SharedItems {
 class NativeFiles {
   NativeFiles._();
   static final instance = NativeFiles._();
-  static const _channel = MethodChannel('pairdesk/files');
+  static const _channel = MethodChannel('pocketdesk/files');
   final _sharedArrived = StreamController<void>.broadcast();
   bool _listening = false;
 
-  /// Something was shared with PairDesk while it was open; call [takeShared].
+  /// Something was shared with PocketDesk while it was open; call [takeShared].
   Stream<void> get sharedArrived {
     if (!_listening) {
       _listening = true;
@@ -61,7 +61,7 @@ class NativeFiles {
     return SharedItems(files: _files(m['files']), text: m['text'] as String?, link: m['link'] as String?);
   }
 
-  /// Moves a received file into Download/PairDesk.
+  /// Moves a received file into Download/PocketDesk.
   Future<SavedFile> saveToDownloads(File temp, String name) async {
     final m = await _channel.invokeMethod<Map<Object?, Object?>>('saveToDownloads', {
       'path': temp.path,

@@ -64,7 +64,7 @@ class Transfer {
 class SavedFile {
   const SavedFile({required this.where, this.uri});
 
-  /// Human-readable place, e.g. "Download/PairDesk/report.pdf".
+  /// Human-readable place, e.g. "Download/PocketDesk/report.pdf".
   final String where;
 
   /// For opening it; null if it can't be opened from the app.
@@ -269,7 +269,7 @@ class FileTransfers extends ChangeNotifier {
     final t = Transfer(fid: fid, incoming: true, name: name, size: size);
     _add(t);
     try {
-      final dir = Directory('${(tempDir ?? Directory.systemTemp).path}/pairdesk-in');
+      final dir = Directory('${(tempDir ?? Directory.systemTemp).path}/pocketdesk-in');
       await dir.create(recursive: true);
       final temp = File('${dir.path}/$fid.part');
       final raf = await temp.open(mode: FileMode.write);

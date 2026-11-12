@@ -1,12 +1,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# systemd unit for the PairDesk relay. See docs/RELAY.md.
+# systemd unit for the PocketDesk relay. See docs/RELAY.md.
 [Unit]
-Description=PairDesk relay
+Description=PocketDesk relay
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/pairdesk-relay --listen 0.0.0.0:443 --listen 0.0.0.0:47900
+ExecStart=/usr/local/bin/pocketdesk-relay --listen 0.0.0.0:443 --listen 0.0.0.0:47900
 Restart=always
 RestartSec=2
 Environment=RUST_LOG=info

@@ -47,7 +47,7 @@ pub fn input_desktop_name() -> Option<String> {
 /// secure desktop isn't showing.
 pub fn user_can_reach_input_desktop() -> bool {
     // Tests (Wine has no secure desktop): act as if the lock screen were up.
-    if std::env::var_os("PAIRDESK_TEST_SECURE_DESKTOP").is_some() {
+    if std::env::var_os("POCKETDESK_TEST_SECURE_DESKTOP").is_some() {
         return false;
     }
     input_desktop_name().is_some_and(|n| !n.eq_ignore_ascii_case("Winlogon"))

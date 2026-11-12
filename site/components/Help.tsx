@@ -113,7 +113,7 @@ export default function Help() {
                 </span>
                 <span className="leading-tight">
                   <b className="block font-semibold">Help link</b>
-                  <span className="text-[0.8rem] text-slate">pairdesk.madhushan.me/p#…</span>
+                  <span className="text-[0.8rem] text-slate">pocketdesk.lapalu.me/p#…</span>
                 </span>
               </span>
             </div>

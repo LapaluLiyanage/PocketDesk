@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 
-const REPO = "sandunMadhushan/pairdesk";
+const REPO = "LapaluLiyanage/pocketdesk";
 const LATEST = `https://github.com/${REPO}/releases/latest`;
 
 type Asset =
@@ -17,13 +17,13 @@ type Asset =
 
 const fileName = (a: Asset, v: string) =>
   ({
-    "windows-x64-setup": `PairDesk-Setup-${v}-x64.exe`,
-    "windows-x64": `pairdesk-agent-${v}-windows-x64.exe`,
-    "linux-x64-deb": `pairdesk_${v}_amd64.deb`,
-    "linux-x64-rpm": `pairdesk-${v}-1.x86_64.rpm`,
-    "linux-x64-appimage": `PairDesk-${v}-x86_64.AppImage`,
-    "android-arm64": `pairdesk-${v}-android-arm64.apk`,
-    "android-armv7": `pairdesk-${v}-android-armv7.apk`,
+    "windows-x64-setup": `PocketDesk-Setup-${v}-x64.exe`,
+    "windows-x64": `pocketdesk-${v}-windows-x64.exe`,
+    "linux-x64-deb": `pocketdesk_${v}_amd64.deb`,
+    "linux-x64-rpm": `pocketdesk-${v}-1.x86_64.rpm`,
+    "linux-x64-appimage": `PocketDesk-${v}-x86_64.AppImage`,
+    "android-arm64": `pocketdesk-${v}-android-arm64.apk`,
+    "android-armv7": `pocketdesk-${v}-android-armv7.apk`,
   })[a];
 
 /** Points the buttons at the latest release's files; until then (or if
@@ -74,14 +74,14 @@ export default function Downloads() {
             <div className="max-w-2xl">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <h2 id="download-title" className="display text-[clamp(2.4rem,5vw,4.2rem)]">
-                  Download PairDesk
+                  Download PocketDesk
                 </h2>
                 {version && (
                   <span className="rounded-full bg-pair-soft px-3 py-1 text-sm font-semibold text-pair">Version {version}</span>
                 )}
               </div>
               <p className="mt-5 text-lg text-slate">
-                Install it on the computer and on your phone. PairDesk updates itself on the computer, and the phone app
+                Install it on the computer and on your phone. PocketDesk updates itself on the computer, and the phone app
                 tells you when a new version is out.
               </p>
             </div>

@@ -6,7 +6,7 @@ import { page } from "@/lib/seo";
 export const metadata: Metadata = page({
   title: "Privacy policy",
   description:
-    "PairDesk collects no personal data and has no account. Your phone talks to your computer over an encrypted connection, directly or through a relay that can't read it.",
+    "PocketDesk collects no personal data and has no account. Your phone talks to your computer over an encrypted connection, directly or through a relay that can't read it.",
   path: "/privacy/",
 });
 
@@ -15,13 +15,13 @@ export default function Privacy() {
     <DocPage>
       <h1 className="display">Privacy policy</h1>
       <p className="mt-4 text-[0.95rem] !text-slate">
-        Applies to the PairDesk app for Android and the PairDesk program for Windows and Linux. Last updated 2
+        Applies to the PocketDesk app for Android and the PocketDesk program for Windows and Linux. Last updated 2
         November 2026.
       </p>
 
       <h2>In short</h2>
       <p>
-        PairDesk doesn&apos;t collect, store or share any personal data. There is no PairDesk account. Your phone and
+        PocketDesk doesn&apos;t collect, store or share any personal data. There is no PocketDesk account. Your phone and
         your computer talk to each other directly, or, when they can&apos;t reach each other, through a relay that
         only passes their encrypted connection along.
       </p>
@@ -46,7 +46,7 @@ export default function Privacy() {
         Touches, key presses, the screen picture when you view it, sound when you listen or talk, clipboard text and
         files you choose to send. All of it goes between your two devices over an encrypted connection (directly, or
         through the relay described below, which can&apos;t read it), and none of it is recorded. Received files are
-        saved in the Downloads/PairDesk folder of the receiving device.
+        saved in the Downloads/PocketDesk folder of the receiving device.
       </p>
       <p>
         <b>Windows, with &ldquo;Sign-in screen and admin prompts&rdquo; turned on:</b> a copy of the computer&apos;s
@@ -54,17 +54,17 @@ export default function Privacy() {
         read, so paired phones can reach the sign-in screen. Turning the option off deletes it.
       </p>
 
-      <h2>Network connections PairDesk makes</h2>
+      <h2>Network connections PocketDesk makes</h2>
       <ul>
         <li>
           <b>Between your devices</b>, on your local network, or through <a href="https://tailscale.com">Tailscale</a>{" "}
-          if you installed it yourself. PairDesk doesn&apos;t send anything to Tailscale; Tailscale&apos;s own privacy
+          if you installed it yourself. PocketDesk doesn&apos;t send anything to Tailscale; Tailscale&apos;s own privacy
           policy covers Tailscale.
         </li>
         <li>
-          <b>The PairDesk relay</b>, when the phone can&apos;t reach the computer directly (another network, no
+          <b>The PocketDesk relay</b>, when the phone can&apos;t reach the computer directly (another network, no
           Tailscale). The computer keeps a connection open to the relay (by default{" "}
-          <code>relay.pairdesk.madhushan.me</code>), and a phone that can&apos;t reach it directly connects through it.
+          <code>relay.lapalu.me</code>), and a phone that can&apos;t reach it directly connects through it.
           The connection is encrypted end to end between your phone and your computer: the relay can&apos;t see the
           screen, what you type, files or sound. It sees the two IP addresses, a random id for the computer and how
           much data passes, keeps that only in a short service log, and stores nothing else. You can turn the relay
@@ -73,12 +73,12 @@ export default function Privacy() {
         <li>
           <b>Update checks.</b> Once a day the computer program (and the Android app downloaded from GitHub) reads a
           small file from GitHub Releases to see whether a newer version exists. Like any web request, this shows
-          GitHub your IP address. You can turn it off in PairDesk&apos;s settings on the computer. Copies from the
+          GitHub your IP address. You can turn it off in PocketDesk&apos;s settings on the computer. Copies from the
           Microsoft Store, Flathub or F-Droid don&apos;t do this; the store updates them.
         </li>
       </ul>
       <p className="mt-4">
-        The PairDesk apps contain no analytics, advertising or crash-reporting code.
+        The PocketDesk apps contain no analytics, advertising or crash-reporting code.
       </p>
 
       <h2>This website</h2>
@@ -104,7 +104,7 @@ export default function Privacy() {
           played there, never recorded.
         </li>
         <li>
-          <b>Fingerprint or screen lock</b> (phone, optional): to lock the app. Android handles it; PairDesk never
+          <b>Fingerprint or screen lock</b> (phone, optional): to lock the app. Android handles it; PocketDesk never
           sees your fingerprint.
         </li>
         <li>
@@ -113,18 +113,18 @@ export default function Privacy() {
         </li>
         <li>
           <b>Sound and microphone</b> (computer): to let your phone hear what the computer plays, and its microphone
-          if you allow that in PairDesk&apos;s settings (off by default). Nothing is recorded.
+          if you allow that in PocketDesk&apos;s settings (off by default). Nothing is recorded.
         </li>
       </ul>
 
       <h2>Children</h2>
-      <p>PairDesk is a general-purpose tool and doesn&apos;t knowingly collect anything from anyone, including children.</p>
+      <p>PocketDesk is a general-purpose tool and doesn&apos;t knowingly collect anything from anyone, including children.</p>
 
       <h2>Changes and contact</h2>
       <p>
         If this policy changes, the new version will be published on this page with a new date. Questions:{" "}
-        <a href="mailto:contact@madhushan.me">contact@madhushan.me</a> or{" "}
-        <a href="https://github.com/sandunMadhushan/pairdesk/issues">GitHub issues</a>.
+        <a href="mailto:lapaluliyanage@gmail.com">lapaluliyanage@gmail.com</a> or{" "}
+        <a href="https://github.com/LapaluLiyanage/pocketdesk/issues">GitHub issues</a>.
       </p>
     </DocPage>
   );

@@ -77,7 +77,7 @@ class PlatformVideoDecoder implements VideoDecoder {
     });
   }
 
-  static const _name = 'pairdesk/video';
+  static const _name = 'pocketdesk/video';
   final MethodChannel _channel;
   void Function(String)? _onError;
   void Function()? _onLost;
@@ -136,7 +136,7 @@ class VideoSupport {
   static bool _checkedCrash = false;
 
   /// True if the phone has an H.264 decoder and video hasn't failed here.
-  static Future<bool> available({MethodChannel channel = const MethodChannel('pairdesk/video')}) async {
+  static Future<bool> available({MethodChannel channel = const MethodChannel('pocketdesk/video')}) async {
     if (!(androidForTest ?? Platform.isAndroid)) return false;
     final prefs = await SharedPreferences.getInstance();
     if (!_checkedCrash) {

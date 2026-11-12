@@ -97,8 +97,8 @@ pub struct EchoCanceller {
 impl EchoCanceller {
     pub fn new() -> Result<Self, String> {
         // For troubleshooting (and tests that check the echo is there).
-        if std::env::var_os("PAIRDESK_NO_ECHO_CANCEL").is_some() {
-            return Err("echo cancelling is turned off (PAIRDESK_NO_ECHO_CANCEL)".into());
+        if std::env::var_os("POCKETDESK_NO_ECHO_CANCEL").is_some() {
+            return Err("echo cancelling is turned off (POCKETDESK_NO_ECHO_CANCEL)".into());
         }
         let render = AudioFormat::ten_ms(REF_RATE, 1);
         let capture = AudioFormat::ten_ms(super::codec::RATE, CHANNELS as u16);

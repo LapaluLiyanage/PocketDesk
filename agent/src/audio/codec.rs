@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! Sound formats: Opus (computer → phone), G.711 µ-law (phone voice →
-//! computer), and the conversions between device formats and PairDesk's
+//! computer), and the conversions between device formats and PocketDesk's
 //! working format: 48 kHz, stereo, 16-bit.
 
 use std::collections::VecDeque;
@@ -15,7 +15,7 @@ use unsafe_libopus::{
 #[cfg(test)]
 use unsafe_libopus::{OpusDecoder, opus_decode, opus_decoder_create, opus_decoder_destroy};
 
-/// PairDesk's working format.
+/// PocketDesk's working format.
 pub const RATE: u32 = 48_000;
 pub const CHANNELS: usize = 2;
 /// One packet: 20 ms.

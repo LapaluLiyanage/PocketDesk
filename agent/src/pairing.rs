@@ -67,9 +67,9 @@ impl PairingCode {
 
 /// Where the shareable link points; the part after `#` never leaves the
 /// phone (browsers don't send it), and the app reads it.
-pub const SHARE_BASE: &str = "https://pairdesk.madhushan.me/p#";
+pub const SHARE_BASE: &str = "https://pocketdesk.lapalu.me/p#";
 
-/// Everything the phone needs, as a `pairdesk://pair?...` link (the QR
+/// Everything the phone needs, as a `pocketdesk://pair?...` link (the QR
 /// code) or a shareable `https://` link (sent by message).
 pub struct PairingLink<'a> {
     pub name: &'a str,
@@ -105,7 +105,7 @@ impl PairingLink<'_> {
     }
 
     pub fn to_uri(&self) -> String {
-        format!("pairdesk://pair?{}", self.query())
+        format!("pocketdesk://pair?{}", self.query())
     }
 
     pub fn to_share(&self) -> String {
@@ -158,7 +158,7 @@ mod tests {
             help: false,
         }
         .to_uri();
-        assert!(link.starts_with("pairdesk://pair?v=2&n=Sandun%27s%20laptop&fp="));
+        assert!(link.starts_with("pocketdesk://pair?v=2&n=Sandun%27s%20laptop&fp="));
         assert!(link.ends_with("&t=TOKEN&p=47800&a=192.168.1.5,10.0.0.2,pc.tail1.ts.net"));
     }
 
@@ -175,11 +175,11 @@ mod tests {
             help: true,
         };
         let share = link.to_share();
-        assert!(share.starts_with("https://pairdesk.madhushan.me/p#v=2&n=PC&fp="));
+        assert!(share.starts_with("https://pocketdesk.lapalu.me/p#v=2&n=PC&fp="));
         assert!(share.ends_with("&a=&r=relay.example.org%3A443%2F0123abcd&h=1"));
         assert_eq!(
             &share[SHARE_BASE.len()..],
-            &link.to_uri()["pairdesk://pair?".len()..]
+            &link.to_uri()["pocketdesk://pair?".len()..]
         );
     }
 }

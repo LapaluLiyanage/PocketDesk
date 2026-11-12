@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //! `--session-helper`: runs as SYSTEM in the session at the screen
-//! (started by the service). Serves the bridge for the user's PairDesk and,
+//! (started by the service). Serves the bridge for the user's PocketDesk and,
 //! while nobody is signed in, runs the phone server for the sign-in screen.
 
 use std::cell::RefCell;
@@ -18,7 +18,7 @@ use crate::screen::capture::Frame;
 
 /// Input and capture on the secure desktop (lock screen, sign-in, UAC).
 ///
-/// Only there: on the normal desktop PairDesk works by itself, and helping
+/// Only there: on the normal desktop PocketDesk works by itself, and helping
 /// there would let any program running as the user send SYSTEM input to
 /// administrator windows. (`allow-normal-desktop` in the admin-only
 /// ProgramData folder lifts this, for tests under Wine, which has no secure
@@ -32,7 +32,7 @@ impl SecureDesktop {
         desktop::follow_input_desktop()?;
         let name = desktop::input_desktop_name().unwrap_or_default();
         if name.eq_ignore_ascii_case("Default") && !self.allow_normal {
-            return Err("the normal desktop is handled by PairDesk itself".into());
+            return Err("the normal desktop is handled by PocketDesk itself".into());
         }
         Ok(())
     }
@@ -101,7 +101,7 @@ pub fn run(base: PathBuf) -> ! {
     loop {
         let user = session::user_token(session);
         let sid = user.as_ref().and_then(session::user_sid);
-        // Who may read the endpoint: the signed-in user (their PairDesk).
+        // Who may read the endpoint: the signed-in user (their PocketDesk).
         if reader.as_ref() != Some(&sid) {
             let sddl = match &sid {
                 Some(s) => acl::admin_and_reader(s),
@@ -117,7 +117,7 @@ pub fn run(base: PathBuf) -> ! {
             }
         }
         // Nobody signed in: serve phones at the sign-in screen. Someone
-        // signed in: their own PairDesk takes over.
+        // signed in: their own PocketDesk takes over.
         if user.is_none() {
             let running = sign_in_server
                 .as_mut()

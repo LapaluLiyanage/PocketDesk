@@ -1,4 +1,4 @@
-# The PairDesk relay
+# The PocketDesk relay
 
 Normally the phone connects straight to the computer: on the same Wi-Fi, or
 through Tailscale. When neither works (the computer is at a friend's house,
@@ -7,7 +7,7 @@ behind someone else's router), both sides can meet at a **relay** instead.
 The relay is a small program on a server with a public address. It only
 joins two connections together:
 
-1. PairDesk on the computer keeps one connection open to the relay and
+1. PocketDesk on the computer keeps one connection open to the relay and
    registers under an id (a hash of a secret only that computer knows).
 2. A phone asks the relay for that id. The relay tells the computer, the
    computer opens a second connection, and the relay joins it to the phone's.
@@ -31,7 +31,7 @@ don't answer within about a second and a half.
   - **Oracle Cloud "Always Free"**: an Ampere (arm64) VM is enough, and its
     free outbound allowance is large. Check Oracle's current free-tier terms.
   - Or any small VPS (Hetzner, DigitalOcean, Vultr, Linode and so on).
-- A DNS name for it. PairDesk uses `relay.pairdesk.madhushan.me:443` by
+- A DNS name for it. PocketDesk uses `relay.lapalu.me:443` by
   default; anyone can enter their own relay in the computer's settings.
 - Ports **443** and **47900** open for TCP. 443 gets through most office
   and hotel firewalls; 47900 is the relay's own port.
@@ -41,12 +41,12 @@ don't answer within about a second and a half.
 On the server, as root:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/sandunMadhushan/pairdesk/main/packaging/relay/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/LapaluLiyanage/pocketdesk/main/packaging/relay/install.sh | sh
 ```
 
-This downloads `pairdesk-relay-linux-x64` or `-arm64` from the latest
+This downloads `pocketdesk-relay-linux-x64` or `-arm64` from the latest
 release to `/usr/local/bin`, installs
-[`pairdesk-relay.service`](../packaging/relay/pairdesk-relay.service) and
+[`pocketdesk-relay.service`](../packaging/relay/pocketdesk-relay.service) and
 starts it, listening on 443 and 47900. It runs as an unprivileged dynamic
 user with only the right to use port 443.
 
@@ -61,7 +61,7 @@ Then open the ports:
   similar "firewall" page.
 
 Check from your own computer: `nc -vz <server-ip> 443` should say
-"succeeded". `journalctl -u pairdesk-relay -f` shows the relay's log.
+"succeeded". `journalctl -u pocketdesk-relay -f` shows the relay's log.
 
 Updating later: run the same install command again.
 
@@ -70,24 +70,24 @@ Updating later: run the same install command again.
 From a copy of this repository:
 
 ```sh
-docker build -f packaging/relay/Dockerfile -t pairdesk-relay .
-docker run -d --name pairdesk-relay --restart=always -p 443:47900 -p 47900:47900 pairdesk-relay
+docker build -f packaging/relay/Dockerfile -t pocketdesk-relay .
+docker run -d --name pocketdesk-relay --restart=always -p 443:47900 -p 47900:47900 pocketdesk-relay
 ```
 
 ## DNS
 
-Add an **A record** for `relay.pairdesk` (in the `madhushan.me` zone)
+Add an **A record** for `relay` (in the `lapalu.me` zone)
 pointing at the server's public IPv4 address. If the domain's DNS is on
 Cloudflare, set the record to **DNS only** (grey cloud): Cloudflare's proxy
 only passes web traffic, not the relay's.
 
-Within a minute, every PairDesk computer with **Use the relay** on (the
-default) connects to it; the PairDesk window shows a green dot under
-*Remote access → PairDesk relay*.
+Within a minute, every PocketDesk computer with **Use the relay** on (the
+default) connects to it; the PocketDesk window shows a green dot under
+*Remote access → PocketDesk relay*.
 
 ## Using your own relay
 
-On the computer: **Remote access → PairDesk relay → Relay server**, enter
+On the computer: **Remote access → PocketDesk relay → Relay server**, enter
 `host:port` and save. Phones learn the new route the next time they
 connect, and every new pairing link carries it.
 
@@ -96,7 +96,7 @@ connect, and every new pairing link carries it.
 - At most 64 open connections per IP address; extra ones are refused.
 - A connection that sends nothing for 90 seconds is closed (both sides
   ping every 25 seconds).
-- Running `pairdesk-relay --listen ADDRESS:PORT` (repeatable) picks the
+- Running `pocketdesk-relay --listen ADDRESS:PORT` (repeatable) picks the
   ports; `RUST_LOG=debug` shows more detail.
 
 The wire format is in [PROTOCOL.md](PROTOCOL.md#relay).
