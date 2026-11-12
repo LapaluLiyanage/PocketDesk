@@ -620,7 +620,9 @@ class _LaptopTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: scheme.primaryContainer,
           foregroundColor: scheme.onPrimaryContainer,
-          child: Icon(laptop.helping ? Icons.support_agent : Icons.laptop),
+          child: Icon(
+            laptop.helping ? Icons.support_agent : (laptop.os == 'macos' ? Icons.laptop_mac : Icons.laptop),
+          ),
         ),
         title: Text(laptop.name, overflow: TextOverflow.ellipsis),
         subtitle: Text(

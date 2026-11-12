@@ -34,7 +34,8 @@ class SoundSheet extends StatelessWidget {
                 else if (!audio.allowed)
                   const _Note(
                     icon: Icons.block,
-                    text: 'Sound is turned off on the computer: PocketDesk → Permissions → Sound and talking.',
+                    text:
+                        'Sound is turned off on the computer: PocketDesk → Permissions → Sound and talking.',
                   ),
                 if (audio.error != null) _Note(icon: Icons.error_outline, text: audio.error!, error: true),
                 const _Header('Listen'),

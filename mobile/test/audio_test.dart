@@ -33,7 +33,9 @@ class FakeAudioConnection extends AgentConnection {
   @override
   Future<AudioInfo> startAudio({required bool sound, required bool mic, required List<String> codecs}) async {
     calls.add('start sound=$sound mic=$mic ${codecs.join(',')}');
-    if (mic && !allow.mic) throw RequestException('not_allowed', 'This is turned off in PocketDesk settings.');
+    if (mic && !allow.mic) {
+      throw RequestException('not_allowed', 'This is turned off in PocketDesk settings.');
+    }
     return AudioInfo(
       codec: codecs.first,
       rate: 48000,

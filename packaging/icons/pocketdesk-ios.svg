@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- PocketDesk iPhone app icon, "In the pocket" (from the design pass): a phone
+     with a red dot sitting in a black pocket with dashed stitching. Full-bleed
+     and opaque: iOS draws the rounded corners itself, and app icons must not
+     be transparent. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect x="0" y="0" width="256" height="256" fill="#fff"/>
+  <rect x="88" y="40" width="80" height="130" rx="18" fill="#fff" stroke="#1C1C1D" stroke-width="10"/>
+  <circle cx="128" cy="86" r="13" fill="#E3352B"/>
+  <path d="M48 124H208V172A44 44 0 0 1 164 216H92A44 44 0 0 1 48 172Z" fill="#1C1C1D"/>
+  <path d="M72 150H184" stroke="#fff" stroke-width="5" stroke-dasharray="10 9" stroke-linecap="round"/>
+</svg>

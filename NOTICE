@@ -1,0 +1,38 @@
+PocketDesk
+Copyright (C) Lapalu Liyanage and contributors.
+
+PocketDesk is free software, licensed under the GNU General Public License,
+version 3 or (at your option) any later version. See the LICENSE file.
+
+PocketDesk is not affiliated with or endorsed by the author of PairDesk.
+
+UPSTREAM
+--------
+PocketDesk is built from PairDesk by Sandun Madhushan.
+
+  Project:  https://github.com/sandunMadhushan/pairdesk
+  Commit:   9a89450b48a1e0512af03c739409f96e52e2a0e8
+  Licence:  GPL-3.0-or-later
+  Copyright (C) Sandun Madhushan.
+
+PairDesk's computer program (agent/), relay (relay/), protocol and Flutter
+phone app (mobile/) are his work, and are used here under the GPL. This
+repository is a standalone copy, not a live fork.
+
+CHANGES BY LAPALU LIYANAGE
+--------------------------
+- Renamed every PairDesk identifier to PocketDesk on the phone and computer
+  sides together (pocketdesk:// links, the _pocketdesk._tcp Bonjour type,
+  pocketdesk/* channels, bundle id me.lapalu.pocketdesk, environment
+  variables, HTTP headers, the sign-in handshake string, default relay
+  relay.lapalu.me, the agent binary name, config and data folders), so a
+  PairDesk phone and a PocketDesk computer cannot pair, or the other way round.
+- Added the iPhone app: an iOS project for the Flutter app, a local iOS
+  plugin (mobile/packages/pocketdesk_ios) for the files channel and pairing
+  links, an unsigned .ipa build on GitHub Actions, and iPhone install notes.
+- Mac-aware phone UI: a Mac icon, Cmd instead of Ctrl, and Mac default
+  shortcut buttons.
+- Settings > About credits, this NOTICE, and a CI check for leftover
+  PairDesk names.
+
+Further changes are recorded in the git history.

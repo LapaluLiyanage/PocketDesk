@@ -1,7 +1,15 @@
 # PocketDesk
 
-Control your laptop from your phone. Pair once, then just open the app and go —
-no codes or "accept" prompts every time.
+Control your Mac or Windows computer from your iPhone. Pair once, then just open
+the app and go — no codes or "accept" prompts every time.
+
+> **Credits.** PocketDesk is built from
+> [PairDesk](https://github.com/sandunMadhushan/pairdesk) by **Sandun Madhushan**
+> (GPL-3.0-or-later). PairDesk's computer program, relay, protocol and Flutter phone
+> app are his work. PocketDesk adds the iPhone app, the Mac computer app, and its own
+> relay and branding; those additions are by **Lapalu Liyanage**. PocketDesk is
+> licensed GPL-3.0-or-later and is not affiliated with or endorsed by the PairDesk
+> author. See [NOTICE](NOTICE).
 
 **Website:** <https://pocketdesk.lapalu.me> · **Licence:** GPL-3.0-or-later
 
@@ -19,7 +27,7 @@ no codes or "accept" prompts every time.
 | | |
 | --- | --- |
 | Computer | Windows 10/11, Linux: X11, and Wayland on GNOME and KDE Plasma (Ubuntu 20.04 / Debian 11 or newer) |
-| Phone | Android 6.0 or newer |
+| Phone | iPhone, iOS 15 or newer (see [Install on iPhone](#install-on-iphone)). The Android app still builds but isn't a goal |
 | Pairing | Scan a QR code once. The phone is remembered; remove it any time on the computer |
 | Security | TLS with a pinned certificate, Ed25519 sign-in, one-time pairing codes |
 | Background | Tray icon, starts when you sign in, finds the computer again if its address changes |
@@ -38,6 +46,25 @@ no codes or "accept" prompts every time.
 | Anywhere | Away from home, connects through [Tailscale](https://tailscale.com) if you use it, or else through the PocketDesk relay, still encrypted end to end; picks the best route by itself |
 | Links | Pair by sending a link from the computer to the phone (chat, email) instead of scanning the QR code |
 | Get help | Someone presses **Get help** on their computer and sends you the link: you see and control their screen for up to 2 hours, without power, files or sound, and they can end it any time |
+
+## Install on iPhone
+
+PocketDesk isn't on the App Store. It is built on GitHub's free Mac servers as an
+unsigned `PocketDesk.ipa`, and you put it on your iPhone with
+[Sideloadly](https://sideloadly.io) and a free Apple ID. You don't need a Mac for this.
+
+0. Install **PocketDesk** on your computer (from this repo's Releases).
+1. Download `PocketDesk.ipa` from the latest [release](https://github.com/LapaluLiyanage/pocketdesk/releases/latest),
+   or from the **iPhone app** run under the Actions tab.
+2. Open Sideloadly on Windows, connect the iPhone, drag in the `.ipa`, and sign in
+   with your Apple ID.
+3. On the iPhone open **Settings → General → VPN & Device Management**, tap your
+   Apple ID and **Trust**. Turn on **Developer Mode** if iOS asks.
+4. Free Apple IDs expire the app after **7 days** (and allow 3 sideloaded apps), so
+   re-install with Sideloadly every week. Your pairings are kept.
+
+On the first launch iOS asks to find devices on your local network. Allow it, or
+Wi-Fi discovery won't work.
 
 ## Quick start
 

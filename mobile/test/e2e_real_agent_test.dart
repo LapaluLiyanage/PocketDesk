@@ -23,7 +23,9 @@ import 'package:pocketdesk/screen/video.dart';
 void main() {
   final link = Platform.environment['POCKETDESK_E2E_LINK'];
   final settings = Platform.environment['POCKETDESK_E2E_SETTINGS'];
-  final skip = link == null || settings == null ? 'set POCKETDESK_E2E_LINK and POCKETDESK_E2E_SETTINGS' : null;
+  final skip = link == null || settings == null
+      ? 'set POCKETDESK_E2E_LINK and POCKETDESK_E2E_SETTINGS'
+      : null;
 
   Future<(int, String)> call(String method, String path, {Map<String, String>? headers, Object? body}) async {
     final client = HttpClient();

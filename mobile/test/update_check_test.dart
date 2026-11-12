@@ -20,8 +20,16 @@ void main() {
     'version': version,
     'notes_url': 'https://github.com/LapaluLiyanage/pocketdesk/releases/tag/v$version',
     'assets': {
-      'android-arm64': {'url': 'https://example.com/pocketdesk-$version-arm64.apk', 'sha256': '00', 'size': 1},
-      'android-armv7': {'url': 'https://example.com/pocketdesk-$version-armv7.apk', 'sha256': '00', 'size': 1},
+      'android-arm64': {
+        'url': 'https://example.com/pocketdesk-$version-arm64.apk',
+        'sha256': '00',
+        'size': 1,
+      },
+      'android-armv7': {
+        'url': 'https://example.com/pocketdesk-$version-armv7.apk',
+        'sha256': '00',
+        'size': 1,
+      },
     },
   };
 
