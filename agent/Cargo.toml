@@ -1,0 +1,78 @@
+[package]
+name = "pairdesk-agent"
+version = "0.11.3"
+edition = "2024"
+description = "PairDesk desktop agent: control this computer from your phone"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/sandunMadhushan/pairdesk"
+homepage = "https://pairdesk.madhushan.me"
+publish = false
+
+[dependencies]
+arboard = { version = "3", default-features = false }
+auto-launch = "0.5"
+base64 = "0.22"
+directories = "6"
+ed25519-dalek = "2"
+enigo = "0.6.1"
+env_logger = "0.11.11"
+fast_image_resize = "6"
+futures-util = "0.3.34"
+gethostname = "1.1.0"
+getrandom = "0.2"
+jpeg-encoder = "0.7"
+local-ip-address = "0.6.13"
+open = "5"
+log = "0.4.34"
+mdns-sd = "0.13"
+# Screen view as H.264 video (BSD-2-Clause, compiled from source).
+openh264 = "0.9"
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+rcgen = { version = "0.13", default-features = false, features = ["crypto", "pem", "ring"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+sha2 = "0.10"
+subtle = "2.6"
+tiny_http = "0.12"
+tokio = { version = "1.53.3", features = ["rt-multi-thread", "macros", "net", "sync", "signal", "time", "fs", "io-util"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12", "logging"] }
+tokio-tungstenite = "0.30.0"
+ureq = { version = "3", default-features = false, features = ["rustls"] }
+webbrowser = "1"
+unsafe-libopus = "0.2"
+aec3 = "0.4"
+
+[build-dependencies]
+embed-resource = "3"
+
+[target.'cfg(windows)'.dependencies]
+tray-icon = "0.21"
+# The PairDesk window: the settings page in WebView2 (part of Windows).
+wry = { version = "0.57", default-features = false, features = ["os-webview"] }
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Graphics_Dwm", "Win32_Graphics_Gdi", "Win32_Security", "Win32_Security_Authorization", "Win32_Storage_Packaging_Appx", "Win32_System_Com", "Win32_System_JobObjects", "Win32_System_LibraryLoader", "Win32_System_Registry", "Win32_System_RemoteDesktop", "Win32_System_Services", "Win32_System_StationsAndDesktops", "Win32_UI_Shell", "Win32_System_Console", "Win32_System_Power", "Win32_System_Shutdown", "Win32_System_Threading", "Win32_UI_HiDpi", "Win32_UI_WindowsAndMessaging"] }
+cpal = "0.18"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+ksni = "0.3"
+# Wayland: the remote desktop portal (D-Bus) and PipeWire (loaded at run time).
+zbus = { version = "5", default-features = false, features = ["tokio", "blocking-api"] }
+libloading = "0.8"
+x11rb = { version = "0.13", features = ["randr"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+[[bin]]
+name = "pairdesk-agent"
+path = "src/main.rs"
+
+# Store (MSIX) build only: started at sign-in, starts the agent quietly.
+[[bin]]
+name = "pairdesk-startup"
+path = "src/bin/pairdesk-startup.rs"

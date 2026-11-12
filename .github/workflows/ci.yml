@@ -1,0 +1,236 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  agent:
+    name: Agent (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-22.04]
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: agent
+      - run: cargo fmt --check
+      - run: cargo clippy --release -- -D warnings
+      - run: cargo test
+      - run: cargo build --release
+      # The PairDesk window (WebView2): it opens and loads the page; the
+      # screenshot is kept for a look. Then a second start shows it again.
+      - name: PairDesk window (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $data = Join-Path $env:RUNNER_TEMP pdhome
+          New-Item -ItemType Directory -Force $data | Out-Null
+          $env:PAIRDESK_HOME = $data
+          $log = Join-Path $data agent.log
+          $agent = Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--port','47955' -PassThru
+          $loaded = $false
+          for ($i = 0; $i -lt 90 -and -not $loaded; $i++) {
+            Start-Sleep 1
+            $loaded = (Test-Path $log) -and (Select-String -Path $log -Pattern 'window: page loaded' -Quiet)
+          }
+          Start-Sleep 3
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $bmp.Save((Join-Path $env:RUNNER_TEMP 'pairdesk-window.png'))
+          Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--port','47955' -Wait
+          Start-Sleep 2
+          Get-Content $log
+          Start-Process -FilePath target\release\pairdesk-agent.exe -ArgumentList '--quit' -Wait
+          Stop-Process -Id $agent.Id -Force -ErrorAction SilentlyContinue
+          if (-not $loaded) { throw "the PairDesk window didn't load the page" }
+          if (-not (Select-String -Path $log -Pattern 'already running; showing it' -Quiet)) { throw "a second start didn't show the window" }
+      - if: runner.os == 'Windows' && always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: pairdesk-window-screenshot
+          path: ${{ runner.temp }}/pairdesk-window.png
+          if-no-files-found: ignore
+      # Linux release builds target glibc 2.31 (Ubuntu 20.04, Debian 11 and newer).
+      - if: runner.os == 'Linux'
+        run: |
+          pip install ziglang
+          cargo install cargo-zigbuild --locked
+          cargo zigbuild --release --target x86_64-unknown-linux-gnu.2.31
+          cp target/x86_64-unknown-linux-gnu/release/pairdesk-agent target/release/pairdesk-agent
+      - uses: actions/upload-artifact@v5
+        with:
+          name: pairdesk-agent-${{ runner.os }}
+          path: |
+            agent/target/release/pairdesk-agent
+            agent/target/release/pairdesk-agent.exe
+          if-no-files-found: error
+
+  mobile:
+    name: Phone app (Android)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+      - run: dart format -l 110 --output=none --set-exit-if-changed lib test
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v5
+        with:
+          name: pairdesk-android
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+  relay:
+    name: Relay
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: relay
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: relay
+      - run: cargo fmt --check
+      - run: cargo clippy --release -- -D warnings
+      - run: cargo test
+
+  site:
+    name: Website
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm run lint
+      - run: test -f out/index.html && test -f out/p/index.html && test -f out/.well-known/assetlinks.json
+
+  e2e:
+    name: End to end (phone code ↔ real agent)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y xvfb python3-xlib xclip
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            agent
+            relay
+      - run: cargo build --release
+        working-directory: agent
+      - run: cargo build --release
+        working-directory: relay
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+        working-directory: mobile
+      - run: tools/e2e.sh
+      # "Get help" through the relay: pairing link, screen, limits, ending.
+      - run: >-
+          AGENT=agent/target/release/pairdesk-agent RELAY=relay/target/release/pairdesk-relay
+          tools/e2e-relay.sh
+      - run: AGENT=agent/target/release/pairdesk-agent tools/e2e-update.sh
+
+  e2e-wayland:
+    name: End to end on GNOME Wayland (portal + PipeWire)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: >
+          sudo apt-get update && sudo apt-get install -y mutter xdg-desktop-portal
+          xdg-desktop-portal-gnome pipewire wireplumber python3-gi gir1.2-atspi-2.0
+          gir1.2-gtk-4.0 at-spi2-core dbus-daemon pipewire-pulse pipewire-bin libpulse0 xvfb
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: agent
+      - run: cargo build --release
+        working-directory: agent
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+        working-directory: mobile
+      - run: tools/e2e-wayland.sh
+      # Two-way sound, with a private PipeWire server.
+      - run: dbus-run-session -- tools/e2e-audio.sh
+
+  e2e-windows:
+    name: End to end, Windows build under Wine (through the sign-in screen helper)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y wine64 xvfb python3-xlib xclip g++-mingw-w64-x86-64-posix \
+            pipewire wireplumber pipewire-pulse pipewire-bin libpulse0 dbus-daemon
+          sudo update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32-gcc-posix
+          sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-gnu
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: agent
+      - run: cargo build --target x86_64-pc-windows-gnu
+        working-directory: agent
+        env:
+          CARGO_PROFILE_DEV_DEBUG: "0"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+        working-directory: mobile
+      - run: >
+          PATH=$PATH:/usr/lib/wine HELPER=1 WINE=1
+          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pairdesk-agent.exe tools/e2e.sh
+      # Sound on the Windows build (WASAPI through Wine's PulseAudio driver).
+      - run: >
+          PATH=$PATH:/usr/lib/wine WINE=1
+          AGENT=agent/target/x86_64-pc-windows-gnu/debug/pairdesk-agent.exe
+          dbus-run-session -- tools/e2e-audio.sh

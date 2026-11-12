@@ -1,0 +1,5 @@
+• Fixes connecting from another network: the computer tells the phone its new addresses as soon as they change, so turning Tailscale on works without pairing again
+• The app now installs its own updates: press Update and Android does the rest
+• Settings → About → Check for updates asks GitHub right away
+• New in a computer's menu: "Add an address", to type one yourself
+• On Windows, Remote access can allow PairDesk through the firewall on every kind of network
