@@ -12,6 +12,7 @@ files in the Files app, Quick Look, and pocketdesk:// pairing links.
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
   s.dependency 'Flutter'
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDE_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.platform         = :ios, '15.0'
   s.swift_version    = '5.0'
   s.frameworks       = 'QuickLook', 'UniformTypeIdentifiers'
