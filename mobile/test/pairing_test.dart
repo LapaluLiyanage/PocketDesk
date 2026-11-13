@@ -64,8 +64,9 @@ void main() {
     test('signs the agent\'s auth message layout', () async {
       final id = await PhoneIdentity.fromSeed(List.filled(32, 1));
       final msg = id.authMessage(List.filled(32, 2), List.filled(32, 3));
-      expect(msg.length, 'pocketdesk-auth-v2'.length + 1 + 96);
-      expect(msg.sublist(16, 17), [0]);
+      const context = 'pocketdesk-auth-v2';
+      expect(msg.length, context.length + 1 + 96);
+      expect(msg.sublist(context.length, context.length + 1), [0]);
       expect(msg.sublist(msg.length - 32), id.publicKey);
     });
   });
