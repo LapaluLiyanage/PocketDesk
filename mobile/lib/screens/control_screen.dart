@@ -332,7 +332,7 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
                             style: TextStyle(fontSize: 14, letterSpacing: 1.2, color: pc.pillInk),
                           ),
                           Text(
-                            ms == null ? 'Connected via $route' : 'Connected via $route · $ms ms',
+                            ms == null ? route : '$route · $ms ms',
                             style: TextStyle(fontSize: 10.5, color: pc.pillInk.withValues(alpha: 0.65)),
                           ),
                         ],

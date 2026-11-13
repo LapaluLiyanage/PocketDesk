@@ -18,8 +18,12 @@ import 'package:pocketdesk/files/share_inbox.dart';
 import 'package:pocketdesk/files/transfers.dart';
 import 'package:pocketdesk/pairing/identity.dart';
 import 'package:pocketdesk/pairing/laptop.dart';
+import 'package:pocketdesk/screens/about_screen.dart';
 import 'package:pocketdesk/screens/control_screen.dart';
 import 'package:pocketdesk/screens/home_screen.dart';
+import 'package:pocketdesk/screens/settings_screen.dart';
+import 'package:pocketdesk/settings/app_settings.dart';
+import 'package:pocketdesk/ui/pocket_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final outDir = Platform.environment['POCKETDESK_SCREENSHOTS'];
@@ -69,6 +73,10 @@ Future<void> loadFonts() async {
         ..addFont(f('Roboto-Bold.ttf')))
       .load();
   await (FontLoader('MaterialIcons')..addFont(f('MaterialIcons-Regular.otf'))).load();
+  // The app's own font (one variable font; real phones apply the weights).
+  await (FontLoader(
+    'Manrope',
+  )..addFont(File('assets/fonts/Manrope.ttf').readAsBytes().then((b) => ByteData.sublistView(b)))).load();
   // Phones fall back to other fonts for symbols such as →; so does this.
   const dejavu = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf';
   if (File(dejavu).existsSync()) {
@@ -78,11 +86,7 @@ Future<void> loadFonts() async {
   }
 }
 
-ThemeData theme() => ThemeData(
-  fontFamily: 'Roboto',
-  fontFamilyFallback: const ['Fallback'],
-  colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2457D6)),
-);
+ThemeData theme({bool dark = false}) => pocketTheme(dark: dark);
 
 void main() {
   final shotKey = GlobalKey();
@@ -97,7 +101,7 @@ void main() {
   });
   tearDown(() => tmp.deleteSync(recursive: true));
 
-  Future<void> phone(WidgetTester tester, Widget home) async {
+  Future<void> phone(WidgetTester tester, Widget home, {bool dark = false}) async {
     // A touch screen: no keyboard focus rings; real shadows, not the test
     // framework's outlines.
     FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
@@ -112,7 +116,11 @@ void main() {
     await tester.pumpWidget(
       RepaintBoundary(
         key: shotKey,
-        child: MaterialApp(debugShowCheckedModeBanner: false, theme: theme(), home: home),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: theme(dark: dark),
+          home: home,
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -185,6 +193,23 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Clipboard and files'));
     await shoot(tester, '5_clipboard_files');
+    // 6. Power.
+    await phone(tester, control(conn));
+    await tester.tap(find.text('Power'));
+    await shoot(tester, '6_power');
+
+    // 7. Settings and About.
+    final settings = await tester.runAsync(AppSettings.load);
+    await phone(tester, SettingsScreen(settings: settings!));
+    await shoot(tester, '7_settings');
+    await phone(tester, const AboutScreen());
+    await shoot(tester, '8_about');
+
+    // 9. Dark.
+    await phone(tester, HomeScreen(model: model), dark: true);
+    await shoot(tester, '9_computers_dark');
+    await phone(tester, control(conn), dark: true);
+    await shoot(tester, '9_touchpad_dark');
     debugDisableShadows = true; // the framework checks it is back to normal
   });
 }
