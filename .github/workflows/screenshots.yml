@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Renders the real phone screens to PNG (test/store_screenshots_test.dart), so
+# the design can be looked at without a phone. Run it by hand or on mobile changes.
+name: Screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/lib/**"
+      - "mobile/test/store_screenshots_test.dart"
+      - ".github/workflows/screenshots.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  phone:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: mobile/pubspec.yaml
+          cache: true
+      - run: flutter pub get
+      - run: |
+          mkdir -p "$RUNNER_TEMP/shots"
+          POCKETDESK_SCREENSHOTS="$RUNNER_TEMP/shots" flutter test test/store_screenshots_test.dart
+          ls -la "$RUNNER_TEMP/shots"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: phone-screenshots
+          path: ${{ runner.temp }}/shots
+          if-no-files-found: error
