@@ -13,7 +13,7 @@
     --hover: rgba(0, 0, 0, .05); --ok: #1a1a1a; --ok-bg: #f1f1ef; --danger: #e3352b;
     --danger-bg: #fdeceb; --warn: #8a5a00; --warn-bg: #fff4dc; --red: #e3352b;
     --shadow: 0 1px 1px rgba(0, 0, 0, .04), 0 8px 20px rgba(0, 0, 0, .06);
-    --page-bg: linear-gradient(180deg, #fcfcfb 0%, #f0f0ee 100%);
+    --page-bg: linear-gradient(180deg, #fcfcfb 0%, #f0f0ee 100%); --pill-sub: rgba(255, 255, 255, .14);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -22,7 +22,7 @@
       --hover: rgba(255, 255, 255, .07); --ok: #f3f3f1; --ok-bg: #2d2d2f; --danger: #ff4a3d;
       --danger-bg: #3a1c1a; --warn: #f0b252; --warn-bg: #2e2716; --red: #ff4a3d;
       --shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 10px 22px rgba(0, 0, 0, .4);
-      --page-bg: linear-gradient(180deg, #1c1c1e 0%, #121213 100%);
+      --page-bg: linear-gradient(180deg, #1c1c1e 0%, #121213 100%); --pill-sub: rgba(0, 0, 0, .1);
     }
   }
   * { box-sizing: border-box; }
@@ -34,43 +34,45 @@
   }
   input, textarea, code, .selectable { -webkit-user-select: text; user-select: text; }
 
-  /* ---- Layout: sidebar + content ---- */
-  .app { display: grid; grid-template-columns: 248px 1fr; height: 100vh; }
-  nav.side {
-    background: var(--side); border-right: 1px solid var(--line);
-    display: flex; flex-direction: column; padding: 16px 12px 12px; min-height: 0; overflow-y: auto;
-  }
-  .brand {
-    display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 12px; margin-bottom: 16px;
-    background: var(--accent); color: var(--accent-text); border-radius: 99px;
+  /* ---- Layout: the 440 pt design: black pill on top, four tabs, content, corner action ---- */
+  .app { display: flex; flex-direction: column; height: 100vh; max-width: 520px; margin: 0 auto; }
+  header.top { flex: none; padding: 16px 20px 0; }
+  .pill-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 66px;
+    padding: 0 14px 0 28px; border-radius: 33px; background: var(--accent); color: var(--accent-text);
     box-shadow: 0 14px 30px rgba(0, 0, 0, .18);
   }
-  .logo { width: 38px; height: 38px; flex: none; display: block; border-radius: 10px; }
-  .brand-name { font-weight: 500; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .brand-sub { display: flex; align-items: center; gap: 6px; color: inherit; opacity: .7; font-size: 11px; letter-spacing: .04em; }
-  .nav-list { display: grid; gap: 2px; }
+  .pill-head .grow { min-width: 0; }
+  .caps { font-size: 9px; letter-spacing: .32em; text-transform: uppercase; opacity: .65; }
+  .head-name { font-size: 19px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; flex: none; padding: 7px 13px; border-radius: 99px;
+    background: var(--pill-sub); font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  }
+  .chip .dot { width: 7px; height: 7px; margin: 0; background: var(--muted); }
+  .chip .dot.ok { background: var(--red); }
+  .chip .dot.warn { background: #d97706; }
+  nav.tabs { flex: none; padding: 14px 20px 6px; }
+  .nav-list { display: flex; gap: 4px; justify-content: space-between; }
   .nav-item {
-    position: relative; display: flex; align-items: center; gap: 12px; width: 100%;
-    padding: 10px 14px; border: 0; border-radius: 99px; background: none; color: var(--text);
-    font: inherit; text-align: left; cursor: pointer;
+    position: relative; display: flex; align-items: center; gap: 7px; width: auto; padding: 5px 12px 5px 6px;
+    border: 0; border-radius: 99px; background: none; color: var(--muted); font: inherit; font-size: 10px;
+    letter-spacing: .2em; text-transform: uppercase; cursor: pointer;
   }
   .nav-item:hover { background: var(--hover); }
-  .nav-item[aria-current="page"] { background: var(--accent); color: var(--accent-text); box-shadow: var(--shadow); font-weight: 600; }
-  .nav-item[aria-current="page"]::before { content: none; }
-  .nav-item svg { width: 18px; height: 18px; flex: none; color: var(--muted); }
-  .nav-item[aria-current="page"] svg { color: var(--accent-text); }
+  .nav-item svg { width: 24px; height: 24px; flex: none; padding: 5px; border-radius: 50%; color: var(--muted); }
+  .nav-item[aria-current="page"] { background: var(--card); color: var(--text); box-shadow: var(--shadow); font-weight: 600; }
+  .nav-item[aria-current="page"] svg { background: var(--red); color: #fff; }
   .nav-item .count {
-    margin-left: auto; min-width: 20px; padding: 0 6px; border-radius: 99px; font-size: 11px;
-    font-weight: 700; text-align: center; background: var(--red); color: #fff;
+    min-width: 18px; padding: 0 5px; border-radius: 99px; font-size: 10px; font-weight: 700; text-align: center;
+    background: var(--red); color: #fff; letter-spacing: 0;
   }
-  .nav-item .count.alert { background: var(--red); color: #fff; }
-  .side-foot { margin-top: auto; padding: 12px 8px 0; color: var(--muted); font-size: 12px; }
-
-  .content { overflow-y: auto; min-width: 0; }
-  .page { max-width: 820px; padding: 28px 36px 48px; }
-  .page-head { margin-bottom: 20px; }
-  .page-head h1 { font-size: 28px; font-weight: 300; margin: 0 0 4px; letter-spacing: -.01em; }
-  .page-head p { color: var(--muted); margin: 0; }
+  .content { flex: 1; overflow-y: auto; min-width: 0; padding-bottom: 150px; }
+  .page { padding: 10px 20px 24px; }
+  .page-head { display: none; }
+  .page-head h1 { font-size: 10px; font-weight: 600; margin: 0; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+  .page-head p { display: none; }
+  section.page[data-tab="settings"] .page-head { display: block; margin: 16px 0 8px; }
 
   /* ---- Cards ---- */
   .card {
@@ -213,21 +215,42 @@
   .help-card { box-shadow: 0 0 0 1.5px var(--red), var(--shadow); }
   .stopped { display: grid; place-items: center; height: 100vh; text-align: center; padding: 24px; }
 
-  /* Narrow (the 440 pt design, or a small browser window): the pill on top, the tabs along the bottom. */
-  @media (max-width: 720px) {
-    .app { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
-    nav.side {
-      order: 2; flex-direction: row; align-items: center; padding: 8px 10px; overflow-x: auto; overflow-y: hidden;
-      border-right: 0; border-top: 1px solid var(--line); background: var(--card);
-    }
-    .content { order: 1; }
-    .brand, .side-foot { display: none; }
-    .nav-list { display: flex; gap: 2px; margin: 0 auto; }
-    .nav-item { flex-direction: column; gap: 2px; padding: 6px 12px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
-    .nav-item .count { position: absolute; top: 0; right: 2px; margin: 0; }
-    .page, .banners { padding-left: 16px; padding-right: 16px; }
-    form.add .fields { grid-template-columns: 1fr; }
+  /* ---- Design pieces ---- */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .tile {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px; min-height: 112px;
+    border-radius: 16px; border: 0; background: var(--card); box-shadow: var(--shadow); cursor: default;
+    color: var(--text); font: inherit; text-align: left;
   }
+  .tile:hover { box-shadow: var(--shadow); }
+  .tile .tic { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); color: var(--muted); margin-bottom: 6px; }
+  .tile .tic svg { width: 18px; height: 18px; }
+  .tile.on .tic { background: var(--red); color: #fff; }
+  .tile b { font-size: 14px; font-weight: 600; }
+  .tile span.cap { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  .avatar { border-radius: 10px; background: var(--accent); color: var(--accent-text); }
+  .badge { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; background: none; color: var(--muted); padding: 0; }
+  .drop { border-color: var(--red); background: var(--card); }
+  .drop svg { color: #fff; background: var(--red); border-radius: 50%; padding: 12px; width: 52px; height: 52px; }
+  .drop.over, .drop:hover { border-color: var(--red); background: var(--card); }
+  .hero { padding: 16px 18px; }
+  #help-idle { display: none; }
+  .corner {
+    position: fixed; right: 0; bottom: 0; width: 138px; height: 138px; border: 0; border-radius: 0;
+    border-top-left-radius: 138px; background: var(--accent); color: var(--accent-text); padding: 0 32px 38px 0;
+    display: none; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 4px;
+    font-size: 9px; letter-spacing: .3em; text-transform: uppercase; cursor: pointer; z-index: 5;
+  }
+  .corner:hover { filter: none; background: var(--accent); }
+  .corner svg { width: 26px; height: 26px; }
+  .getbtn {
+    position: fixed; left: max(20px, calc(50vw - 240px)); bottom: 26px; display: none; align-items: center; gap: 8px;
+    padding: 0 20px; min-height: 44px; border-radius: 99px; background: var(--card); color: var(--muted);
+    font-size: 10px; letter-spacing: .24em; text-transform: uppercase; box-shadow: var(--shadow); border: 0; z-index: 5;
+  }
+  .getbtn svg { width: 18px; height: 18px; }
+  body[data-tab="home"] .corner, body[data-tab="home"] .getbtn { display: flex; }
+  @media (min-width: 521px) { .corner { right: calc(50vw - 260px); } }
 </style>
 </head>
 <body>
@@ -244,30 +267,35 @@
     <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 12.2l2.4 2.4 4.6-4.8"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-life" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M6 6l3.5 3.5M18 6l-3.5 3.5M6 18l3.5-3.5M18 18l-3.5-3.5"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2M14 18v2"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5a12 12 0 0 1 17 0M6.5 12.8a8 8 0 0 1 11 0M9.6 16a3.6 3.6 0 0 1 4.8 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.6-7.9A5.5 5.5 0 0 1 17 9.5a4.2 4.2 0 0 1 .5 8.5z"/></symbol>
     <symbol id="i-update" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3M19.5 4v4h-4"/></symbol>
   </defs>
 </svg>
 
 <div class="app" id="app">
-  <nav class="side" aria-label="PocketDesk">
-    <div class="brand">
-      <svg class="logo" aria-hidden="true" viewBox="0 0 256 256"><rect width="256" height="256" fill="#fff"/><rect x="88" y="40" width="80" height="130" rx="18" fill="#fff" stroke="#1C1C1D" stroke-width="10"/><circle cx="128" cy="86" r="13" fill="#E3352B"/><path d="M48 124H208V172A44 44 0 0 1 164 216H92A44 44 0 0 1 48 172Z" fill="#1C1C1D"/><path d="M72 150H184" stroke="#fff" stroke-width="5" stroke-dasharray="10 9" stroke-linecap="round"/></svg>
+  <header class="top">
+    <div class="pill-head">
       <div class="grow">
-        <div class="brand-name" id="name">PocketDesk</div>
-        <div class="brand-sub"><span class="dot" id="side-dot"></span><span id="side-status">Starting…</span></div>
+        <div class="caps">PocketDesk on</div>
+        <div class="head-name" id="name">PocketDesk</div>
       </div>
+      <span class="chip"><span class="dot" id="side-dot"></span><span id="side-status">Starting…</span></span>
     </div>
-    <div class="nav-list" role="tablist" aria-orientation="vertical">
-      <button class="nav-item" data-page="home" role="tab"><svg><use href="#i-home"/></svg>Home</button>
-      <button class="nav-item" data-page="phones" role="tab"><svg><use href="#i-phone"/></svg>Phones<span class="count" id="count-phones" hidden></span></button>
+  </header>
+  <nav class="tabs" aria-label="PocketDesk">
+    <div class="nav-list" role="tablist">
+      <button class="nav-item" data-page="home" role="tab"><svg><use href="#i-home"/></svg>Home<span class="count" id="count-phones" hidden></span></button>
+      <button class="nav-item" data-page="pair" role="tab"><svg><use href="#i-qr"/></svg>Pair</button>
       <button class="nav-item" data-page="files" role="tab"><svg><use href="#i-files"/></svg>Files<span class="count" id="count-files" hidden></span></button>
-      <button class="nav-item" data-page="shortcuts" role="tab"><svg><use href="#i-shortcut"/></svg>Shortcuts</button>
-      <button class="nav-item" data-page="permissions" role="tab"><svg><use href="#i-shield"/></svg>Permissions</button>
-      <button class="nav-item" data-page="remote" role="tab"><svg><use href="#i-globe"/></svg>Remote access</button>
-      <button class="nav-item" data-page="secure" role="tab" id="nav-secure" hidden><svg><use href="#i-lock"/></svg>Sign-in screen</button>
-      <button class="nav-item" data-page="settings" role="tab"><svg><use href="#i-gear"/></svg>Settings<span class="count alert" id="count-settings" hidden>1</span></button>
+      <button class="nav-item" data-page="settings" role="tab"><svg><use href="#i-sliders"/></svg>Settings<span class="count alert" id="count-settings" hidden>1</span></button>
+      <button class="nav-item" data-page="secure" id="nav-secure" hidden></button>
     </div>
-    <div class="side-foot" id="side-version"></div>
+    <div id="side-version" hidden></div>
   </nav>
 
   <div class="content" id="content">
@@ -288,7 +316,7 @@
     </div>
 
     <!-- Home -->
-    <section class="page" data-page="home" aria-labelledby="home-title">
+    <section class="page" data-page="home" data-tab="home" aria-labelledby="home-title">
       <div class="page-head">
         <h1 id="home-title">Home</h1>
         <p>Use this computer from your phone: touchpad, keyboard, screen, files and more.</p>
@@ -332,17 +360,25 @@
           <button id="btn-get-help">Get help</button>
         </div>
       </div>
+      <div class="page-head"><h1>Connection</h1></div>
       <div class="tiles">
-        <button class="tile" data-go="phones"><svg><use href="#i-phone"/></svg><b>Phones</b><span id="tile-phones">–</span></button>
-        <button class="tile" data-go="files"><svg><use href="#i-upload"/></svg><b>Send files</b><span id="tile-files">–</span></button>
-        <button class="tile" data-go="remote"><svg><use href="#i-globe"/></svg><b>Remote access</b><span id="tile-remote">–</span></button>
-        <button class="tile" data-go="secure" id="tile-secure-wrap" hidden><svg><use href="#i-lock"/></svg><b>Sign-in screen</b><span id="tile-secure">–</span></button>
-        <button class="tile" data-go="settings"><svg><use href="#i-update"/></svg><b>Updates</b><span id="tile-update">–</span></button>
+        <div class="tile" id="t-wifi"><div class="tic"><svg><use href="#i-wifi"/></svg></div><b>Wi-Fi</b><span class="cap" id="tile-wifi">–</span></div>
+        <div class="tile" id="t-ts"><div class="tic"><svg><use href="#i-globe"/></svg></div><b>Tailscale</b><span class="cap" id="tile-ts">–</span></div>
+        <div class="tile" id="t-relay"><div class="tic"><svg><use href="#i-cloud"/></svg></div><b>Relay</b><span class="cap" id="tile-relay">–</span></div>
+      </div>
+      <div class="card">
+        <h2>Paired phones</h2>
+        <p class="empty" id="no-phones">No phones yet.</p>
+        <ul class="list" id="phones"></ul>
+      </div>
+      <div hidden>
+        <span id="tile-phones"></span><span id="tile-files"></span><span id="tile-remote"></span>
+        <button id="tile-secure-wrap"></button><span id="tile-secure"></span><span id="tile-update"></span>
       </div>
     </section>
 
     <!-- Phones -->
-    <section class="page" data-page="phones" aria-labelledby="phones-title" hidden>
+    <section class="page" data-page="phones" data-tab="pair" aria-labelledby="phones-title" hidden>
       <div class="page-head">
         <h1 id="phones-title">Phones</h1>
         <p>Pair once, then your phone connects whenever this computer is on.</p>
@@ -370,15 +406,10 @@
           </div>
         </div>
       </div>
-      <div class="card">
-        <h2>Paired phones</h2>
-        <p class="empty" id="no-phones">No phones yet.</p>
-        <ul class="list" id="phones"></ul>
-      </div>
     </section>
 
     <!-- Files -->
-    <section class="page" data-page="files" aria-labelledby="files-title" hidden>
+    <section class="page" data-page="files" data-tab="files" aria-labelledby="files-title" hidden>
       <div class="page-head">
         <h1 id="files-title">Files</h1>
         <p>Send files to your phone, and see what phones sent here.</p>
@@ -410,7 +441,7 @@
     </section>
 
     <!-- Shortcuts -->
-    <section class="page" data-page="shortcuts" aria-labelledby="sc-title" hidden>
+    <section class="page" data-page="shortcuts" data-tab="settings" aria-labelledby="sc-title" hidden>
       <div class="page-head">
         <h1 id="sc-title">Shortcuts</h1>
         <p>Websites, folders and programs to open from your phone. Installed apps show up on the phone by themselves.</p>
@@ -444,7 +475,7 @@
     </section>
 
     <!-- Permissions -->
-    <section class="page" data-page="permissions" aria-labelledby="perm-title" hidden>
+    <section class="page" data-page="permissions" data-tab="settings" aria-labelledby="perm-title" hidden>
       <div class="page-head">
         <h1 id="perm-title">Permissions</h1>
         <p>What paired phones can do. Touchpad and keyboard are always on.</p>
@@ -470,7 +501,7 @@
     </section>
 
     <!-- Remote access -->
-    <section class="page" data-page="remote" aria-labelledby="remote-title" hidden>
+    <section class="page" data-page="remote" data-tab="settings" aria-labelledby="remote-title" hidden>
       <div class="page-head">
         <h1 id="remote-title">Remote access</h1>
         <p>Reach this computer from anywhere, not only on the same Wi-Fi.</p>
@@ -520,7 +551,7 @@
     </section>
 
     <!-- Sign-in screen (Windows) -->
-    <section class="page" data-page="secure" aria-labelledby="sd-title" id="secure" hidden>
+    <section class="page" data-page="secure" data-tab="settings" aria-labelledby="sd-title" id="secure" hidden>
       <div class="page-head">
         <h1 id="sd-title">Sign-in screen</h1>
         <p>The lock screen, the sign-in screen and administrator prompts, from your phone.</p>
@@ -541,7 +572,7 @@
     </section>
 
     <!-- Settings -->
-    <section class="page" data-page="settings" aria-labelledby="settings-title" hidden>
+    <section class="page" data-page="settings" data-tab="settings" aria-labelledby="settings-title" hidden>
       <div class="page-head">
         <h1 id="settings-title">Settings</h1>
         <p>Start-up, updates and details about this computer.</p>
@@ -581,6 +612,8 @@
     </section>
   </div>
 </div>
+<button class="corner" id="btn-corner" aria-label="Pair a phone"><svg><use href="#i-plus"/></svg>Pair</button>
+<button class="getbtn" id="btn-gethelp"><svg><use href="#i-life"/></svg>Get help</button>
 <script>
 "use strict";
 const api = (path) => location.pathname.replace(/\/$/, "") + "/api/" + path;
@@ -637,6 +670,9 @@ function render(s) {
   $("btn-home-pair").hidden = s.phones.length > 0 && !s.pairing;
   $("side-status").textContent = connected.length ? "Connected" : "Ready";
   $("side-dot").className = "dot" + (connected.length ? " ok" : "");
+  $("tile-wifi").textContent = (s.addresses || []).length ? "Active" : "Offline";
+  $("t-wifi").classList.toggle("on", (s.addresses || []).length > 0);
+  document.querySelector(".hero").hidden = s.phones.length > 0 && !s.pairing;
   $("tile-phones").textContent = s.phones.length
     ? s.phones.length + " paired" + (connected.length ? ", " + connected.length + " connected" : "")
     : "Pair your first phone";
@@ -800,6 +836,8 @@ function render(s) {
   renderFirewall(s.firewall);
   $("fw-lan").textContent = (s.addresses || []).join(" or ") || "not on a network";
   $("fw-port").textContent = s.port;
+  $("tile-ts").textContent = { running: "Ready", not_connected: "Off", not_installed: "Not installed", checking: "Checking" }[r.status] || "–";
+  $("t-ts").classList.toggle("on", r.status === "running");
   $("tile-remote").textContent = { running: "On (Tailscale)", not_connected: "Tailscale is off",
     not_installed: "Same Wi-Fi only", checking: "Checking…" }[r.status] || "Unknown";
   const awake = $("keep-awake");
@@ -927,6 +965,8 @@ let connectedPhones = [];
 function renderRelay(r) {
   if (!r) return;
   const st = r.state || { status: "off" };
+  $("tile-relay").textContent = { online: "Ready", connecting: "Connecting", failed: "Failed", off: "Off" }[st.status] || "–";
+  $("t-relay").classList.toggle("on", st.status === "online");
   $("relay-dot").className = "dot" + (st.status === "online" ? " ok" : st.status === "failed" ? " warn" : "");
   $("relay-text").textContent = {
     online: "Connected. Your phones can reach this computer from anywhere.",
@@ -1236,22 +1276,27 @@ $("btn-quit").onclick = async () => {
 };
 
 // ---- Screens ----
-const PAGES = ["home", "phones", "files", "shortcuts", "permissions", "remote", "secure", "settings"];
+const TABS = ["home", "pair", "files", "settings"];
+// Older names (links, the ?pair address) still work.
+const TAB_OF = { home: "home", phones: "pair", pair: "pair", files: "files", shortcuts: "settings",
+  permissions: "settings", remote: "settings", secure: "settings", settings: "settings" };
 let currentPage = "home";
 function go(page, focus) {
-  if (!PAGES.includes(page)) page = "home";
-  if (page === "secure" && $("nav-secure").hidden) page = "home";
-  currentPage = page;
-  for (const el of document.querySelectorAll("section.page")) el.hidden = el.dataset.page !== page;
+  const tab = TAB_OF[page] || "home";
+  currentPage = tab;
+  document.body.dataset.tab = tab;
+  for (const el of document.querySelectorAll("section.page")) {
+    el.hidden = el.dataset.tab !== tab || (el.dataset.page === "secure" && $("nav-secure").hidden);
+  }
   for (const b of document.querySelectorAll(".nav-item")) {
-    const on = b.dataset.page === page;
+    const on = b.dataset.page === tab;
     if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
     b.setAttribute("aria-selected", on);
     b.tabIndex = on ? 0 : -1;
   }
-  if (location.hash !== "#" + page) history.replaceState(null, "", "#" + page);
+  if (location.hash !== "#" + tab) history.replaceState(null, "", "#" + tab);
   $("content").scrollTop = 0;
-  if (focus) document.querySelector('.nav-item[data-page="' + page + '"]').focus();
+  if (focus) document.querySelector('.nav-item[data-page="' + tab + '"]').focus();
 }
 for (const b of document.querySelectorAll(".nav-item")) b.onclick = () => go(b.dataset.page);
 for (const t of document.querySelectorAll("[data-go]")) t.onclick = () => go(t.dataset.go);
@@ -1261,23 +1306,25 @@ document.querySelector(".nav-list").onkeydown = (e) => {
   const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
   if (step) { e.preventDefault(); go(items[(i + step + items.length) % items.length].dataset.page, true); }
 };
-// Ctrl+1…8 switch screens, like tabs.
+// Ctrl+1…4 switch tabs.
 window.addEventListener("keydown", (e) => {
   if (!e.ctrlKey || e.altKey || e.shiftKey) return;
-  const items = [...document.querySelectorAll(".nav-item")].filter((b) => !b.hidden);
   const n = Number(e.key);
-  if (n >= 1 && n <= items.length) { e.preventDefault(); go(items[n - 1].dataset.page, true); }
+  if (n >= 1 && n <= TABS.length) { e.preventDefault(); go(TABS[n - 1], true); }
 });
 $("btn-home-pair").onclick = async () => {
-  go("phones");
+  go("pair");
   try { render(await post("pair")); } catch (e) { showBanner(e.message, true); }
 };
+
+$("btn-corner").onclick = () => $("btn-home-pair").onclick();
+$("btn-gethelp").onclick = () => $("btn-get-help").click();
 
 (async () => {
   go(location.hash.slice(1) || "home");
   if (new URLSearchParams(location.search).has("pair")) {
-    history.replaceState(null, "", location.pathname + "#phones");
-    go("phones");
+    history.replaceState(null, "", location.pathname + "#pair");
+    go("pair");
     try { render(await post("pair")); } catch (e) {}
   }
   await refresh();

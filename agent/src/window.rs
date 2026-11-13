@@ -230,8 +230,8 @@ fn make_window() -> Result<HWND, String> {
         });
         // About 1040×740 at 100 % scaling, never bigger than the screen.
         let dpi = GetDpiForSystem().max(96) as i32;
-        let width = (1040 * dpi / 96).min(GetSystemMetrics(SM_CXSCREEN) * 9 / 10);
-        let height = (740 * dpi / 96).min(GetSystemMetrics(SM_CYSCREEN) * 9 / 10);
+        let width = (460 * dpi / 96).min(GetSystemMetrics(SM_CXSCREEN) * 9 / 10);
+        let height = (800 * dpi / 96).min(GetSystemMetrics(SM_CYSCREEN) * 9 / 10);
         let title = wide("PocketDesk");
         let hwnd = CreateWindowExW(
             0,
@@ -274,8 +274,8 @@ unsafe extern "system" fn window_proc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPAR
                 // Room for the sidebar and a screen beside it.
                 let dpi = GetDpiForWindow(hwnd).max(96) as i32;
                 let info = &mut *(lp as *mut MINMAXINFO);
-                info.ptMinTrackSize.x = 760 * dpi / 96;
-                info.ptMinTrackSize.y = 520 * dpi / 96;
+                info.ptMinTrackSize.x = 380 * dpi / 96;
+                info.ptMinTrackSize.y = 560 * dpi / 96;
                 0
             }
             WM_DESTROY_LATER => {
