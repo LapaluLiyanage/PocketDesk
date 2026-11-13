@@ -103,8 +103,8 @@ class _AppsBrowserState extends State<AppsBrowser> {
     Widget header(String text) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
       child: Text(
-        text.toUpperCase(),
-        style: TextStyle(fontSize: 9.5, letterSpacing: 2.4, color: PocketColors.of(context).ink2),
+        text,
+        style: TextStyle(fontSize: 11, letterSpacing: 1.6, color: PocketColors.of(context).ink2),
       ),
     );
     Widget tile(RemoteApp a) => ListTile(
