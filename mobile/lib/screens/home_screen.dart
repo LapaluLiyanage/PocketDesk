@@ -2,6 +2,8 @@
 // Paired computers. Tap one to connect; with a single computer the app
 // connects by itself when it opens.
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show Clipboard;
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +19,11 @@ import '../update_install.dart';
 import 'control_screen.dart';
 import 'scan_screen.dart';
 import 'settings_screen.dart';
+
+/// iPhone only: Wi-Fi discovery silently fails if Local Network is off.
+const _localNetworkTip =
+    '\n• Local Network is on for PocketDesk (Settings → PocketDesk). iPhone needs it to find '
+    'the computer on Wi-Fi; away from home, Tailscale or the relay work without it.';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.model, this.updates, this.installer});
@@ -253,7 +260,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'Check that:\n'
             '• the computer is on and not asleep\n'
             '• PocketDesk is running on it (look for the tray icon)\n'
-            '$network',
+            '$network'
+            '${Platform.isIOS ? _localNetworkTip : ''}',
       ),
       FailureKind.wrongComputer => (
         'Different computer',
@@ -273,10 +281,15 @@ class _HomeScreenState extends State<HomeScreen> {
       FailureKind.version => ('Update needed', e.message),
       _ => ('Couldn\'t connect', e.message),
     };
-    await _showMessage(title, body, forget: e.kind == FailureKind.notPaired ? laptop : null);
+    await _showMessage(
+      title,
+      body,
+      forget: e.kind == FailureKind.notPaired ? laptop : null,
+      settings: Platform.isIOS && e.kind == FailureKind.unreachable,
+    );
   }
 
-  Future<void> _showMessage(String title, String body, {Laptop? forget}) {
+  Future<void> _showMessage(String title, String body, {Laptop? forget, bool settings = false}) {
     return showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -290,6 +303,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 _model.forget(forget);
               },
               child: Text('Remove ${forget.name}'),
+            ),
+          if (settings)
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(ctx);
+                try {
+                  await launchUrl(Uri.parse('app-settings:'));
+                } catch (_) {}
+              },
+              child: const Text('Open Settings'),
             ),
           FilledButton(onPressed: () => Navigator.pop(ctx), child: const Text('OK')),
         ],
