@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 hits=$(git grep -Iin -e 'pairdesk' -e 'madhushan' -- . \
   ':!LICENSE' ':!NOTICE' ':!README.md' ':!tools/check-names.sh' \
-  | grep -viE 'Sandun Madhushan|sandunMadhushan/pairdesk|Based on PairDesk' || true)
+  | grep -viE 'Sandun Madhushan|sandunMadhushan/pairdesk|Based on PairDesk|official PairDesk app' || true)
 paths=$(git ls-files | grep -iE 'pairdesk|madhushan' || true)
 if [ -n "$hits$paths" ]; then
   echo "Leftover PairDesk identifiers:"

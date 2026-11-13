@@ -2,23 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../screen/video.dart';
 
 import '../settings/app_lock.dart';
 import '../update_check.dart';
+import 'about_screen.dart';
 import 'remote_help_screen.dart';
 import '../settings/app_settings.dart';
-
-final _pocketdeskRepo = Uri.parse('https://github.com/LapaluLiyanage/pocketdesk');
-final _upstreamRepo = Uri.parse('https://github.com/sandunMadhushan/pairdesk');
-
-Future<void> _open(Uri uri) async {
-  try {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
-  } catch (_) {}
-}
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({
@@ -126,24 +117,17 @@ class SettingsScreen extends StatelessWidget {
             if (updates != null) _CheckForUpdates(updates: updates!),
             FutureBuilder<PackageInfo>(
               future: PackageInfo.fromPlatform(),
-              builder: (_, snap) => ListTile(
+              builder: (context, snap) => ListTile(
                 leading: const Icon(Icons.info_outline),
-                title: const Text('PocketDesk'),
+                title: const Text('About & credits'),
                 subtitle: Text(
-                  '${snap.hasData ? 'Version ${snap.data!.version}\n' : ''}'
-                  'iPhone & Mac versions by Lapalu Liyanage\n'
-                  'Licence: GPL-3.0-or-later',
+                  '${snap.hasData ? 'PocketDesk ${snap.data!.version} · ' : ''}'
+                  'Based on PairDesk by Sandun Madhushan',
                 ),
-                isThreeLine: true,
-                onTap: () => _open(_pocketdeskRepo),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () =>
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AboutScreen())),
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite_outline),
-              title: const Text('Based on PairDesk by Sandun Madhushan'),
-              subtitle: const Text('github.com/sandunMadhushan/pairdesk'),
-              trailing: const Icon(Icons.open_in_new, size: 18),
-              onTap: () => _open(_upstreamRepo),
             ),
           ],
         ),
