@@ -315,7 +315,7 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
                     final route = _conn.viaTailscale ? 'Tailscale' : 'Wi-Fi';
                     final pc = PocketColors.of(context);
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                       decoration: BoxDecoration(
                         color: pc.pill,
                         borderRadius: BorderRadius.circular(28),
@@ -327,9 +327,9 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            (_conn.agentName ?? 'Computer').toUpperCase(),
+                            _conn.agentName ?? 'Computer',
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, letterSpacing: 1.2, color: pc.pillInk),
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: pc.pillInk),
                           ),
                           Text(
                             ms == null ? route : '$route · $ms ms',

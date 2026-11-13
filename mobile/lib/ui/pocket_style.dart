@@ -421,7 +421,7 @@ ThemeData pocketTheme({required bool dark}) {
     listTileTheme: ListTileThemeData(
       iconColor: c.ink,
       textColor: c.ink,
-      subtitleTextStyle: TextStyle(color: c.ink2),
+      subtitleTextStyle: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: c.ink2),
     ),
     dividerTheme: DividerThemeData(color: c.field, space: 1),
     navigationBarTheme: NavigationBarThemeData(
@@ -436,6 +436,7 @@ ThemeData pocketTheme({required bool dark}) {
       ),
       labelTextStyle: WidgetStateProperty.resolveWith(
         (s) => TextStyle(
+          fontFamily: 'Manrope',
           fontSize: 10,
           letterSpacing: 1.2,
           fontWeight: FontWeight.w600,
@@ -449,7 +450,7 @@ ThemeData pocketTheme({required bool dark}) {
         foregroundColor: c.pillInk,
         shape: stadium,
         minimumSize: const Size(64, 48),
-        textStyle: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.4),
+        textStyle: const TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.w600, letterSpacing: 0.4),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -524,7 +525,7 @@ ThemeData pocketTheme({required bool dark}) {
       backgroundColor: c.field,
       selectedColor: c.pill,
       side: BorderSide.none,
-      labelStyle: TextStyle(color: c.ink),
+      labelStyle: TextStyle(fontFamily: 'Manrope', color: c.ink),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(color: c.pill, linearTrackColor: c.field),
     popupMenuTheme: PopupMenuThemeData(
