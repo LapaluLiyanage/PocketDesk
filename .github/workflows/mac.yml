@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# PocketDesk for Mac: the agent must build and pass its tests on macOS.
+name: Mac
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "agent/**"
+      - ".github/workflows/mac.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  agent:
+    name: Agent (macOS)
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: agent
+      - run: cargo check --all-targets
+      - run: cargo test
