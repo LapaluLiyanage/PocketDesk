@@ -77,10 +77,10 @@ class PowerTab extends StatelessWidget {
     Widget tile(PowerAction a) {
       final ok = allowed.action(a);
       final danger = a.endsSession;
-      final fg = !ok ? pc.ink3 : (danger ? pc.accInk : pc.ink);
+      final fg = !ok ? pc.ink3 : (danger ? pc.pillInk : pc.ink);
       return Container(
         decoration: BoxDecoration(
-          color: !ok ? pc.field : (danger ? pc.acc : pc.card),
+          color: !ok ? pc.field : (danger ? pc.pill : pc.card),
           borderRadius: BorderRadius.circular(24),
           boxShadow: ok ? pc.shadow : null,
         ),

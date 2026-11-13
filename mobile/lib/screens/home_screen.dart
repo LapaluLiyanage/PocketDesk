@@ -737,6 +737,7 @@ class _LaptopTile extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       subtitle,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 11, color: c.ink2),
                     ),
