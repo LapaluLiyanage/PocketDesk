@@ -360,3 +360,177 @@ class CapsAction extends StatelessWidget {
     );
   }
 }
+
+/// The app theme from the design: near-black ink on white, one red accent,
+/// Manrope, pill-shaped buttons, soft cards. Every screen that doesn't draw
+/// itself (control tabs, settings, sheets, dialogs) takes its look from here.
+ThemeData pocketTheme({required bool dark}) {
+  final c = dark ? PocketColors.dark : PocketColors.light;
+  final base = dark ? Brightness.dark : Brightness.light;
+  final scheme = ColorScheme.fromSeed(seedColor: c.pill, brightness: base).copyWith(
+    primary: c.pill,
+    onPrimary: c.pillInk,
+    primaryContainer: c.field,
+    onPrimaryContainer: c.ink,
+    secondary: c.acc,
+    onSecondary: c.accInk,
+    secondaryContainer: c.field,
+    onSecondaryContainer: c.ink,
+    tertiary: c.acc,
+    error: c.acc,
+    onError: c.accInk,
+    surface: c.card,
+    onSurface: c.ink,
+    onSurfaceVariant: c.ink2,
+    surfaceContainerLowest: c.bgTop,
+    surfaceContainerLow: c.card,
+    surfaceContainer: c.card,
+    surfaceContainerHigh: c.card,
+    surfaceContainerHighest: c.field,
+    outline: c.ink3,
+    outlineVariant: c.field,
+  );
+  const stadium = StadiumBorder();
+  final radius = BorderRadius.circular(16);
+  return ThemeData(
+    colorScheme: scheme,
+    fontFamily: 'Manrope',
+    scaffoldBackgroundColor: c.bgTop,
+    canvasColor: c.bgTop,
+    extensions: [c],
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent,
+      foregroundColor: c.ink,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      centerTitle: false,
+      titleTextStyle: TextStyle(
+        fontFamily: 'Manrope',
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: c.ink,
+      ),
+    ),
+    cardTheme: CardThemeData(
+      color: c.card,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      shape: RoundedRectangleBorder(borderRadius: radius),
+    ),
+    listTileTheme: ListTileThemeData(
+      iconColor: c.ink,
+      textColor: c.ink,
+      subtitleTextStyle: TextStyle(color: c.ink2),
+    ),
+    dividerTheme: DividerThemeData(color: c.field, space: 1),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: c.card,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      height: 68,
+      indicatorColor: c.pill,
+      indicatorShape: stadium,
+      iconTheme: WidgetStateProperty.resolveWith(
+        (s) => IconThemeData(color: s.contains(WidgetState.selected) ? c.pillInk : c.ink2, size: 22),
+      ),
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (s) => TextStyle(
+          fontSize: 10,
+          letterSpacing: 1.2,
+          fontWeight: FontWeight.w600,
+          color: s.contains(WidgetState.selected) ? c.ink : c.ink2,
+        ),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: c.pill,
+        foregroundColor: c.pillInk,
+        shape: stadium,
+        minimumSize: const Size(64, 48),
+        textStyle: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.4),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: c.ink,
+        side: BorderSide(color: c.ink3),
+        shape: stadium,
+        minimumSize: const Size(64, 48),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: c.ink, shape: stadium),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: c.pill,
+      foregroundColor: c.pillInk,
+      shape: stadium,
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected) ? c.pillInk : c.ink2,
+      ),
+      trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? c.pill : c.field),
+      trackOutlineColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected) ? c.pill : c.ink3,
+      ),
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: c.pill,
+      thumbColor: c.pill,
+      inactiveTrackColor: c.field,
+      overlayColor: c.pill.withValues(alpha: 0.12),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: c.card,
+      surfaceTintColor: Colors.transparent,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: c.card,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: c.pill,
+      contentTextStyle: TextStyle(fontFamily: 'Manrope', color: c.pillInk),
+      actionTextColor: c.pillInk,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: c.field,
+      border: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
+      enabledBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: c.ink, width: 1.5),
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: SegmentedButton.styleFrom(
+        shape: stadium,
+        selectedBackgroundColor: c.pill,
+        selectedForegroundColor: c.pillInk,
+        foregroundColor: c.ink,
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      shape: stadium,
+      backgroundColor: c.field,
+      selectedColor: c.pill,
+      side: BorderSide.none,
+      labelStyle: TextStyle(color: c.ink),
+    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: c.pill, linearTrackColor: c.field),
+    popupMenuTheme: PopupMenuThemeData(
+      color: c.card,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: radius),
+    ),
+  );
+}

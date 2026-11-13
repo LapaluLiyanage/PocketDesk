@@ -66,40 +66,11 @@ class PocketDeskApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The design pass: near-black ink on white, one red accent.
-    const ink = Color(0xFF1C1C1D);
-    const red = Color(0xFFE3352B);
-    final light = ColorScheme.fromSeed(seedColor: ink).copyWith(
-      primary: ink,
-      onPrimary: Colors.white,
-      secondary: red,
-      onSecondary: Colors.white,
-      surface: Colors.white,
-      onSurface: ink,
-    );
-    final dark = ColorScheme.fromSeed(seedColor: ink, brightness: Brightness.dark).copyWith(
-      primary: Colors.white,
-      onPrimary: ink,
-      secondary: const Color(0xFFFF4A3D),
-      onSecondary: Colors.white,
-      surface: const Color(0xFF0E0E0F),
-      onSurface: const Color(0xFFFAFAFA),
-    );
     return MaterialApp(
       title: 'PocketDesk',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: light,
-        fontFamily: 'Manrope',
-        scaffoldBackgroundColor: const Color(0xFFFAFAFA),
-        extensions: const [PocketColors.light],
-      ),
-      darkTheme: ThemeData(
-        colorScheme: dark,
-        fontFamily: 'Manrope',
-        scaffoldBackgroundColor: const Color(0xFF0E0E0F),
-        extensions: const [PocketColors.dark],
-      ),
+      theme: pocketTheme(dark: false),
+      darkTheme: pocketTheme(dark: true),
       builder: (context, child) {
         final settings = model.settings;
         if (settings == null || child == null) return child ?? const SizedBox.shrink();
