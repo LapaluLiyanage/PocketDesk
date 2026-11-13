@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screen/video.dart';
+import '../ui/pocket_style.dart';
 
 import '../settings/app_lock.dart';
 import '../update_check.dart';
@@ -53,80 +54,143 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    Widget header(String t) => Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
-      child: Text(t, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.primary)),
+    final c = PocketColors.of(context);
+    final pad = MediaQuery.viewPaddingOf(context);
+    Widget section(String t) => Padding(
+      padding: const EdgeInsets.fromLTRB(6, 24, 6, 8),
+      child: Text(t, style: TextStyle(fontSize: 9.5, letterSpacing: 2.6, color: c.ink2)),
     );
+    Widget group(List<Widget> children) => PocketCard(radius: 20, child: Column(children: children));
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListenableBuilder(
-        listenable: settings,
-        builder: (context, _) => ListView(
+      backgroundColor: Colors.transparent,
+      body: PocketBackground(
+        child: Stack(
           children: [
-            header('Security'),
-            SwitchListTile(
-              secondary: const Icon(Icons.fingerprint),
-              title: const Text('App lock'),
-              subtitle: const Text('Ask for fingerprint, face or screen lock to open PocketDesk'),
-              value: settings.appLock,
-              onChanged: (on) => _toggleLock(context, on),
-            ),
-            if (settings.appLock)
-              ListTile(
-                leading: const SizedBox(width: 24),
-                title: const Text('Lock again'),
-                trailing: DropdownButton<LockAfter>(
-                  value: settings.lockAfter,
-                  underline: const SizedBox.shrink(),
-                  onChanged: (v) => settings.setLockAfter(v!),
-                  items: [for (final v in LockAfter.values) DropdownMenuItem(value: v, child: Text(v.label))],
-                ),
+            ListenableBuilder(
+              listenable: settings,
+              builder: (context, _) => ListView(
+                padding: EdgeInsets.fromLTRB(20, pad.top + 96, 20, pad.bottom + 32),
+                children: [
+                  section('APP LOCK'),
+                  group([
+                    SwitchListTile(
+                      secondary: const Icon(Icons.fingerprint),
+                      title: const Text('App lock'),
+                      subtitle: const Text('Ask for fingerprint, face or screen lock to open PocketDesk'),
+                      value: settings.appLock,
+                      onChanged: (on) => _toggleLock(context, on),
+                    ),
+                    if (settings.appLock)
+                      ListTile(
+                        leading: const SizedBox(width: 24),
+                        title: const Text('Lock again'),
+                        trailing: DropdownButton<LockAfter>(
+                          value: settings.lockAfter,
+                          underline: const SizedBox.shrink(),
+                          onChanged: (v) => settings.setLockAfter(v!),
+                          items: [
+                            for (final v in LockAfter.values)
+                              DropdownMenuItem(value: v, child: Text(v.label)),
+                          ],
+                        ),
+                      ),
+                  ]),
+                  section('CONNECTION'),
+                  group([
+                    ListTile(
+                      leading: const Icon(Icons.public),
+                      title: const Text('Connect from anywhere'),
+                      subtitle: const Text('Use PocketDesk away from home with Tailscale'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () =>
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (_) => const RemoteHelpScreen())),
+                    ),
+                  ]),
+                  section('TOUCHPAD'),
+                  group([
+                    ListTile(
+                      leading: const Icon(Icons.speed),
+                      title: const Text('Pointer speed'),
+                      subtitle: Slider(
+                        value: settings.pointerSpeed,
+                        min: AppSettings.minSpeed,
+                        max: AppSettings.maxSpeed,
+                        divisions: 8,
+                        label: '${settings.pointerSpeed.toStringAsFixed(2)}×',
+                        onChanged: settings.setPointerSpeed,
+                      ),
+                    ),
+                    SwitchListTile(
+                      secondary: const Icon(Icons.swap_vert),
+                      title: const Text('Natural scrolling'),
+                      subtitle: const Text('Content moves with your fingers, like on a phone'),
+                      value: settings.naturalScroll,
+                      onChanged: settings.setNaturalScroll,
+                    ),
+                    const SmoothVideoTile(),
+                  ]),
+                  section('APPEARANCE'),
+                  group([
+                    Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: SegmentedButton<ThemeMode>(
+                          showSelectedIcon: false,
+                          segments: const [
+                            ButtonSegment(
+                              value: ThemeMode.system,
+                              icon: Icon(Icons.contrast),
+                              label: Text('System'),
+                            ),
+                            ButtonSegment(value: ThemeMode.light, label: Text('Light')),
+                            ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+                          ],
+                          selected: {settings.themeMode},
+                          onSelectionChanged: (v) => settings.setThemeMode(v.first),
+                        ),
+                      ),
+                    ),
+                  ]),
+                  section('ABOUT'),
+                  group([
+                    if (updates != null) _CheckForUpdates(updates: updates!),
+                    FutureBuilder<PackageInfo>(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (context, snap) => ListTile(
+                        leading: const Icon(Icons.info_outline),
+                        title: const Text('About & credits'),
+                        subtitle: Text(
+                          '${snap.hasData ? 'PocketDesk ${snap.data!.version} · ' : ''}'
+                          'Based on PairDesk by Sandun Madhushan',
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () =>
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (_) => const AboutScreen())),
+                      ),
+                    ),
+                  ]),
+                ],
               ),
-            header('Connection'),
-            ListTile(
-              leading: const Icon(Icons.public),
-              title: const Text('Connect from anywhere'),
-              subtitle: const Text('Use PocketDesk away from home with Tailscale'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RemoteHelpScreen())),
             ),
-            header('Touchpad'),
-            ListTile(
-              leading: const Icon(Icons.speed),
-              title: const Text('Pointer speed'),
-              subtitle: Slider(
-                value: settings.pointerSpeed,
-                min: AppSettings.minSpeed,
-                max: AppSettings.maxSpeed,
-                divisions: 8,
-                label: '${settings.pointerSpeed.toStringAsFixed(2)}×',
-                onChanged: settings.setPointerSpeed,
-              ),
-            ),
-            SwitchListTile(
-              secondary: const Icon(Icons.swap_vert),
-              title: const Text('Natural scrolling'),
-              subtitle: const Text('Content moves with your fingers, like on a phone'),
-              value: settings.naturalScroll,
-              onChanged: settings.setNaturalScroll,
-            ),
-            const SmoothVideoTile(),
-            header('About'),
-            if (updates != null) _CheckForUpdates(updates: updates!),
-            FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snap) => ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('About & credits'),
-                subtitle: Text(
-                  '${snap.hasData ? 'PocketDesk ${snap.data!.version} · ' : ''}'
-                  'Based on PairDesk by Sandun Madhushan',
-                ),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () =>
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const AboutScreen())),
+            Positioned(
+              top: pad.top + 16,
+              left: 22,
+              right: 22,
+              child: Row(
+                children: [
+                  RoundIconButton(
+                    icon: Icons.chevron_left,
+                    tooltip: 'Back',
+                    onPressed: () => Navigator.of(context).maybePop(),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: PillHeader(label: 'POCKETDESK', title: 'Settings'),
+                  ),
+                ],
               ),
             ),
           ],

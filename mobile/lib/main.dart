@@ -66,17 +66,21 @@ class PocketDeskApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PocketDesk',
-      debugShowCheckedModeBanner: false,
-      theme: pocketTheme(dark: false),
-      darkTheme: pocketTheme(dark: true),
-      builder: (context, child) {
-        final settings = model.settings;
-        if (settings == null || child == null) return child ?? const SizedBox.shrink();
-        return AppLockGate(settings: settings, child: child);
-      },
-      home: HomeScreen(model: model, updates: updates, installer: installer),
+    return ListenableBuilder(
+      listenable: Listenable.merge([?model.settings]),
+      builder: (context, _) => MaterialApp(
+        title: 'PocketDesk',
+        themeMode: model.settings?.themeMode ?? ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        theme: pocketTheme(dark: false),
+        darkTheme: pocketTheme(dark: true),
+        builder: (context, child) {
+          final settings = model.settings;
+          if (settings == null || child == null) return child ?? const SizedBox.shrink();
+          return AppLockGate(settings: settings, child: child);
+        },
+        home: HomeScreen(model: model, updates: updates, installer: installer),
+      ),
     );
   }
 }

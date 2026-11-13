@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pocketdesk/agent_connection.dart';
 import 'package:pocketdesk/buttons/custom_button.dart';
@@ -146,5 +147,13 @@ void main() {
     final again = await AppSettings.load();
     expect(again.appLock, isTrue);
     expect(again.lockAfter, LockAfter.fiveMinutes);
+  });
+
+  test('appearance follows the phone until chosen, then persists', () async {
+    SharedPreferences.setMockInitialValues({});
+    final s = await AppSettings.load();
+    expect(s.themeMode, ThemeMode.system);
+    await s.setThemeMode(ThemeMode.dark);
+    expect((await AppSettings.load()).themeMode, ThemeMode.dark);
   });
 }

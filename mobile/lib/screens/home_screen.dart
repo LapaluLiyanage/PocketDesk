@@ -830,16 +830,31 @@ class _ProgressDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = PocketColors.of(context);
     return PopScope(
       canPop: false,
       child: AlertDialog(
         content: ListenableBuilder(
           listenable: connection,
-          builder: (_, _) => Row(
+          builder: (_, _) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(width: 28, height: 28, child: CircularProgressIndicator(strokeWidth: 3)),
-              const SizedBox(width: 20),
-              Expanded(child: Text(connection.progress ?? 'Connecting…')),
+              Text('CONNECTING', style: TextStyle(fontSize: 9.5, letterSpacing: 2.8, color: c.ink2)),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(strokeWidth: 3, color: c.acc, backgroundColor: c.field),
+                  ),
+                  const SizedBox(width: 18),
+                  Expanded(
+                    child: Text(connection.progress ?? 'Connecting…', style: TextStyle(color: c.ink)),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

@@ -238,6 +238,59 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
     );
   }
 
+  /// While the connection is being rebuilt (the computer went quiet, or the
+  /// phone woke up), a card says so instead of leaving a frozen screen.
+  Widget _withOffline(Widget child) => Stack(
+    children: [
+      child,
+      ListenableBuilder(
+        listenable: _conn,
+        builder: (context, _) {
+          if (_conn.status != ConnectionStatus.connecting) return const SizedBox.shrink();
+          final c = PocketColors.of(context);
+          return Positioned.fill(
+            child: ColoredBox(
+              color: const Color(0x66000000),
+              child: Center(
+                child: PocketCard(
+                  radius: 24,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(28, 24, 28, 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'RECONNECTING',
+                          style: TextStyle(fontSize: 9.5, letterSpacing: 2.8, color: c.ink2),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: c.acc,
+                            backgroundColor: c.field,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _conn.progress ?? 'Reconnecting…',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: c.ink),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ],
+  );
+
   static const _kTouchpad = 0, _kScreen = 1, _kApps = 3;
   bool get _keyboardTab => _tab == _kTouchpad || _tab == _kScreen;
 
@@ -333,37 +386,39 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
                   ),
                 ],
               ),
-        body: SafeArea(
-          bottom: false,
-          top: !_fullscreen,
-          child: Column(
-            children: [
-              Expanded(
-                child: IndexedStack(
-                  index: _tab,
-                  children: [
-                    _touchpadTab(),
-                    // Built on first visit; streams only while visible.
-                    _visited.contains(_kScreen)
-                        ? ScreenTab(
-                            connection: _conn,
-                            settings: widget.settings,
-                            active: _tab == _kScreen,
-                            fullscreen: _fullscreen,
-                            onFullscreen: (on) => setState(() => _fullscreen = on),
-                          )
-                        : const SizedBox.shrink(),
-                    ButtonsTab(connection: _conn),
-                    // Built on first visit, so the app list loads only when wanted.
-                    _visited.contains(_kApps)
-                        ? AppsTab(connection: _conn, laptopKey: widget.laptopKey)
-                        : const SizedBox.shrink(),
-                    PowerTab(connection: _conn),
-                  ],
+        body: _withOffline(
+          SafeArea(
+            bottom: false,
+            top: !_fullscreen,
+            child: Column(
+              children: [
+                Expanded(
+                  child: IndexedStack(
+                    index: _tab,
+                    children: [
+                      _touchpadTab(),
+                      // Built on first visit; streams only while visible.
+                      _visited.contains(_kScreen)
+                          ? ScreenTab(
+                              connection: _conn,
+                              settings: widget.settings,
+                              active: _tab == _kScreen,
+                              fullscreen: _fullscreen,
+                              onFullscreen: (on) => setState(() => _fullscreen = on),
+                            )
+                          : const SizedBox.shrink(),
+                      ButtonsTab(connection: _conn),
+                      // Built on first visit, so the app list loads only when wanted.
+                      _visited.contains(_kApps)
+                          ? AppsTab(connection: _conn, laptopKey: widget.laptopKey)
+                          : const SizedBox.shrink(),
+                      PowerTab(connection: _conn),
+                    ],
+                  ),
                 ),
-              ),
-              if (_showKeyboard && _keyboardTab) _keyboardPanel(),
-            ],
+                if (_showKeyboard && _keyboardTab) _keyboardPanel(),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: _fullscreen

@@ -2,6 +2,7 @@
 // Phone-side preferences: app lock, pointer speed, scroll direction.
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// How long the app may stay in the background before it locks again.
@@ -23,6 +24,7 @@ class AppSettings extends ChangeNotifier {
   static const _kSpeed = 'pocketdesk.settings.pointerSpeed';
   static const _kNatural = 'pocketdesk.settings.naturalScroll';
   static const _kScreenTouchpad = 'pocketdesk.settings.screenTouchpad';
+  static const _kTheme = 'pocketdesk.settings.theme';
 
   static const minSpeed = 0.5;
   static const maxSpeed = 2.5;
@@ -58,6 +60,17 @@ class AppSettings extends ChangeNotifier {
   bool get naturalScroll => _prefs.getBool(_kNatural) ?? true;
   Future<void> setNaturalScroll(bool on) async {
     await _prefs.setBool(_kNatural, on);
+    notifyListeners();
+  }
+
+  /// Light, dark, or follow the phone.
+  ThemeMode get themeMode {
+    final name = _prefs.getString(_kTheme);
+    return ThemeMode.values.firstWhere((m) => m.name == name, orElse: () => ThemeMode.system);
+  }
+
+  Future<void> setThemeMode(ThemeMode m) async {
+    await _prefs.setString(_kTheme, m.name);
     notifyListeners();
   }
 
