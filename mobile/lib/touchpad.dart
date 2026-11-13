@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'ui/pocket_style.dart';
 import 'agent_connection.dart';
 import 'touchpad_gestures.dart';
 
@@ -43,7 +44,7 @@ class _TouchpadState extends State<Touchpad> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final pc = PocketColors.of(context);
     _gestures.sensitivity = 1.6 * widget.speed;
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -63,19 +64,19 @@ class _TouchpadState extends State<Touchpad> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
         decoration: BoxDecoration(
-          color: _fingers > 0 ? scheme.surfaceContainerHighest : scheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: scheme.outlineVariant),
+          color: _fingers > 0 ? pc.field : pc.card,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: pc.shadow,
         ),
         child: Center(
           child: IgnorePointer(
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Text(
-                'Move with one finger · tap to click\n'
-                'Two fingers: scroll · two-finger tap: right-click',
+                'ONE FINGER · MOVE · TAP TO CLICK\n'
+                'TWO FINGERS · SCROLL · TAP FOR RIGHT-CLICK',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: scheme.onSurfaceVariant.withValues(alpha: 0.6)),
+                style: TextStyle(fontSize: 10, height: 2, letterSpacing: 2.4, color: pc.ink3),
               ),
             ),
           ),
@@ -122,7 +123,7 @@ class _HoldButtonState extends State<HoldButton> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final pc = PocketColors.of(context);
     return Listener(
       onPointerDown: (_) => _press(),
       onPointerUp: (_) => _release(),
@@ -132,13 +133,18 @@ class _HoldButtonState extends State<HoldButton> {
         height: 64,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: _down ? scheme.primary : scheme.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: scheme.outlineVariant),
+          color: _down ? pc.acc : pc.pill,
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: const [BoxShadow(color: Color(0x2E000000), blurRadius: 20, offset: Offset(0, 8))],
         ),
         child: Text(
-          widget.label,
-          style: TextStyle(fontWeight: FontWeight.w600, color: _down ? scheme.onPrimary : scheme.onSurface),
+          widget.label.toUpperCase(),
+          style: TextStyle(
+            fontSize: 12,
+            letterSpacing: 3,
+            fontWeight: FontWeight.w600,
+            color: _down ? pc.accInk : pc.pillInk,
+          ),
         ),
       ),
     );

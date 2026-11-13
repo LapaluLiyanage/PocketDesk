@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../ui/pocket_style.dart';
 import '../agent_connection.dart';
 import '../audio/audio_controller.dart';
 import '../audio/native_audio.dart';
@@ -253,20 +254,36 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
         appBar: _fullscreen
             ? null
             : AppBar(
+                toolbarHeight: 68,
                 title: ListenableBuilder(
                   listenable: _conn,
                   builder: (context, _) {
                     final ms = _conn.latency?.inMilliseconds;
                     final route = _conn.viaTailscale ? 'Tailscale' : 'Wi-Fi';
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(_conn.agentName ?? 'Computer', overflow: TextOverflow.ellipsis),
-                        Text(
-                          ms == null ? 'Connected via $route' : 'Connected via $route · $ms ms',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
+                    final pc = PocketColors.of(context);
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: pc.pill,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: const [
+                          BoxShadow(color: Color(0x2E000000), blurRadius: 20, offset: Offset(0, 8)),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            (_conn.agentName ?? 'Computer').toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 14, letterSpacing: 1.2, color: pc.pillInk),
+                          ),
+                          Text(
+                            ms == null ? 'Connected via $route' : 'Connected via $route · $ms ms',
+                            style: TextStyle(fontSize: 10.5, color: pc.pillInk.withValues(alpha: 0.65)),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 ),
