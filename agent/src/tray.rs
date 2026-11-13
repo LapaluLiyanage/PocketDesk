@@ -59,7 +59,10 @@ fn tooltip(state: &AppState) -> String {
             state.name
         ),
         (true, false) => format!("PocketDesk – {} – your screen is being viewed", state.name),
-        (false, true) => format!("PocketDesk – {} – your microphone is being heard", state.name),
+        (false, true) => format!(
+            "PocketDesk – {} – your microphone is being heard",
+            state.name
+        ),
         (false, false) => format!("PocketDesk – {}", state.name),
     }
 }

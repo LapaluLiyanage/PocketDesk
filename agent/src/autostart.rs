@@ -147,10 +147,7 @@ mod flatpak {
         options.insert("autostart", Value::from(enabled));
         options.insert(
             "commandline",
-            Value::from(vec![
-                "pocketdesk".to_string(),
-                "--background".to_string(),
-            ]),
+            Value::from(vec!["pocketdesk".to_string(), "--background".to_string()]),
         );
         conn.call_method(
             Some("org.freedesktop.portal.Desktop"),
