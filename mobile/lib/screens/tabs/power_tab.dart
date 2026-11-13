@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../ui/pocket_style.dart';
 import '../../agent_connection.dart';
 import '../../buttons/custom_button.dart';
 
@@ -63,7 +64,7 @@ class PowerTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final pc = PocketColors.of(context);
     if (!connection.features.contains('power')) {
       return Center(
         child: Padding(
@@ -76,28 +77,35 @@ class PowerTab extends StatelessWidget {
     Widget tile(PowerAction a) {
       final ok = allowed.action(a);
       final danger = a.endsSession;
-      final color = danger ? theme.colorScheme.errorContainer : theme.colorScheme.secondaryContainer;
-      final onColor = danger ? theme.colorScheme.onErrorContainer : theme.colorScheme.onSecondaryContainer;
-      return Material(
-        color: ok ? color : theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(20),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: ok ? () => doPower(context, connection, a) : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(powerIcon(a), size: 36, color: ok ? onColor : theme.disabledColor),
-                const SizedBox(height: 8),
-                Text(
-                  powerLabel(a),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(color: ok ? onColor : theme.disabledColor),
-                ),
-              ],
+      final fg = !ok ? pc.ink3 : (danger ? pc.accInk : pc.ink);
+      return Container(
+        decoration: BoxDecoration(
+          color: !ok ? pc.field : (danger ? pc.acc : pc.card),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: ok ? pc.shadow : null,
+        ),
+        child: Material(
+          type: MaterialType.transparency,
+          borderRadius: BorderRadius.circular(24),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: ok ? () => doPower(context, connection, a) : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(powerIcon(a), size: 34, color: fg),
+                  const SizedBox(height: 10),
+                  Text(
+                    powerLabel(a),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: fg),
+                  ),
+                  if (!ok) Text('OFF', style: TextStyle(fontSize: 9, letterSpacing: 2.4, color: pc.ink3)),
+                ],
+              ),
             ),
           ),
         ),
@@ -124,7 +132,7 @@ class PowerTab extends StatelessWidget {
             padding: const EdgeInsets.only(top: 16),
             child: Text(
               'Greyed-out actions are turned off in PocketDesk settings on the computer.',
-              style: theme.textTheme.bodySmall,
+              style: TextStyle(fontSize: 11.5, height: 1.5, color: pc.ink2),
               textAlign: TextAlign.center,
             ),
           ),

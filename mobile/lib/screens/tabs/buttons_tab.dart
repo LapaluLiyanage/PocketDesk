@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import '../../agent_connection.dart';
 import '../../buttons/custom_button.dart';
+import '../../ui/pocket_style.dart';
 import '../button_editor.dart';
 import 'power_tab.dart';
 
@@ -146,7 +147,7 @@ class _ButtonsTabState extends State<ButtonsTab> {
   Widget build(BuildContext context) {
     final buttons = _buttons;
     if (buttons == null) return const Center(child: CircularProgressIndicator());
-    final theme = Theme.of(context);
+    final pc = PocketColors.of(context);
     if (!widget.connection.features.contains('combo')) {
       return Center(
         child: Padding(
@@ -163,7 +164,12 @@ class _ButtonsTabState extends State<ButtonsTab> {
             padding: const EdgeInsets.fromLTRB(16, 4, 4, 0),
             child: Row(
               children: [
-                Expanded(child: Text('Long-press a button to change it.', style: theme.textTheme.bodySmall)),
+                Expanded(
+                  child: Text(
+                    'LONG-PRESS A BUTTON TO CHANGE IT',
+                    style: TextStyle(fontSize: 9.5, letterSpacing: 2.2, color: pc.ink2),
+                  ),
+                ),
                 TextButton(onPressed: _reset, child: const Text('Reset')),
               ],
             ),
@@ -187,19 +193,18 @@ class _ButtonsTabState extends State<ButtonsTab> {
                   label: const Text('Add'),
                   style: OutlinedButton.styleFrom(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    side: BorderSide(color: pc.ink3),
+                    foregroundColor: pc.ink2,
                   ),
                 );
               }
               final b = buttons[i];
-              return Material(
-                color: theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(16),
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
+              return GestureDetector(
+                onLongPress: () => _menu(b),
+                child: PocketCard(
                   onTap: () => _press(b),
-                  onLongPress: () => _menu(b),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,18 +213,14 @@ class _ButtonsTabState extends State<ButtonsTab> {
                           b.label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            color: theme.colorScheme.onSecondaryContainer,
-                          ),
+                          style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: pc.ink),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 3),
                         Text(
                           _subtitle(b.action),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSecondaryContainer.withValues(alpha: 0.75),
-                          ),
+                          style: TextStyle(fontSize: 11, color: pc.ink2),
                         ),
                       ],
                     ),

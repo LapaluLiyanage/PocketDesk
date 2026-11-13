@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../ui/pocket_style.dart';
 import '../../agent_connection.dart';
 import '../../buttons/custom_button.dart';
 
@@ -80,7 +81,6 @@ class _AppsBrowserState extends State<AppsBrowser> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final error = _error;
     if (error != null) {
       return _Message(
@@ -102,15 +102,20 @@ class _AppsBrowserState extends State<AppsBrowser> {
 
     Widget header(String text) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-      child: Text(text, style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.primary)),
+      child: Text(
+        text.toUpperCase(),
+        style: TextStyle(fontSize: 9.5, letterSpacing: 2.4, color: PocketColors.of(context).ink2),
+      ),
     );
     Widget tile(RemoteApp a) => ListTile(
-      leading: CircleAvatar(
-        backgroundColor: theme.colorScheme.secondaryContainer,
-        foregroundColor: theme.colorScheme.onSecondaryContainer,
+      leading: PocketBadge(
         child: _busyId == a.id
-            ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-            : Icon(_kindIcon(a.kind), size: 20),
+            ? SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2, color: PocketColors.of(context).pillInk),
+              )
+            : Icon(_kindIcon(a.kind)),
       ),
       title: Text(a.name, overflow: TextOverflow.ellipsis),
       onTap: () => _tap(a),
@@ -132,6 +137,7 @@ class _AppsBrowserState extends State<AppsBrowser> {
             hintText: 'Search apps',
             leading: const Icon(Icons.search),
             elevation: const WidgetStatePropertyAll(0),
+            backgroundColor: WidgetStatePropertyAll(PocketColors.of(context).field),
             onChanged: (v) => setState(() => _query = v.trim().toLowerCase()),
             trailing: [IconButton(tooltip: 'Refresh', icon: const Icon(Icons.refresh), onPressed: _load)],
           ),
