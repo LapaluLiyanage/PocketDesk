@@ -117,6 +117,7 @@ void main() {
       RepaintBoundary(
         key: shotKey,
         child: MaterialApp(
+          key: UniqueKey(),
           debugShowCheckedModeBanner: false,
           theme: theme(dark: dark),
           home: home,
