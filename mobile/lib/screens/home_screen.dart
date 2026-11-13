@@ -11,6 +11,7 @@ import '../files/share_inbox.dart';
 import '../app_model.dart';
 import '../pairing/laptop.dart';
 import '../pairing/pairing_link.dart';
+import '../ui/pocket_style.dart';
 import '../update_check.dart';
 import '../update_install.dart';
 import 'control_screen.dart';
@@ -400,81 +401,108 @@ class _HomeScreenState extends State<HomeScreen> {
         final laptops = _model.laptops;
         final update = widget.updates?.available;
         final installer = widget.installer;
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('PocketDesk'),
-            actions: [
-              IconButton(
-                tooltip: 'Paste a link',
-                icon: const Icon(Icons.add_link),
-                onPressed: _busy ? null : _pasteLink,
+        final top = MediaQuery.viewPaddingOf(context).top;
+        final bottom = MediaQuery.viewPaddingOf(context).bottom;
+        final settings = _model.settings;
+        final header = laptops.isEmpty ? 'PocketDesk · 3 steps' : 'PocketDesk · ${laptops.length}';
+        final extras = <Widget>[
+          if (update != null && installer != null)
+            _UpdateCard(update: update, installer: installer, onDismiss: widget.updates!.dismiss),
+          if (ShareInbox.instance.pending case final shared?)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.ios_share),
+                title: Text(
+                  shared.files.isEmpty
+                      ? 'Text to send to a computer\'s clipboard'
+                      : shared.files.length == 1
+                      ? '${shared.files.single.name} to send'
+                      : '${shared.files.length} files to send',
+                ),
+                subtitle: const Text('Choose a computer below.'),
+                trailing: IconButton(
+                  tooltip: 'Discard',
+                  icon: const Icon(Icons.close),
+                  onPressed: () => ShareInbox.instance.take(),
+                ),
               ),
-              if (_model.settings case final settings?)
-                IconButton(
-                  tooltip: 'Settings',
-                  icon: const Icon(Icons.settings_outlined),
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => SettingsScreen(settings: settings, updates: widget.updates),
-                    ),
-                  ),
+            ),
+        ];
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: PocketBackground(
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 18,
+                  top: top + 100,
+                  child: OutlineWordmark(laptops.isEmpty ? 'WELCOME' : 'COMPUTERS'),
                 ),
-            ],
-          ),
-          floatingActionButton: laptops.isEmpty
-              ? null
-              : FloatingActionButton.extended(
-                  onPressed: _busy ? null : _addComputer,
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text('Scan pairing code'),
+                Positioned.fill(
+                  child: laptops.isEmpty
+                      ? _EmptyState(top: top + 112, extras: extras)
+                      : ListView(
+                          padding: EdgeInsets.fromLTRB(104, top + 106, 20, 190 + bottom),
+                          children: [
+                            ...extras.map(
+                              (w) => Padding(padding: const EdgeInsets.only(bottom: 14), child: w),
+                            ),
+                            for (final l in laptops)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 14),
+                                child: _LaptopTile(
+                                  laptop: l,
+                                  onTap: _busy ? null : () => _connect(l),
+                                  onRename: () => _rename(l),
+                                  onAddAddress: () => _addAddress(l),
+                                  onForget: () => _confirmForget(l),
+                                ),
+                              ),
+                          ],
+                        ),
                 ),
-          body: laptops.isEmpty
-              ? Column(
-                  children: [
-                    if (update != null && installer != null)
-                      _UpdateCard(update: update, installer: installer, onDismiss: widget.updates!.dismiss),
-                    Expanded(
-                      child: _EmptyState(
-                        onAdd: _busy ? null : _addComputer,
-                        onPaste: _busy ? null : _pasteLink,
-                      ),
-                    ),
-                  ],
-                )
-              : ListView(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 96),
-                  children: [
-                    if (update != null && installer != null)
-                      _UpdateCard(update: update, installer: installer, onDismiss: widget.updates!.dismiss),
-                    if (ShareInbox.instance.pending case final shared?)
-                      Card(
-                        child: ListTile(
-                          leading: const Icon(Icons.ios_share),
-                          title: Text(
-                            shared.files.isEmpty
-                                ? 'Text to send to a computer\'s clipboard'
-                                : shared.files.length == 1
-                                ? '${shared.files.single.name} to send'
-                                : '${shared.files.length} files to send',
-                          ),
-                          subtitle: const Text('Choose a computer below.'),
-                          trailing: IconButton(
-                            tooltip: 'Discard',
-                            icon: const Icon(Icons.close),
-                            onPressed: () => ShareInbox.instance.take(),
-                          ),
+                Positioned(
+                  top: top + 16,
+                  left: 22,
+                  child: PillHeader(label: laptops.isEmpty ? 'WELCOME' : 'MY COMPUTERS', title: header),
+                ),
+                if (settings != null)
+                  Positioned(
+                    top: top + 27,
+                    right: 22,
+                    child: RoundIconButton(
+                      icon: Icons.settings_outlined,
+                      tooltip: 'Settings',
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SettingsScreen(settings: settings, updates: widget.updates),
                         ),
                       ),
-                    for (final l in laptops)
-                      _LaptopTile(
-                        laptop: l,
-                        onTap: _busy ? null : () => _connect(l),
-                        onRename: () => _rename(l),
-                        onAddAddress: () => _addAddress(l),
-                        onForget: () => _confirmForget(l),
-                      ),
-                  ],
+                    ),
+                  ),
+                Positioned(
+                  left: 104,
+                  bottom: 40 + bottom,
+                  child: CapsAction(
+                    icon: Icons.link,
+                    label: 'PASTE A LINK',
+                    tooltip: 'Paste a link',
+                    onPressed: _busy ? null : _pasteLink,
+                  ),
                 ),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: CornerAction(
+                    icon: Icons.qr_code_scanner,
+                    label: 'SCAN',
+                    tooltip: 'Scan pairing code',
+                    onPressed: _busy ? null : _addComputer,
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -606,115 +634,167 @@ class _LaptopTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final c = PocketColors.of(context);
     final os = switch (laptop.os) {
       'windows' => 'Windows',
       'linux' => 'Linux',
       'macos' => 'macOS',
       _ => null,
     };
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
-        leading: CircleAvatar(
-          backgroundColor: scheme.primaryContainer,
-          foregroundColor: scheme.onPrimaryContainer,
-          child: Icon(
-            laptop.helping ? Icons.support_agent : (laptop.os == 'macos' ? Icons.laptop_mac : Icons.laptop),
-          ),
-        ),
-        title: Text(laptop.name, overflow: TextOverflow.ellipsis),
-        subtitle: Text(
-          laptop.helping
-              ? 'Helping · temporary access'
-              : switch ((os, laptop.reachableAnywhere)) {
-                  (null, true) => 'Here or away',
-                  (null, false) => 'Tap to connect',
-                  (final os?, true) => '$os · here or away',
-                  (final os?, false) => '$os · tap to connect',
-                },
-        ),
-        onTap: onTap,
-        trailing: PopupMenuButton<String>(
-          tooltip: 'More',
-          onSelected: (v) => switch (v) {
-            'rename' => onRename(),
-            'address' => onAddAddress(),
-            _ => onForget(),
-          },
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'rename', child: Text('Rename')),
-            PopupMenuItem(value: 'address', child: Text('Add an address')),
-            PopupMenuItem(value: 'forget', child: Text('Remove')),
+    final icon = laptop.helping
+        ? Icons.support_agent
+        : switch (laptop.os) {
+            'macos' => Icons.laptop_mac,
+            'windows' => Icons.window,
+            'linux' => Icons.terminal,
+            _ => Icons.computer,
+          };
+    final subtitle = laptop.helping
+        ? 'Helping · temporary access'
+        : switch ((os, laptop.reachableAnywhere)) {
+            (null, true) => 'Here or away',
+            (null, false) => 'Tap to connect',
+            (final os?, true) => '$os · here or away',
+            (final os?, false) => '$os · tap to connect',
+          };
+    return Dismissible(
+      key: ValueKey(laptop.key),
+      direction: DismissDirection.endToStart,
+      // Swiping asks first; the row stays until the owner confirms.
+      confirmDismiss: (_) async {
+        onForget();
+        return false;
+      },
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 22),
+        decoration: BoxDecoration(color: c.acc, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.delete_outline, color: c.accInk, size: 20),
+            const SizedBox(height: 3),
+            Text('REMOVE', style: TextStyle(fontSize: 9, letterSpacing: 2, color: c.accInk)),
           ],
+        ),
+      ),
+      child: PocketCard(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 10, 4, 10),
+          child: Row(
+            children: [
+              PocketBadge(child: Icon(icon)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(color: c.acc, shape: BoxShape.circle),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          laptop.helping ? 'HELPING' : 'PAIRED',
+                          style: TextStyle(fontSize: 9, letterSpacing: 2.2, color: c.ink2),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      laptop.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: c.ink),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      subtitle,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 11, color: c.ink2),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                tooltip: 'More',
+                iconColor: c.ink2,
+                onSelected: (v) => switch (v) {
+                  'rename' => onRename(),
+                  'address' => onAddAddress(),
+                  _ => onForget(),
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem(value: 'rename', child: Text('Rename')),
+                  PopupMenuItem(value: 'address', child: Text('Add an address')),
+                  PopupMenuItem(value: 'forget', child: Text('Remove')),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+/// First launch: three steps, then scan.
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.onAdd, required this.onPaste});
+  const _EmptyState({required this.top, this.extras = const []});
 
-  final VoidCallback? onAdd;
-  final VoidCallback? onPaste;
+  final double top;
+  final List<Widget> extras;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    Widget step(String n, String text) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+    final c = PocketColors.of(context);
+    Widget step(String n, String title, String body) => Padding(
+      padding: const EdgeInsets.only(bottom: 18),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(radius: 12, child: Text(n, style: const TextStyle(fontSize: 12))),
-          const SizedBox(width: 12),
-          Expanded(child: Text(text, style: theme.textTheme.bodyLarge)),
+          PocketBadge(size: 34, child: Text(n)),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: c.ink),
+                ),
+                const SizedBox(height: 3),
+                Text(body, style: TextStyle(fontSize: 12.5, height: 1.4, color: c.ink2)),
+              ],
+            ),
+          ),
         ],
       ),
     );
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.phonelink, size: 56, color: theme.colorScheme.primary),
-              const SizedBox(height: 16),
-              Text('Pair your computer', style: theme.textTheme.headlineSmall),
-              const SizedBox(height: 8),
-              Text(
-                'You only do this once. After that, open the app and you\'re connected.',
-                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-              ),
-              const SizedBox(height: 16),
-              step('1', 'Install PocketDesk on your computer and open it.'),
-              step('2', 'It shows a QR code. Tap below and scan it.'),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: onAdd,
-                  icon: const Icon(Icons.qr_code_scanner),
-                  label: const Text('Scan pairing code'),
-                ),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: onPaste,
-                  icon: const Icon(Icons.add_link),
-                  label: const Text('Paste a link instead'),
-                ),
-              ),
-            ],
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(104, top, 20, 190),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...extras.map((w) => Padding(padding: const EdgeInsets.only(bottom: 14), child: w)),
+          Text(
+            'Pair your computer',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: c.ink),
           ),
-        ),
+          const SizedBox(height: 8),
+          Text(
+            'You only do this once. After that, open the app and you\'re connected.',
+            style: TextStyle(fontSize: 13, height: 1.45, color: c.ink2),
+          ),
+          const SizedBox(height: 26),
+          step('1', 'Install PocketDesk on your computer', 'Mac or Windows. Open it and it shows a QR code.'),
+          step('2', 'Scan it with this iPhone', 'Tap SCAN below. Once. No accounts, no passwords.'),
+          step('3', 'Done', 'PocketDesk reconnects on its own — at home or away.'),
+        ],
       ),
     );
   }

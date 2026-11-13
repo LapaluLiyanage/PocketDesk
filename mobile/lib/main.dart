@@ -9,6 +9,7 @@ import 'app_model.dart';
 import 'files/share_inbox.dart';
 import 'screens/home_screen.dart';
 import 'settings/app_lock.dart';
+import 'ui/pocket_style.dart';
 import 'update_check.dart';
 import 'update_install.dart';
 

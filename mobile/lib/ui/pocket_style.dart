@@ -90,7 +90,8 @@ class PocketColors extends ThemeExtension<PocketColors> {
   PocketColors copyWith() => this;
 
   @override
-  PocketColors lerp(ThemeExtension<PocketColors>? other, double t) => t < 0.5 ? this : (other as PocketColors? ?? this);
+  PocketColors lerp(ThemeExtension<PocketColors>? other, double t) =>
+      t < 0.5 ? this : (other as PocketColors? ?? this);
 }
 
 /// The screen background: a soft top-to-bottom gradient.
@@ -104,7 +105,11 @@ class PocketBackground extends StatelessWidget {
     final c = PocketColors.of(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [c.bgTop, c.bgBottom]),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [c.bgTop, c.bgBottom],
+        ),
       ),
       child: child,
     );
@@ -266,7 +271,13 @@ class RoundIconButton extends StatelessWidget {
 
 /// The black quarter circle in the bottom-right corner: the main action.
 class CornerAction extends StatelessWidget {
-  const CornerAction({super.key, required this.icon, required this.label, required this.tooltip, this.onPressed});
+  const CornerAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.tooltip,
+    this.onPressed,
+  });
 
   final IconData icon;
   final String label;
@@ -313,7 +324,13 @@ class CornerAction extends StatelessWidget {
 
 /// A quiet text action ("PASTE A LINK").
 class CapsAction extends StatelessWidget {
-  const CapsAction({super.key, required this.icon, required this.label, required this.tooltip, this.onPressed});
+  const CapsAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.tooltip,
+    this.onPressed,
+  });
 
   final IconData icon;
   final String label;
