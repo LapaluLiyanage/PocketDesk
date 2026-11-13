@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import 'package:flutter/material.dart';
 
+import '../ui/pocket_style.dart';
 import 'audio_controller.dart';
 
 /// The Sound panel: listen to the computer, talk to it.
@@ -102,7 +103,7 @@ class _TalkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final pc = PocketColors.of(context);
     final on = audio.talking;
     final button = AnimatedContainer(
       duration: const Duration(milliseconds: 120),
@@ -110,12 +111,15 @@ class _TalkButton extends StatelessWidget {
       height: on ? 104 : 96,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: !enabled ? scheme.surfaceContainerHighest : (on ? scheme.error : scheme.primary),
+        color: !enabled ? pc.field : (on ? pc.acc : pc.pill),
+        boxShadow: enabled
+            ? const [BoxShadow(color: Color(0x2E000000), blurRadius: 20, offset: Offset(0, 8))]
+            : null,
       ),
       child: Icon(
         on ? Icons.mic : Icons.mic_none,
         size: 44,
-        color: !enabled ? scheme.onSurfaceVariant : (on ? scheme.onError : scheme.onPrimary),
+        color: !enabled ? pc.ink3 : (on ? pc.accInk : pc.pillInk),
       ),
     );
     return Semantics(
@@ -141,7 +145,12 @@ class _Header extends StatelessWidget {
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
     child: Text(
       text,
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
+      style: TextStyle(
+        fontSize: 11,
+        letterSpacing: 1.8,
+        fontWeight: FontWeight.w600,
+        color: PocketColors.of(context).ink2,
+      ),
     ),
   );
 }
@@ -154,14 +163,14 @@ class _Note extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final pc = PocketColors.of(context);
     return Card(
       margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-      color: error ? scheme.errorContainer : scheme.surfaceContainerHigh,
+      color: error ? pc.acc : pc.field,
       elevation: 0,
       child: ListTile(
-        leading: Icon(icon, color: error ? scheme.onErrorContainer : null),
-        title: Text(text, style: TextStyle(color: error ? scheme.onErrorContainer : null)),
+        leading: Icon(icon, color: error ? pc.accInk : pc.ink2),
+        title: Text(text, style: TextStyle(color: error ? pc.accInk : pc.ink)),
       ),
     );
   }

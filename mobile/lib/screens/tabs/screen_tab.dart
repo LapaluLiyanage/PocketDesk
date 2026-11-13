@@ -629,8 +629,8 @@ class _Hint extends StatelessWidget {
     return IgnorePointer(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.6),
-          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xCC1C1C1D),
+          borderRadius: BorderRadius.circular(small ? 99 : 20),
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: small ? 6 : 10, vertical: small ? 2 : 6),

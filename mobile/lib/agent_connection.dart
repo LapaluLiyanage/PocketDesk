@@ -321,6 +321,9 @@ class AgentConnection extends ChangeNotifier {
   /// quiet, before it gives up and tells the owner.
   static const maxReconnects = 3;
 
+  /// True while connected through a "Get help" link: temporary access.
+  bool get helpSession => _session?.$1.helping ?? false;
+
   /// Set by [connect]: what [_reconnect] needs to come back on its own.
   (Laptop, PhoneIdentity, String)? _session;
   int _reconnects = 0;

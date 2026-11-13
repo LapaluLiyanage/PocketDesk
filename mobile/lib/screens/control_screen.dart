@@ -392,6 +392,7 @@ class _ControlScreenState extends State<ControlScreen> with WidgetsBindingObserv
             top: !_fullscreen,
             child: Column(
               children: [
+                if (_conn.helpSession) const _HelpBanner(),
                 Expanded(
                   child: IndexedStack(
                     index: _tab,
@@ -529,6 +530,39 @@ class _MediaRow extends StatelessWidget {
         btn(Icons.play_arrow, 'Play / pause', AgentKey.playPause),
         btn(Icons.skip_next, 'Next', AgentKey.next),
       ],
+    );
+  }
+}
+
+/// "Get help": a red bar while you're helping someone, as in the design.
+class _HelpBanner extends StatelessWidget {
+  const _HelpBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = PocketColors.of(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+      decoration: BoxDecoration(color: c.acc, borderRadius: BorderRadius.circular(28)),
+      child: Row(
+        children: [
+          Icon(Icons.support_agent, size: 20, color: c.accInk),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'HELPING',
+                  style: TextStyle(fontSize: 9, letterSpacing: 2.8, color: c.accInk.withValues(alpha: 0.8)),
+                ),
+                Text('Temporary access · up to 2 hours', style: TextStyle(fontSize: 14, color: c.accInk)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

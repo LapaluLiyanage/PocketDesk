@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../ui/pocket_style.dart';
 import '../agent_connection.dart';
 import '../files/native_files.dart';
 import '../files/transfers.dart';
@@ -148,7 +149,15 @@ class ExchangeSheet extends StatelessWidget {
 
     Widget header(String text) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-      child: Text(text, style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.primary)),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          letterSpacing: 1.8,
+          fontWeight: FontWeight.w600,
+          color: PocketColors.of(context).ink2,
+        ),
+      ),
     );
 
     return SafeArea(
